@@ -4,11 +4,14 @@
    the not-found and error pages through .gallery, .gallery-title and
    .gallery-empty. */
 .gallery {
-	--nbf-paper: #f1f0ec;
-	--nbf-ink: #0d0d0c;
-	--nbf-muted: #6b6a66;
-	--nbf-line: #d9d7d0;
-	--nbf-accent: #ff4a1c;
+	/* Night and electric blue: graphite paper, Cloud Dancer ink (#f0eee9,
+	   Pantone 2026), one blue accent. */
+	--nbf-paper: #111214;
+	--nbf-ink: #f0eee9;
+	--nbf-accent: #3d5afe;
+	/* Derived, so a palette only sets paper, ink and accent. */
+	--nbf-muted: color-mix(in oklab, var(--nbf-ink) 62%, var(--nbf-paper));
+	--nbf-line: color-mix(in oklab, var(--nbf-ink) 16%, var(--nbf-paper));
 	--nbf-ease: cubic-bezier(0.23, 1, 0.32, 1);
 	--nbf-gutter: clamp(1rem, 4vw, 3rem);
 	min-height: 100dvh;
@@ -419,7 +422,7 @@
 	gap: 1rem;
 	width: min(78vw, 34rem);
 	padding: clamp(1.25rem, 3vw, 2rem);
-	border: 1px solid rgb(241 240 236 / 0.18);
+	border: 1px solid color-mix(in oklab, var(--nbf-paper) 18%, transparent);
 	border-radius: 0.375rem;
 }
 .nbf-rail-number {
@@ -429,7 +432,8 @@
 	font-stretch: 125%;
 	line-height: 0.8;
 	color: transparent;
-	-webkit-text-stroke: 1px rgb(241 240 236 / 0.5);
+	-webkit-text-stroke: 1px
+		color-mix(in oklab, var(--nbf-paper) 50%, transparent);
 }
 .nbf-rail-panel h3 {
 	margin: 0;
@@ -441,13 +445,13 @@
 .nbf-rail-panel p {
 	max-width: 36ch;
 	margin: 0;
-	color: rgb(241 240 236 / 0.7);
+	color: color-mix(in oklab, var(--nbf-paper) 70%, transparent);
 	line-height: 1.5;
 }
 .nbf-rail-progress {
 	height: 2px;
 	margin-inline: var(--nbf-gutter);
-	background: rgb(241 240 236 / 0.18);
+	background: color-mix(in oklab, var(--nbf-paper) 18%, transparent);
 }
 .nbf-rail-progress > span {
 	display: block;
