@@ -179,7 +179,8 @@ export function Header() {
 						<SiteLink
 							to=""
 							aria-label="Plumín, inicio"
-							className="rounded-full"
+							// The font sits high in its line box: 2px down centres the lowercase wordmark and nib for the eye.
+							className="translate-y-[2px] rounded-full"
 						>
 							<Logo />
 						</SiteLink>
