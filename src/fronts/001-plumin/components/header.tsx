@@ -88,7 +88,7 @@ function MiniCart() {
 							) : (
 								<>
 									<ShippingMeter subtotal={totals.subtotal} />
-									<CartLines compact />
+									<CartLines compact onNavigate={() => setOpen(false)} />
 								</>
 							)}
 						</Drawer.Body>
