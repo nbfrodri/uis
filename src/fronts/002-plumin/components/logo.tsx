@@ -34,9 +34,9 @@ export function LogoMark({
 
 export function Logo({ className }: { className?: string }) {
 	return (
-		<span className={`inline-flex items-center gap-2 ${className ?? ""}`}>
-			<LogoMark className="size-8 text-(--ink)" />
-			<span className="text-[1.6rem] leading-none font-extrabold tracking-[-0.04em]">
+		<span className={`inline-flex items-center gap-1.5 ${className ?? ""}`}>
+			<LogoMark className="size-6 translate-y-px text-(--ink)" />
+			<span className="text-[1.3rem] leading-none font-extrabold tracking-[-0.04em]">
 				plumín
 			</span>
 		</span>

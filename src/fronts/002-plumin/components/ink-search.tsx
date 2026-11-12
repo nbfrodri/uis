@@ -30,9 +30,12 @@ function SearchIcon() {
 export function InkSearch({
 	onDone,
 	className,
+	variant = "outlined",
 }: {
 	onDone?: () => void;
 	className?: string;
+	/** "filled" drops the border so the field sits inside another outline (the header pill). */
+	variant?: "outlined" | "filled";
 }) {
 	const [query, setQuery] = useState("");
 	const navigate = useNavigate();
@@ -69,7 +72,7 @@ export function InkSearch({
 				</span>
 				<Input
 					placeholder="Buscar tintas"
-					className="h-10 w-full rounded-full pr-10 pl-9"
+					className={`h-9 w-full rounded-full pr-9 pl-9 text-[0.9375rem] ${variant === "filled" ? "border-transparent! bg-(--wash)! shadow-none!" : ""}`}
 					onKeyDown={(event) => {
 						// No suggestion highlighted: Enter searches the whole catalogue.
 						if (

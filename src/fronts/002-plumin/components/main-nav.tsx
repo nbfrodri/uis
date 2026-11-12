@@ -1,5 +1,11 @@
 import { NavigationMenu } from "@base-ui/react/navigation-menu";
-import { type ReactNode, useLayoutEffect, useRef, useState } from "react";
+import {
+	type ReactNode,
+	type RefObject,
+	useLayoutEffect,
+	useRef,
+	useState,
+} from "react";
 import { Link, useLocation } from "react-router";
 import { families, findInk, formatPrice, inks, mix, sampleBox } from "../data";
 import { useSitePath } from "./site-link";
@@ -8,12 +14,39 @@ import { Swatch } from "./swatch";
 const featured = ["granada", "mar-de-bizkaia", "musgo-de-ordesa"].flatMap(
 	(id) => findInk(id) ?? [],
 );
+const vials = [
+	"azul-real",
+	"granada",
+	"musgo-de-ordesa",
+	"tabaco",
+	"ciruela",
+].flatMap((id) => findInk(id) ?? []);
 const familyColor = Object.fromEntries(
 	families.map((f) => [f.id, inks.find((ink) => ink.family === f.id)?.color]),
 );
 
 const itemClass =
-	"relative z-10 flex h-10 items-center gap-1 rounded-full px-4 font-semibold outline-none focus-visible:ring-2 focus-visible:ring-(--ink)";
+	"relative z-10 flex h-9 items-center gap-1.5 rounded-full px-3.5 text-[0.9375rem] font-semibold outline-none focus-visible:ring-2 focus-visible:ring-(--ink)";
+
+/** Thin chevron matching the stroke of the other icons; nudged 1px down to sit on the text's optical centre. */
+function ChevronIcon() {
+	return (
+		<svg
+			viewBox="0 0 12 12"
+			className="size-3 translate-y-px"
+			fill="none"
+			aria-hidden="true"
+		>
+			<path
+				d="M2.5 4.5 6 8l3.5-3.5"
+				stroke="currentColor"
+				strokeWidth="1.6"
+				strokeLinecap="round"
+				strokeLinejoin="round"
+			/>
+		</svg>
+	);
+}
 
 /** A Base UI menu link that navigates with React Router inside the front. */
 function MenuLink({
@@ -56,7 +89,7 @@ function useSlidingIndicator(activeIndex: number) {
 	return { listRef, box, setHovered };
 }
 
-export function MainNav() {
+export function MainNav({ anchor }: { anchor: RefObject<HTMLElement | null> }) {
 	const { pathname } = useLocation();
 	const sitePath = useSitePath();
 	const activeIndex = pathname.startsWith(sitePath("tintas"))
@@ -81,7 +114,7 @@ export function MainNav() {
 			>
 				<span
 					aria-hidden="true"
-					className="nav-indicator absolute top-0 left-0 h-10 rounded-full bg-(--wash)"
+					className="nav-indicator absolute top-0 left-0 h-9 rounded-full bg-(--wash)"
 					style={{
 						transform: `translateX(${box?.left ?? 0}px)`,
 						width: box?.width ?? 0,
@@ -91,12 +124,12 @@ export function MainNav() {
 				<NavigationMenu.Item data-nav-item {...hover(0)}>
 					<NavigationMenu.Trigger className={itemClass}>
 						Tintas
-						<NavigationMenu.Icon className="nav-chevron text-xs">
-							▾
+						<NavigationMenu.Icon className="nav-chevron">
+							<ChevronIcon />
 						</NavigationMenu.Icon>
 					</NavigationMenu.Trigger>
-					<NavigationMenu.Content className="nav-content grid w-[min(46rem,calc(100vw-2rem))] grid-cols-[1fr_1.4fr_0.9fr] gap-6 p-6">
-						<div>
+					<NavigationMenu.Content className="nav-content grid w-[min(44rem,calc(100vw-2rem))] grid-cols-[0.8fr_1.6fr] gap-x-2 p-2">
+						<div className="p-4">
 							<p className="text-sm font-bold text-(--ink-soft)">Por color</p>
 							<ul className="mt-3 grid gap-1">
 								{families.map((family) => (
@@ -116,7 +149,7 @@ export function MainNav() {
 								))}
 							</ul>
 						</div>
-						<div>
+						<div className="p-4">
 							<p className="text-sm font-bold text-(--ink-soft)">Destacadas</p>
 							<ul className="mt-3 grid grid-cols-3 gap-3">
 								{featured.map((ink, i) => (
@@ -144,26 +177,38 @@ export function MainNav() {
 								))}
 							</ul>
 						</div>
-						<div className="flex flex-col justify-between rounded-2xl bg-(--ink) p-5 text-white">
-							<div>
-								<p className="text-lg leading-tight font-extrabold">
-									{sampleBox.name}
-								</p>
-								<p className="mt-1 text-sm text-white/80">
-									Cinco viales para probar.
-								</p>
-							</div>
+						{/* Sample box: a full-width strip, so it reads as an offer rather than a squeezed column. */}
+						<div className="col-span-2 flex items-center gap-5 rounded-2xl bg-(--ink) p-4 pl-5 text-white">
+							<span className="flex h-12 items-end gap-1.5" aria-hidden="true">
+								{vials.map((ink, i) => (
+									<span
+										key={ink.id}
+										className="relative h-full w-3.5 rounded-t-full rounded-b-sm bg-white/15"
+									>
+										<span
+											className="absolute inset-x-0.5 bottom-0.5 rounded-t-full rounded-b-sm"
+											style={{
+												background: ink.color,
+												height: `${50 + i * 9}%`,
+											}}
+										/>
+									</span>
+								))}
+							</span>
+							<span className="min-w-0 flex-1">
+								<span className="block font-extrabold">{sampleBox.name}</span>
+								<span className="block text-sm text-white/75">
+									Cinco viales de 4 ml para probar en casa.
+								</span>
+							</span>
+							<span className="text-xl font-extrabold">
+								{formatPrice(sampleBox.price)}
+							</span>
 							<MenuLink
 								to="#muestras"
-								className="mt-4 font-semibold underline underline-offset-4"
+								className="flex h-9 items-center rounded-full bg-white px-4 text-sm font-bold text-(--ink)"
 							>
-								{formatPrice(sampleBox.price)}, pedirla
-							</MenuLink>
-							<MenuLink
-								to="tintas"
-								className="mt-2 text-sm text-white/80 hover:text-white"
-							>
-								Ver las doce tintas
+								Pedir la caja
 							</MenuLink>
 						</div>
 					</NavigationMenu.Content>
@@ -181,8 +226,10 @@ export function MainNav() {
 			</NavigationMenu.List>
 
 			<NavigationMenu.Portal>
+				{/* Anchored to the whole pill so the panel sits centred under it, not under the trigger. */}
 				<NavigationMenu.Positioner
-					sideOffset={14}
+					anchor={anchor}
+					sideOffset={8}
 					align="center"
 					className="nav-positioner z-40"
 				>
