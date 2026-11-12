@@ -47,14 +47,18 @@ export function Preloader({
 	const progress = useMotionValue(0);
 	const line = useTransform(progress, (v) => `scaleX(${v / 100})`);
 	const done = useRef(onDone);
-	done.current = onDone;
+	useEffect(() => {
+		done.current = onDone;
+	});
 
 	useEffect(() => {
 		if (state === "off") done.current();
 		if (state !== "counting") return;
 		try {
 			sessionStorage.setItem("nbf-intro", "seen");
-		} catch {}
+		} catch {
+			// Storage blocked (private mode): the intro simply plays again next time.
+		}
 		const controls = animate(progress, 100, {
 			duration: 1.4,
 			ease: [0.65, 0, 0.35, 1],
