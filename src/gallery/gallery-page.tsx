@@ -21,6 +21,73 @@ import { PracticeRail } from "./practice-rail";
 import { ProjectCard } from "./project-card";
 import { ArrowIcon } from "./studio-icons";
 
+type ShapeList = Parameters<typeof ParallaxShapes>[0]["shapes"];
+
+// Decorative layers: depth comes from speed (px travelled across the pass).
+const WORK_SHAPES: ShapeList = [
+	{
+		kind: "ring",
+		left: "62%",
+		top: "-4rem",
+		size: 220,
+		speed: 260,
+		spin: 40,
+	},
+	{
+		kind: "plus",
+		left: "8%",
+		top: "70%",
+		size: 44,
+		speed: 420,
+		spin: 180,
+	},
+	{
+		kind: "star",
+		left: "88%",
+		top: "78%",
+		size: 56,
+		speed: 520,
+		spin: 120,
+		accent: true,
+	},
+	{
+		kind: "dots",
+		left: "44%",
+		top: "88%",
+		size: 70,
+		speed: 180,
+		spin: 0,
+	},
+];
+
+const CTA_SHAPES: ShapeList = [
+	{
+		kind: "square",
+		left: "70%",
+		top: "10%",
+		size: 140,
+		speed: 300,
+		spin: -60,
+	},
+	{
+		kind: "star",
+		left: "56%",
+		top: "62%",
+		size: 40,
+		speed: 460,
+		spin: 200,
+		accent: true,
+	},
+	{
+		kind: "ring",
+		left: "86%",
+		top: "48%",
+		size: 90,
+		speed: 520,
+		spin: 0,
+	},
+];
+
 export function GalleryPage({ fronts }: { fronts: Front[] }) {
 	const reduce = usePrefersReducedMotion();
 	const [introDone, setIntroDone] = useState(false);
@@ -67,44 +134,7 @@ export function GalleryPage({ fronts }: { fronts: Front[] }) {
 					className="nbf-work"
 					aria-labelledby="nbf-work-title"
 				>
-					<ParallaxShapes
-						still={reduce}
-						shapes={[
-							{
-								kind: "ring",
-								left: "62%",
-								top: "-4rem",
-								size: 220,
-								speed: 260,
-								spin: 40,
-							},
-							{
-								kind: "plus",
-								left: "8%",
-								top: "70%",
-								size: 44,
-								speed: 420,
-								spin: 180,
-							},
-							{
-								kind: "star",
-								left: "88%",
-								top: "78%",
-								size: 56,
-								speed: 520,
-								spin: 120,
-								accent: true,
-							},
-							{
-								kind: "dots",
-								left: "44%",
-								top: "88%",
-								size: 70,
-								speed: 180,
-								spin: 0,
-							},
-						]}
-					/>
+					<ParallaxShapes still={reduce} shapes={WORK_SHAPES} />
 					<div className="nbf-work-head">
 						<h2 id="nbf-work-title" className="nbf-label">
 							Trabajo
@@ -137,36 +167,7 @@ export function GalleryPage({ fronts }: { fronts: Front[] }) {
 					/>
 				</section>
 				<section className="nbf-cta" aria-labelledby="nbf-cta-title">
-					<ParallaxShapes
-						still={reduce}
-						shapes={[
-							{
-								kind: "square",
-								left: "70%",
-								top: "10%",
-								size: 140,
-								speed: 300,
-								spin: -60,
-							},
-							{
-								kind: "star",
-								left: "56%",
-								top: "62%",
-								size: 40,
-								speed: 460,
-								spin: 200,
-								accent: true,
-							},
-							{
-								kind: "ring",
-								left: "86%",
-								top: "48%",
-								size: 90,
-								speed: 520,
-								spin: 0,
-							},
-						]}
-					/>
+					<ParallaxShapes still={reduce} shapes={CTA_SHAPES} />
 					<p className="nbf-label">Siguiente paso</p>
 					<RevealLines
 						id="nbf-cta-title"
