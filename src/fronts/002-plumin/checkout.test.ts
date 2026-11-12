@@ -2,11 +2,8 @@ import { cartTotals } from "./cart";
 import {
 	type CheckoutForm,
 	formatCardNumber,
-	isValidCardNumber,
 	validateCheckout,
 } from "./checkout";
-
-const now = new Date("2026-11-12T10:00:00Z");
 
 const base: CheckoutForm = {
 	email: "lucia@example.com",
@@ -26,29 +23,39 @@ const base: CheckoutForm = {
 	bizumPhone: "",
 };
 
-describe("validateCheckout", () => {
+describe("validateCheckout (practice mode: any value, but not empty)", () => {
 	it("accepts a complete home delivery paid by card", () => {
-		expect(validateCheckout(base, now)).toEqual({});
+		expect(validateCheckout(base)).toEqual({});
 	});
 
-	it("explains each wrong or missing field", () => {
-		const errors = validateCheckout(
-			{
-				...base,
-				email: "lucia@",
-				postalCode: "2800",
-				phone: "12345",
-				firstName: " ",
-			},
-			now,
-		);
+	it("accepts made-up values in any format", () => {
+		const anything = {
+			...base,
+			email: "x",
+			phone: "1",
+			postalCode: "abc",
+			cardNumber: "1",
+			cardExpiry: "ya",
+			cardCvc: "?",
+		};
+		expect(validateCheckout(anything)).toEqual({});
+	});
+
+	it("names each empty field", () => {
+		const errors = validateCheckout({
+			...base,
+			email: " ",
+			firstName: "",
+			phone: "",
+			postalCode: "",
+		});
 		expect(Object.keys(errors).sort()).toEqual([
 			"email",
 			"firstName",
 			"phone",
 			"postalCode",
 		]);
-		expect(errors.postalCode).toMatch(/5 cifras/);
+		expect(errors.email).toMatch(/correo/i);
 	});
 
 	it("only asks for name and phone when collecting in the shop", () => {
@@ -60,27 +67,10 @@ describe("validateCheckout", () => {
 			city: "",
 			province: "",
 		};
-		expect(validateCheckout(pickup, now)).toEqual({});
+		expect(validateCheckout(pickup)).toEqual({});
 	});
 
-	it("rejects an invalid card, an expired date and a short CVC", () => {
-		const errors = validateCheckout(
-			{
-				...base,
-				cardNumber: "4242 4242 4242 4241",
-				cardExpiry: "10/26",
-				cardCvc: "12",
-			},
-			now,
-		);
-		expect(Object.keys(errors).sort()).toEqual([
-			"cardCvc",
-			"cardExpiry",
-			"cardNumber",
-		]);
-	});
-
-	it("needs a Spanish mobile for Bizum and ignores the card fields", () => {
+	it("asks for the Bizum phone instead of the card", () => {
 		const bizum = {
 			...base,
 			payment: "bizum" as const,
@@ -89,21 +79,12 @@ describe("validateCheckout", () => {
 			cardCvc: "",
 			cardName: "",
 		};
-		expect(
-			validateCheckout({ ...bizum, bizumPhone: "912345678" }, now),
-		).toHaveProperty("bizumPhone");
-		expect(
-			validateCheckout({ ...bizum, bizumPhone: "612 345 678" }, now),
-		).toEqual({});
+		expect(Object.keys(validateCheckout(bizum))).toEqual(["bizumPhone"]);
+		expect(validateCheckout({ ...bizum, bizumPhone: "5" })).toEqual({});
 	});
 });
 
-describe("card helpers", () => {
-	it("checks the Luhn digit", () => {
-		expect(isValidCardNumber("4242424242424242")).toBe(true);
-		expect(isValidCardNumber("4242424242424241")).toBe(false);
-	});
-
+describe("formatCardNumber", () => {
 	it("groups digits in fours and drops anything else", () => {
 		expect(formatCardNumber("4242-4242x42424242 99")).toBe(
 			"4242 4242 4242 4242 99",

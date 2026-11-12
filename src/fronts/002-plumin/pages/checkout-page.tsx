@@ -6,10 +6,8 @@ import {
 	FieldError,
 	Input,
 	Label,
-	ListBox,
 	Radio,
 	RadioGroup,
-	Select,
 	TextField,
 } from "@heroui/react";
 import { type ReactNode, useState } from "react";
@@ -24,11 +22,18 @@ import {
 	formatExpiry,
 	orderNumber,
 	type Payment,
-	provinces,
 	validateCheckout,
 } from "../checkout";
 import { SiteLink } from "../components/site-link";
+import {
+	emptyPlaceText,
+	SuggestField,
+	singlePostalCode,
+	useCitySuggestions,
+	usePlaceSuggestions,
+} from "../components/suggest-field";
 import { findInk, formatPrice, nameOf, priceOf } from "../data";
+import { filterProvinces, type Place } from "../places";
 
 /** How long the fake payment "processes" before confirming. */
 const FAKE_PAYMENT_MS = 1200;
@@ -137,11 +142,101 @@ function OptionCard({
 			<Radio.Content className="flex! min-w-0 flex-1 flex-row! items-start justify-between gap-3">
 				<span className="min-w-0">
 					<Label className="block font-bold">{title}</Label>
-					<Description className="mt-0.5 block">{detail}</Description>
+					{detail && (
+						<Description className="mt-0.5 block">{detail}</Description>
+					)}
 				</span>
 				{aside && <span className="shrink-0 font-semibold">{aside}</span>}
 			</Radio.Content>
 		</Radio>
+	);
+}
+
+/** Street, postcode, city and province, with suggestions as you type. Any text is accepted. */
+function AddressFields({
+	form,
+	errors,
+	onChange,
+}: {
+	form: CheckoutForm;
+	errors: CheckoutErrors;
+	onChange: (changes: Partial<CheckoutForm>) => void;
+}) {
+	const streets = usePlaceSuggestions(
+		form.address,
+		"address",
+		form.city || undefined,
+	);
+	const cities = useCitySuggestions(form.city);
+	const provinceItems = filterProvinces(form.province).map((name) => ({
+		id: name,
+		label: name,
+	}));
+	const fill = (place: Place) =>
+		onChange({
+			...(place.street ? { address: place.street } : {}),
+			...(place.postcode ? { postalCode: place.postcode } : {}),
+			...(place.city ? { city: place.city } : {}),
+			...(place.province ? { province: place.province } : {}),
+		});
+
+	return (
+		<>
+			<SuggestField
+				label="Dirección"
+				className="sm:col-span-2"
+				value={form.address}
+				onChange={(address) => onChange({ address })}
+				items={streets.places}
+				onPick={fill}
+				error={errors.address}
+				placeholder="Calle y número"
+				autoComplete="street-address"
+				emptyText={emptyPlaceText(form.address, streets.status, "calles")}
+			/>
+			<Field
+				name="postalCode"
+				label="Código postal"
+				autoComplete="postal-code"
+				inputMode="numeric"
+				form={form}
+				errors={errors}
+				onChange={(name, value) => onChange({ [name]: value })}
+			/>
+			<SuggestField
+				label="Ciudad"
+				value={form.city}
+				onChange={(city) => onChange({ city })}
+				items={cities.places}
+				onPick={(place) => {
+					fill(place);
+					// Many towns have a single postal code: fill it in too.
+					singlePostalCode(place.id).then(
+						(postalCode) => postalCode && onChange({ postalCode }),
+					);
+				}}
+				error={errors.city}
+				autoComplete="address-level2"
+				emptyText={
+					cities.loading
+						? "Cargando municipios…"
+						: form.city.trim().length < 2
+							? "Escribe al menos 2 letras."
+							: "Ningún municipio coincide. Puedes escribirlo a mano."
+				}
+			/>
+			<SuggestField
+				label="Provincia"
+				className="sm:col-span-2"
+				value={form.province}
+				onChange={(province) => onChange({ province })}
+				items={provinceItems}
+				onPick={(item) => onChange({ province: item.label })}
+				error={errors.province}
+				autoComplete="address-level1"
+				emptyText="Ninguna provincia coincide. Puedes escribirla a mano."
+			/>
+		</>
 	);
 }
 
@@ -155,12 +250,15 @@ export function CheckoutPage() {
 
 	const totals = cartTotals(cart, priceOf, form.delivery);
 
-	const update = (name: keyof CheckoutForm, value: string) => {
-		const next = { ...form, [name]: value } as CheckoutForm;
+	const patch = (changes: Partial<CheckoutForm>) => {
+		const next = { ...form, ...changes };
 		setForm(next);
 		// After the first attempt, errors follow the user's corrections live.
 		if (submitted) setErrors(validateCheckout(next));
 	};
+
+	const update = (name: keyof CheckoutForm, value: string) =>
+		patch({ [name]: value });
 
 	const submit = () => {
 		setSubmitted(true);
@@ -221,8 +319,7 @@ export function CheckoutPage() {
 				Finalizar compra
 			</h1>
 			<p className="mt-3 max-w-[60ch] rounded-xl bg-[#fff6d6] px-4 py-3 text-sm text-[#5c4300]">
-				Pago simulado: no escribas datos reales. Para la tarjeta usa 4242 4242
-				4242 4242, cualquier fecha futura y cualquier CVC.
+				Pago de prueba: vale cualquier dato.
 			</p>
 
 			<div className="mt-10 grid gap-12 lg:grid-cols-[1fr_24rem]">
@@ -241,7 +338,6 @@ export function CheckoutPage() {
 							type="email"
 							inputMode="email"
 							autoComplete="email"
-							description="Te enviaremos ahí la confirmación del pedido."
 							{...fieldProps}
 						/>
 						<Checkbox className="mt-4 flex-row! items-center! gap-3!">
@@ -264,13 +360,13 @@ export function CheckoutPage() {
 							<OptionCard
 								value="domicilio"
 								title="Envío a domicilio"
-								detail="Correos Express, en 24-48 h laborables."
+								detail="24-48 h"
 								aside={totals.subtotal >= 40 ? "Gratis" : formatPrice(4.9)}
 							/>
 							<OptionCard
 								value="tienda"
 								title="Recoger en la tienda"
-								detail="Calle del Ave María 31, Madrid. Listo en unas 2 horas."
+								detail="Ave María 31, en unas 2 h"
 								aside="Gratis"
 							/>
 						</RadioGroup>
@@ -289,60 +385,7 @@ export function CheckoutPage() {
 								{...fieldProps}
 							/>
 							{form.delivery === "domicilio" && (
-								<>
-									<Field
-										name="address"
-										label="Dirección"
-										autoComplete="street-address"
-										placeholder="Calle, número, piso y puerta"
-										className="sm:col-span-2"
-										{...fieldProps}
-									/>
-									<Field
-										name="postalCode"
-										label="Código postal"
-										autoComplete="postal-code"
-										inputMode="numeric"
-										format={(v) => v.replace(/\D/g, "").slice(0, 5)}
-										{...fieldProps}
-									/>
-									<Field
-										name="city"
-										label="Ciudad"
-										autoComplete="address-level2"
-										{...fieldProps}
-									/>
-									<Select
-										className="sm:col-span-2"
-										value={form.province || null}
-										onChange={(key) =>
-											update("province", key ? String(key) : "")
-										}
-										isInvalid={Boolean(errors.province)}
-										placeholder="Elige una provincia"
-									>
-										<Label className="font-semibold">Provincia</Label>
-										<Select.Trigger className="h-12">
-											<Select.Value />
-											<Select.Indicator />
-										</Select.Trigger>
-										<FieldError>{errors.province}</FieldError>
-										<Select.Popover>
-											<ListBox>
-												{provinces.map((province) => (
-													<ListBox.Item
-														key={province.id}
-														id={province.id}
-														textValue={province.name}
-													>
-														{province.name}
-														<ListBox.ItemIndicator />
-													</ListBox.Item>
-												))}
-											</ListBox>
-										</Select.Popover>
-									</Select>
-								</>
+								<AddressFields form={form} errors={errors} onChange={patch} />
 							)}
 							<Field
 								name="phone"
@@ -350,11 +393,6 @@ export function CheckoutPage() {
 								type="tel"
 								inputMode="tel"
 								autoComplete="tel-national"
-								description={
-									form.delivery === "tienda"
-										? "Te escribimos cuando esté listo."
-										: "Solo para el repartidor."
-								}
 								className="sm:col-span-2"
 								{...fieldProps}
 							/>
@@ -368,18 +406,8 @@ export function CheckoutPage() {
 							onChange={(value) => update("payment", value as Payment)}
 							className="grid gap-3 sm:grid-cols-2"
 						>
-							<OptionCard
-								value="tarjeta"
-								title="Tarjeta"
-								detail="Visa, Mastercard o Amex."
-								aside=""
-							/>
-							<OptionCard
-								value="bizum"
-								title="Bizum"
-								detail="Confirmas el pago en tu banco."
-								aside=""
-							/>
+							<OptionCard value="tarjeta" title="Tarjeta" detail="" aside="" />
+							<OptionCard value="bizum" title="Bizum" detail="" aside="" />
 						</RadioGroup>
 
 						{form.payment === "tarjeta" ? (
@@ -428,7 +456,6 @@ export function CheckoutPage() {
 									type="tel"
 									inputMode="tel"
 									autoComplete="off"
-									description="Recibirás una notificación simulada para aceptar el pago."
 									{...fieldProps}
 								/>
 							</div>
@@ -519,8 +546,8 @@ function Confirmation({ order }: { order: Order }) {
 			</h1>
 			<p className="mt-4 text-lg">
 				Gracias, {form.firstName}. Tu número de pedido es{" "}
-				<strong>{order.id}</strong>. Hemos enviado (de mentira) la confirmación
-				a <strong>{form.email}</strong>.
+				<strong>{order.id}</strong>. Confirmación enviada a{" "}
+				<strong>{form.email}</strong>.
 			</p>
 
 			<dl className="mt-10 grid gap-6 rounded-3xl bg-(--wash) p-6 sm:grid-cols-2">
@@ -557,11 +584,6 @@ function Confirmation({ order }: { order: Order }) {
 					</dd>
 				</div>
 			</dl>
-
-			<p className="mt-6 text-sm text-(--ink-soft)">
-				Es una tienda de práctica: no se ha cobrado nada ni se ha guardado
-				ningún dato.
-			</p>
 			<SiteLink to="tintas" className={buttonVariants({ className: "mt-6" })}>
 				Seguir mirando tintas
 			</SiteLink>

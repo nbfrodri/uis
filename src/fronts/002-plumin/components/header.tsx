@@ -156,8 +156,7 @@ export function Header() {
 	return (
 		<>
 			<p className="bg-(--ink) px-4 py-2 text-center text-sm font-medium text-white">
-				Envío gratis a partir de 40 €. Y en la tienda de Lavapiés puedes probar
-				todas las tintas.
+				Envío gratis desde 40 €
 			</p>
 			<header
 				data-scrolled={scrolled}

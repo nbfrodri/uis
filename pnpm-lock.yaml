@@ -44,6 +44,9 @@ importers:
       react-router:
         specifier: ^8.5.1
         version: 8.5.1(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
+      spanish-cities-info:
+        specifier: ^2.4.2
+        version: 2.4.2
     devDependencies:
       '@biomejs/biome':
         specifier: ^2.6.6
@@ -1278,6 +1281,9 @@ packages:
     resolution: {integrity: sha512-KGj/8Y43x35aZVDtt+J4mK1hoLGHULMYfSkODJNQjNDC3oW1PqPoxMwo0pLUsWM/UEGzON/NxeHywEfNXNP3Vw==}
     engines: {node: '>=0.10.0'}
 
+  spanish-cities-info@2.4.2:
+    resolution: {integrity: sha512-BPkaKrgKPYYevzGS81AOP+EHkp4HS/smtsQFxmtlaaWsXoPfok9+IgRdIDrhzb9NSBsz26r+cOTN43GKkE8IVg==}
+
   std-env@4.3.0:
     resolution: {integrity: sha512-OtU/EgQ1kIm5KwqQpBC6ZEMXrZRui11w8zgfTWp8cdO9B8OaPsbA8bTHO2P+HNo1VlUTGMVBwPhydu6poeXiag==}
 
@@ -2490,6 +2496,8 @@ snapshots:
   scheduler@0.28.0: {}
 
   source-map-js@1.2.2: {}
+
+  spanish-cities-info@2.4.2: {}
 
   std-env@4.3.0: {}
 

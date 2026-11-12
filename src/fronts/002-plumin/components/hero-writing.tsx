@@ -148,10 +148,6 @@ export function HeroWriting() {
 					</div>
 
 					<figure className="relative rotate-[-1.5deg] rounded-2xl bg-white px-7 pt-6 pb-8 shadow-[0_30px_60px_-30px_rgb(23_32_88/0.45),0_0_0_1px_rgb(23_32_88/0.06)] sm:px-10">
-						<div className="flex items-center justify-between text-sm text-(--ink-soft)">
-							<span>Hoja de prueba</span>
-							<span>Plumín medio, papel de 90 g</span>
-						</div>
 						<p
 							className="ruled font-hand mt-3 min-h-[8.25rem] text-[clamp(1.9rem,3.2vw,2.4rem)]"
 							style={{ color: ink.color, transition: "color 300ms ease" }}

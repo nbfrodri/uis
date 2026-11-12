@@ -96,9 +96,6 @@ export function Home() {
 								Querida Elena, te escribo con {ink.name}.
 							</p>
 							<p className="mt-4 font-bold">{ink.name}</p>
-							<p className="text-sm text-(--ink-soft)">
-								Plumín medio sobre papel de 90 g
-							</p>
 						</SiteLink>
 					))}
 				</div>

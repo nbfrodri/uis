@@ -23,12 +23,8 @@ describe("checkout", () => {
 	it("explains what is missing instead of submitting", async () => {
 		await renderCheckout();
 		await userEvent.click(screen.getByRole("button", { name: /pagar/i }));
-		expect(
-			await screen.findByText(/escribe un correo válido/i),
-		).toBeInTheDocument();
-		expect(
-			screen.getByText(/código postal tiene 5 cifras/i),
-		).toBeInTheDocument();
+		expect(await screen.findByText(/escribe un correo/i)).toBeInTheDocument();
+		expect(screen.getByText(/escribe el código postal/i)).toBeInTheDocument();
 		expect(screen.queryByText(/pedido confirmado/i)).not.toBeInTheDocument();
 	});
 

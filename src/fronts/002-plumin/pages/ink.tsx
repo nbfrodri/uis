@@ -60,9 +60,6 @@ export function InkPage() {
 
 					<div className="mt-8 rounded-2xl border border-(--rule) p-5">
 						<AddToCart id={ink.id} />
-						<p className="mt-4 text-sm text-(--ink-soft)">
-							Envío en 24-48 h. Gratis a partir de 40 €.
-						</p>
 					</div>
 
 					<figure className="mt-10">
@@ -75,9 +72,6 @@ export function InkPage() {
 								cigüeña tocaba el saxofón detrás del palenque de paja.
 							</p>
 						</div>
-						<figcaption className="mt-2 text-sm text-(--ink-soft)">
-							Prueba de escritura con plumín medio sobre papel de 90 g.
-						</figcaption>
 					</figure>
 
 					<dl className="mt-10 grid grid-cols-2 gap-x-6 gap-y-6 border-t border-(--rule) pt-6">

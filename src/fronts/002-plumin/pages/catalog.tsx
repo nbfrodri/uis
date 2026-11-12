@@ -28,10 +28,6 @@ export function Catalog() {
 			<h1 className="text-5xl font-extrabold tracking-[-0.04em] sm:text-7xl">
 				Tintas
 			</h1>
-			<p className="mt-3 max-w-[52ch] text-lg text-(--ink-soft)">
-				Frascos de 50 ml. Cada muestra es una pasada de bastoncillo sobre papel
-				blanco.
-			</p>
 
 			<div className="mt-8 flex flex-wrap items-end justify-between gap-4">
 				<nav aria-label="Filtrar por color" className="flex flex-wrap gap-2">

@@ -53,9 +53,6 @@ export function CartPage() {
 					>
 						Tramitar pedido
 					</SiteLink>
-					<p className="mt-3 text-xs text-(--ink-soft)">
-						Tienda de práctica: el pago es simulado y no se cobra nada.
-					</p>
 				</aside>
 			</div>
 		</main>
