@@ -18,18 +18,22 @@ export const routes: RouteObject[] = [
 	{ path: "*", element: <NotFound /> },
 ];
 
-const router = createBrowserRouter([
-	{
-		element: (
-			<>
-				<ScrollRestoration />
-				<Outlet />
-			</>
-		),
-		errorElement: <RouteError />,
-		children: routes,
-	},
-]);
+const router = createBrowserRouter(
+	[
+		{
+			element: (
+				<>
+					<ScrollRestoration />
+					<Outlet />
+				</>
+			),
+			errorElement: <RouteError />,
+			children: routes,
+		},
+	],
+	// "/" locally, "/uis" on GitHub Pages (Vite's base, without the trailing slash).
+	{ basename: import.meta.env.BASE_URL.replace(/\/$/, "") || "/" },
+);
 
 export function App() {
 	return <RouterProvider router={router} />;
