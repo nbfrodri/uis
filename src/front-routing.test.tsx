@@ -54,7 +54,10 @@ describe("front routing", () => {
 		select.blur();
 		await userEvent.keyboard("{Escape}");
 		expect(
-			await screen.findByRole("heading", { name: "Libreta de interfaces" }),
+			await screen.findByRole("heading", {
+				name: /ideas que se pueden visitar/i,
+			}),
 		).toBeInTheDocument();
+		expect(document.title).toBe("Estudio digital");
 	});
 });

@@ -32,6 +32,31 @@ function renderGallery(list: Front[], url = "/") {
 }
 
 describe("GalleryPage", () => {
+	it("presents the studio and lets visitors pause decorative motion", async () => {
+		renderGallery(fronts);
+		expect(
+			screen.getByRole("link", { name: "Estudio digital, inicio" }),
+		).toHaveAttribute("href", "/");
+		expect(
+			screen.getByRole("heading", {
+				level: 1,
+				name: /ideas que se pueden visitar/i,
+			}),
+		).toBeInTheDocument();
+		await userEvent.click(
+			screen.getByRole("button", { name: "Pausar movimiento" }),
+		);
+		expect(
+			screen.getByRole("button", { name: "Activar movimiento" }),
+		).toHaveAttribute("aria-pressed", "true");
+		await userEvent.click(
+			screen.getByRole("button", { name: "Activar movimiento" }),
+		);
+		expect(
+			screen.getByRole("button", { name: "Pausar movimiento" }),
+		).toHaveAttribute("aria-pressed", "false");
+	});
+
 	it("lists every front with a link to open it", () => {
 		renderGallery(fronts);
 		const items = screen.getAllByRole("listitem");
