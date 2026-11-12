@@ -50,18 +50,15 @@ export function Home() {
 				aria-labelledby="novedades"
 				className="mx-auto mt-24 max-w-7xl px-4 sm:px-8"
 			>
-				<div className="flex items-end justify-between gap-4">
+				<div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-end">
 					<h2
 						id="novedades"
 						className="text-4xl font-extrabold tracking-[-0.03em] sm:text-5xl"
 					>
 						Llegadas este otoño
 					</h2>
-					<SiteLink
-						to="tintas"
-						className="font-semibold underline underline-offset-4"
-					>
-						Ver las doce
+					<SiteLink to="tintas" className="button button--primary shrink-0">
+						Ver el catálogo
 					</SiteLink>
 				</div>
 				<div className="mt-10 grid grid-cols-2 gap-x-5 gap-y-12 lg:grid-cols-4">
