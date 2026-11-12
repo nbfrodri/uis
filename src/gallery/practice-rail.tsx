@@ -66,10 +66,11 @@ export function PracticeRail({ still }: { still: boolean }) {
 		(v) => `translateX(${-v * distance}px)`,
 	);
 	const progress = useTransform(scrollYProgress, (v) => `scaleX(${v})`);
-	// The backdrop words travel the other way, slower: parallax depth.
+	// The backdrop reads left to right and drifts the same way as the panels,
+	// but slower: parallax depth.
 	const backdrop = useTransform(
 		scrollYProgress,
-		(v) => `translate(${-10 + v * 30}%, -50%)`,
+		(v) => `translate(${5 - v * 35}%, -50%)`,
 	);
 	const [current, setCurrent] = useState(1);
 	useMotionValueEvent(scrollYProgress, "change", (v) =>

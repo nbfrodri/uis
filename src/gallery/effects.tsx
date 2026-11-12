@@ -322,28 +322,6 @@ export function Tilt({
 	);
 }
 
-const madrid = new Intl.DateTimeFormat("es-ES", {
-	hour: "2-digit",
-	minute: "2-digit",
-	timeZone: "Europe/Madrid",
-});
-
-/** Local time in Madrid, refreshed every 20 seconds. */
-export function MadridClock() {
-	const [time, setTime] = useState("");
-	useEffect(() => {
-		const update = () => setTime(madrid.format(new Date()));
-		update();
-		const id = window.setInterval(update, 20_000);
-		return () => window.clearInterval(id);
-	}, []);
-	return (
-		<span className="nbf-clock">
-			Madrid <time>{time}</time>
-		</span>
-	);
-}
-
 /** The footer monogram: letters rise into place, staggered, when it comes into view. */
 export function FooterMark({ still }: { still: boolean }) {
 	const ref = useRef<HTMLSpanElement>(null);
@@ -369,5 +347,170 @@ export function FooterMark({ still }: { still: boolean }) {
 				</span>
 			))}
 		</span>
+	);
+}
+
+/** A heading whose lines rise from under a mask, one after another, on view. */
+export function RevealLines({
+	id,
+	lines,
+	still,
+}: {
+	id: string;
+	lines: string[];
+	still: boolean;
+}) {
+	const ref = useRef<HTMLHeadingElement>(null);
+	const inView = useInView(ref, { once: true, amount: 0.5 });
+	return (
+		<h2 ref={ref} id={id} aria-label={lines.join(" ")}>
+			{lines.map((line, i) => (
+				<span key={line} className="nbf-reveal-line" aria-hidden="true">
+					<motion.span
+						initial={still ? false : { transform: "translateY(105%)" }}
+						animate={
+							still || inView ? { transform: "translateY(0%)" } : undefined
+						}
+						transition={{
+							duration: 0.9,
+							delay: i * 0.1,
+							ease: [0.23, 1, 0.32, 1],
+						}}
+					>
+						{line}
+					</motion.span>
+				</span>
+			))}
+		</h2>
+	);
+}
+
+type Shape = {
+	kind: "ring" | "plus" | "star" | "dots" | "square";
+	/** Position inside the section, as CSS lengths. */
+	left: string;
+	top: string;
+	size: number;
+	/** Pixels travelled across the section's pass: larger = nearer. */
+	speed: number;
+	/** Degrees turned across the pass. */
+	spin: number;
+	accent?: boolean;
+};
+
+const SHAPE_PATHS: Record<Shape["kind"], ReactNode> = {
+	ring: <circle cx="50" cy="50" r="46" fill="none" strokeWidth="2" />,
+	plus: <path d="M50 8v84M8 50h84" fill="none" strokeWidth="6" />,
+	star: (
+		<path
+			d="M50 0C53 30 70 47 100 50 70 53 53 70 50 100 47 70 30 53 0 50 30 47 47 30 50 0Z"
+			stroke="none"
+		/>
+	),
+	dots: (
+		<g stroke="none">
+			{[15, 50, 85].flatMap((x) =>
+				[15, 50, 85].map((y) => (
+					<circle key={`${x}-${y}`} cx={x} cy={y} r="5" />
+				)),
+			)}
+		</g>
+	),
+	square: (
+		<rect
+			x="6"
+			y="6"
+			width="88"
+			height="88"
+			rx="4"
+			fill="none"
+			strokeWidth="2"
+		/>
+	),
+};
+
+/** Decorative SVG shapes that drift and turn at their own depth while a section scrolls by. */
+export function ParallaxShapes({
+	shapes,
+	still,
+}: {
+	shapes: Shape[];
+	still: boolean;
+}) {
+	const ref = useRef<HTMLDivElement>(null);
+	const { scrollYProgress } = useScroll({
+		target: ref,
+		offset: ["start end", "end start"],
+	});
+	return (
+		<div ref={ref} className="nbf-shapes" aria-hidden="true">
+			{shapes.map((shape) => (
+				<ShapeItem
+					key={`${shape.kind}-${shape.left}-${shape.top}`}
+					shape={shape}
+					progress={scrollYProgress}
+					still={still}
+				/>
+			))}
+		</div>
+	);
+}
+
+function ShapeItem({
+	shape,
+	progress,
+	still,
+}: {
+	shape: Shape;
+	progress: ReturnType<typeof useScroll>["scrollYProgress"];
+	still: boolean;
+}) {
+	const transform = useTransform(
+		progress,
+		(v) =>
+			`translateY(${(0.5 - v) * shape.speed}px) rotate(${v * shape.spin}deg)`,
+	);
+	return (
+		<motion.svg
+			viewBox="0 0 100 100"
+			className="nbf-shape"
+			data-accent={shape.accent ? "" : undefined}
+			style={{
+				left: shape.left,
+				top: shape.top,
+				width: shape.size,
+				height: shape.size,
+				...(still ? {} : { transform }),
+			}}
+		>
+			{SHAPE_PATHS[shape.kind]}
+		</motion.svg>
+	);
+}
+
+/** A loose hand-drawn line that draws itself as its section scrolls through view. */
+export function ScrollDrawnLine({ still }: { still: boolean }) {
+	const ref = useRef<HTMLDivElement>(null);
+	const { scrollYProgress } = useScroll({
+		target: ref,
+		offset: ["start 0.9", "end 0.35"],
+	});
+	return (
+		<div ref={ref} className="nbf-drawn-line" aria-hidden="true">
+			<svg viewBox="0 0 400 600" fill="none" aria-hidden="true">
+				<motion.path
+					d="M330 10C380 120 120 140 160 250S390 330 300 430 60 470 120 590"
+					strokeWidth="2"
+					strokeLinecap="round"
+					style={{ pathLength: still ? 1 : scrollYProgress }}
+				/>
+				<motion.circle
+					cx="120"
+					cy="590"
+					r="7"
+					style={{ opacity: still ? 1 : scrollYProgress }}
+				/>
+			</svg>
+		</div>
 	);
 }

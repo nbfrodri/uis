@@ -52,9 +52,12 @@ function Band({
 	});
 	const boost = useTransform(velocity, [0, 1000], [0, 5], { clamp: false });
 	const heading = useRef<number>(direction);
+	// Fast scrolling leans the words, like type under inertia.
+	const skew = useTransform(velocity, [-2500, 0, 2500], [10, 0, -10]);
 	const transform = useTransform(
-		offset,
-		(v) => `translateX(${wrap(-50, 0, v)}%)`,
+		[offset, skew],
+		([v, k]) =>
+			`translateX(${wrap(-50, 0, Number(v))}%) skewX(${still ? 0 : k}deg)`,
 	);
 
 	// Drifts on its own; scrolling speeds it up, and scrolling back up turns it round.

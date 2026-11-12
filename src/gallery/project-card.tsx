@@ -1,4 +1,4 @@
-import { motion, useScroll, useTransform } from "motion/react";
+import { motion, useInView, useScroll, useTransform } from "motion/react";
 import { type ComponentType, useRef } from "react";
 import { Link } from "react-router";
 import type { Front } from "../lib/fronts";
@@ -23,6 +23,8 @@ export function ProjectCard({
 }) {
 	const Preview = previews[`../fronts/${front.slug}/preview.tsx`]?.default;
 	const row = useRef<HTMLLIElement>(null);
+	// Watch the row: a fully clipped element never counts as visible.
+	const rowInView = useInView(row, { once: true, amount: 0.3 });
 	const { scrollYProgress } = useScroll({
 		target: row,
 		offset: ["start end", "end start"],
@@ -52,10 +54,21 @@ export function ProjectCard({
 				{Preview && (
 					<Tilt still={still} className="nbf-row-cover">
 						<motion.span
-							className="nbf-row-cover-inner"
-							style={still ? undefined : { transform: depth }}
+							className="nbf-row-cover-reveal"
+							initial={still ? false : { clipPath: "inset(100% 0% 0% 0%)" }}
+							animate={
+								still || rowInView
+									? { clipPath: "inset(0% 0% 0% 0%)" }
+									: undefined
+							}
+							transition={{ duration: 1.1, ease: [0.77, 0, 0.175, 1] }}
 						>
-							<Preview />
+							<motion.span
+								className="nbf-row-cover-inner"
+								style={still ? undefined : { transform: depth }}
+							>
+								<Preview />
+							</motion.span>
 						</motion.span>
 					</Tilt>
 				)}
