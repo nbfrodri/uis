@@ -243,7 +243,7 @@ export function MainNav({ anchor }: { anchor: RefObject<HTMLElement | null> }) {
 					align="center"
 					className="nav-positioner z-40"
 				>
-					<NavigationMenu.Popup className="nav-popup rounded-3xl border border-(--rule) bg-white text-(--ink) shadow-[0_30px_60px_-30px_rgb(23_32_88/0.45)]">
+					<NavigationMenu.Popup className="nav-popup border border-(--rule) bg-white text-(--ink) shadow-[0_30px_60px_-30px_rgb(23_32_88/0.45)]">
 						<NavigationMenu.Viewport />
 					</NavigationMenu.Popup>
 				</NavigationMenu.Positioner>

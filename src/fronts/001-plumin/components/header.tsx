@@ -186,7 +186,7 @@ export function Header() {
 						</SiteLink>
 					</div>
 					<MainNav anchor={pillRef} />
-					<div className="flex items-center gap-2 justify-self-end">
+					<div className="col-start-3 flex items-center gap-2 justify-self-end">
 						<div className="hidden md:block">
 							<InkSearch className="w-40" variant="filled" />
 						</div>
