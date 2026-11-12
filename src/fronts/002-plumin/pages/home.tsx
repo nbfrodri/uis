@@ -1,51 +1,9 @@
-import { buttonVariants } from "@heroui/react";
-import type { CSSProperties } from "react";
 import { AddToCart } from "../components/add-to-cart";
+import { HeroWriting } from "../components/hero-writing";
 import { ProductCard } from "../components/product-card";
 import { ShopMap } from "../components/shop-map";
 import { SiteLink } from "../components/site-link";
-import { Swatch } from "../components/swatch";
 import { families, findInk, formatPrice, inks, mix, sampleBox } from "../data";
-
-/**
- * Hero layers: position, size, tilt and how far each drifts while scrolling.
- * Far layers move little, near layers move a lot: that difference is the parallax.
- */
-const heroLayers = [
-	{
-		id: "lavanda-de-brihuega",
-		className: "left-[4%] top-[18%] h-[58%] w-[22%]",
-		tilt: -8,
-		drift: -40,
-	},
-	{
-		id: "aceituna",
-		className: "right-[6%] top-[6%] h-[48%] w-[20%]",
-		tilt: 6,
-		drift: -60,
-	},
-	{
-		id: "mar-de-bizkaia",
-		className: "left-[24%] top-[2%] h-[78%] w-[28%]",
-		tilt: -3,
-		drift: -120,
-	},
-	{
-		id: "granada",
-		className: "left-[50%] top-[20%] h-[76%] w-[27%]",
-		tilt: 5,
-		drift: -200,
-	},
-	{
-		id: "azul-real",
-		className: "right-[0%] top-[46%] h-[50%] w-[19%]",
-		tilt: -6,
-		drift: -260,
-	},
-].flatMap((layer) => {
-	const ink = findInk(layer.id);
-	return ink ? [{ ...layer, ink }] : [];
-});
 
 const newest = ["granada", "musgo-de-ordesa", "ciruela", "pimenton"].flatMap(
 	(id) => findInk(id) ?? [],
@@ -59,63 +17,7 @@ const familyColor = Object.fromEntries(
 export function Home() {
 	return (
 		<main>
-			<section className="mx-auto grid max-w-7xl items-center gap-10 px-4 pt-10 pb-16 sm:px-8 lg:grid-cols-[1fr_1.1fr] lg:pt-16">
-				<div>
-					<h1 className="max-w-[11ch] text-[clamp(3rem,7.5vw,6.5rem)] leading-[0.95] font-extrabold tracking-[-0.045em]">
-						Tinta para escribir a mano.
-					</h1>
-					<p className="mt-6 max-w-[42ch] text-lg text-(--ink-soft) sm:text-xl">
-						Doce tintas de tres talleres pequeños. Las probamos en papel antes
-						de traerlas, y aquí ves cómo quedan.
-					</p>
-					<div className="mt-8 flex flex-wrap gap-3">
-						<SiteLink
-							to="tintas"
-							className={buttonVariants({
-								size: "lg",
-								className: "px-7 font-semibold",
-							})}
-						>
-							Ver las tintas
-						</SiteLink>
-						<SiteLink
-							to="#muestras"
-							className={buttonVariants({
-								size: "lg",
-								variant: "secondary",
-								className: "px-7 font-semibold",
-							})}
-						>
-							Pedir muestras
-						</SiteLink>
-					</div>
-				</div>
-
-				<div
-					aria-hidden="true"
-					className="relative h-[24rem] sm:h-[32rem] lg:h-[38rem]"
-				>
-					{heroLayers.map((layer, i) => (
-						<div
-							key={layer.id}
-							className={`parallax-layer absolute ${layer.className}`}
-							style={
-								{
-									"--tilt": `${layer.tilt}deg`,
-									"--drift": `${layer.drift}px`,
-								} as CSSProperties
-							}
-						>
-							<Swatch
-								color={layer.ink.color}
-								sheen={layer.ink.sheen}
-								seed={i + 30}
-								className="size-full"
-							/>
-						</div>
-					))}
-				</div>
-			</section>
+			<HeroWriting />
 
 			<section
 				aria-labelledby="por-color"
