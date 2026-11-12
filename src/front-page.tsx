@@ -3,6 +3,16 @@ import { Link, useNavigate, useParams } from "react-router";
 import { findFront, getFrontComponent } from "./fronts/registry";
 import { NotFound } from "./not-found";
 
+/** Esc belongs to the front while the user is in a field or a dialog is open. */
+function isBusy(target: EventTarget | null): boolean {
+	if (document.querySelector("dialog[open]")) return true;
+	return (
+		target instanceof HTMLElement &&
+		(target.isContentEditable ||
+			/^(INPUT|SELECT|TEXTAREA)$/.test(target.tagName))
+	);
+}
+
 export function FrontPage() {
 	const { slug = "" } = useParams();
 	const navigate = useNavigate();
@@ -19,7 +29,11 @@ export function FrontPage() {
 
 	useEffect(() => {
 		const onKey = (event: KeyboardEvent) => {
-			if (event.key === "Escape" && !event.defaultPrevented)
+			if (
+				event.key === "Escape" &&
+				!event.defaultPrevented &&
+				!isBusy(event.target)
+			)
 				navigate("/", { viewTransition: true });
 		};
 		window.addEventListener("keydown", onKey);
@@ -50,7 +64,7 @@ export function FrontPage() {
 const backStyles = `
 .front-back {
 	position: fixed; left: 1rem; bottom: 1rem; z-index: 2147483647;
-	font: 600 0.875rem/1 system-ui, sans-serif; letter-spacing: 0;
+	font: 600 0.875rem/1 "Funnel Sans Variable", system-ui, sans-serif; letter-spacing: 0;
 	color: #1c2b4a; background: #f2e45c; text-decoration: none;
 	padding: 0.6rem 0.9rem; border-radius: 999px;
 	box-shadow: 0 1px 0 rgb(28 43 74 / 0.35);

@@ -38,4 +38,17 @@ describe("front routing", () => {
 			screen.getByRole("heading", { name: /no existe/i }),
 		).toBeInTheDocument();
 	});
+
+	it("leaves the front with Esc, except while typing in a field", async () => {
+		renderAt("/f/002-plumin/tintas/granada");
+		const select = await screen.findByLabelText("Frascos");
+		select.focus();
+		await userEvent.keyboard("{Escape}");
+		expect(screen.getByLabelText("Frascos")).toBeInTheDocument();
+		select.blur();
+		await userEvent.keyboard("{Escape}");
+		expect(
+			await screen.findByRole("heading", { name: "Libreta de interfaces" }),
+		).toBeInTheDocument();
+	});
 });
