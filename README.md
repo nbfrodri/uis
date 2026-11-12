@@ -54,4 +54,4 @@ pnpm build    # tsc + build de producción
 
 ## Publicación
 
-Cada push a `main` pasa las comprobaciones y publica en GitHub Pages (`.github/workflows/deploy.yml`), bajo `/uis/`.
+Las pull requests a `main` pasan el lint, los tests y la build sin publicar. Cada push a `main` repite las comprobaciones y publica en GitHub Pages (`.github/workflows/deploy.yml`), bajo `/uis/`. La publicación manual también queda limitada a `main`.
