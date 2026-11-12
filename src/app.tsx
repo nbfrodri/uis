@@ -15,6 +15,13 @@ export const routes: RouteObject[] = [
 	{ path: "/", element: <GalleryPage fronts={fronts} /> },
 	// The splat lets each front define its own pages (/f/<slug>/productos/12…).
 	{ path: "/f/:slug/*", element: <FrontPage /> },
+	// Temporary: compares two directions for the NBF home page.
+	{
+		path: "/prototipo/nbf",
+		lazy: async () => ({
+			Component: (await import("./prototypes/nbf/nbf-prototype")).NbfPrototype,
+		}),
+	},
 	{ path: "*", element: <NotFound /> },
 ];
 
