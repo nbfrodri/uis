@@ -1,5 +1,4 @@
 import { render, screen, within } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
 import { createMemoryRouter, RouterProvider } from "react-router";
 import type { Front } from "../lib/fronts";
 import { GalleryPage } from "./gallery-page";
@@ -57,34 +56,6 @@ describe("GalleryPage", () => {
 				name: /reproductor de cristal/i,
 			}),
 		).toHaveAttribute("href", "/f/002-glass");
-	});
-
-	it("filters by tag from the URL and marks the active tag", async () => {
-		renderGallery(fronts);
-		await userEvent.click(screen.getByRole("link", { name: "data" }));
-		expect(
-			within(screen.getByRole("region", { name: "Trabajo" })).getAllByRole(
-				"listitem",
-			),
-		).toHaveLength(1);
-		expect(
-			screen.getByRole("link", { name: /libro de cuentas/i }),
-		).toBeInTheDocument();
-		expect(screen.getByRole("link", { name: "data" })).toHaveAttribute(
-			"aria-current",
-			"true",
-		);
-	});
-
-	it("explains how to clear a tag that matches nothing", () => {
-		renderGallery(fronts, "/?tag=brutalist");
-		expect(
-			screen.getByText(/ninguna web lleva la etiqueta/i),
-		).toBeInTheDocument();
-		expect(screen.getByRole("link", { name: /ver todos/i })).toHaveAttribute(
-			"href",
-			"/",
-		);
 	});
 
 	it("tells how to create the first front when there are none", () => {

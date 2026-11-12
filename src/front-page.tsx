@@ -54,7 +54,8 @@ export function FrontPage() {
 				className="front-back"
 				aria-label="Volver al índice (Esc)"
 			>
-				<span>Índice</span>
+				<span className="front-back-mark">NBF</span>
+				<span className="front-back-label">Índice</span>
 				<kbd className="front-back-key">Esc</kbd>
 			</Link>
 			<style>{backStyles}</style>
@@ -66,17 +67,21 @@ export function FrontPage() {
 const backStyles = `
 .front-back {
 	position: fixed; left: 1rem; bottom: max(1rem, env(safe-area-inset-bottom)); z-index: 40;
-	display: inline-flex; align-items: center; justify-content: center; gap: 0.6rem; height: 2.75rem;
-	font: 550 0.8125rem/1 "Archivo Variable", system-ui, sans-serif; letter-spacing: -0.015em;
-	color: #fff; background: rgb(20 23 31 / 0.92); text-decoration: none;
-	padding: 0 0.875rem; border: 1px solid rgb(255 255 255 / 0.15); border-radius: 999px;
-	box-shadow: 0 8px 24px -10px rgb(20 23 31 / 0.45); backdrop-filter: blur(12px);
-	transition: background-color 150ms ease;
+	display: inline-flex; align-items: center; gap: 0.625rem; height: 2.75rem; padding: 0 0.75rem 0 0.875rem;
+	font: 500 0.8125rem/1 "Archivo Variable", system-ui, sans-serif; letter-spacing: -0.01em;
+	color: #f0eee9; background: rgb(17 18 20 / 0.92); text-decoration: none;
+	border: 1px solid rgb(240 238 233 / 0.14); border-radius: 0.5rem;
+	box-shadow: 0 10px 30px -12px rgb(0 0 0 / 0.5); backdrop-filter: blur(12px);
+	transition: background-color 150ms ease, border-color 150ms ease;
 }
-.front-back > span { transform: translateY(1px); }
-.front-back-key { transform: translateY(1px); padding: 0.25rem 0.3rem; border-radius: 4px; background: rgb(255 255 255 / 0.1); color: #c5cad5; font: 450 0.625rem/1 "Archivo Variable", system-ui, sans-serif; }
-.front-back:hover { background: #254cff; }
-.front-back:focus-visible { outline: 2px solid #254cff; outline-offset: 4px; }
+.front-back-mark { font-weight: 800; font-stretch: 125%; letter-spacing: -0.02em; }
+.front-back-label { padding-left: 0.625rem; border-left: 1px solid rgb(240 238 233 / 0.2); }
+.front-back-key { padding: 0.25rem 0.35rem; border-radius: 0.25rem; background: rgb(240 238 233 / 0.1); color: rgb(240 238 233 / 0.7); font: 500 0.625rem/1 "Archivo Variable", system-ui, sans-serif; }
+.front-back:focus-visible { outline: 2px solid #3d5afe; outline-offset: 3px; }
+@media (hover: hover) and (pointer: fine) {
+	.front-back:hover { background: #3d5afe; border-color: #3d5afe; }
+	.front-back:hover .front-back-label { border-color: rgb(240 238 233 / 0.4); }
+}
 body:has([role="dialog"][aria-modal="true"]) .front-back { visibility: hidden; }
 @media (max-width: 40rem) { .front-back-key { display: none; } }
 @media (prefers-reduced-motion: reduce) { .front-back { transition: none; } }

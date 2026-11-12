@@ -12,7 +12,7 @@ const previews = import.meta.glob<{ default: ComponentType }>(
 
 const pad = (n: number) => String(n).padStart(2, "0");
 
-/** One row of the work index; the preview floats in on hover with parallax. */
+/** One row of the work index: title on the left, its preview beside it with parallax. */
 export function ProjectCard({
 	front,
 	still,
@@ -41,13 +41,13 @@ export function ProjectCard({
 				aria-label={`Explorar ${front.title}`}
 			>
 				<span className="nbf-row-index">{pad(front.number)}</span>
-				<span className="nbf-row-name">{front.title}</span>
-				<span className="nbf-row-tags">
-					{front.tags.join(" / ") || "Web de demostración"}
+				<span className="nbf-row-text">
+					<span className="nbf-row-name">{front.title}</span>
+					<span className="nbf-row-meta">
+						<span>{front.tags.join(" / ") || "Web de demostración"}</span>
+						<time dateTime={front.date}>{front.date.slice(0, 4)}</time>
+					</span>
 				</span>
-				<time className="nbf-row-year" dateTime={front.date}>
-					{front.date.slice(0, 4)}
-				</time>
 				{Preview && (
 					<span className="nbf-row-cover" aria-hidden="true">
 						<motion.span

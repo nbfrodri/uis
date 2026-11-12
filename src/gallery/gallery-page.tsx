@@ -1,7 +1,7 @@
 import "@fontsource-variable/archivo/wdth.css";
 import "./gallery.css";
-import { Link, useSearchParams } from "react-router";
-import { collectTags, type Front, filterByTag } from "../lib/fronts";
+import { Link } from "react-router";
+import type { Front } from "../lib/fronts";
 import { MarqueeBands } from "./marquee-bands";
 import { usePrefersReducedMotion, useSmoothScroll } from "./motion-prefs";
 import { NbfHero } from "./nbf-hero";
@@ -10,11 +10,7 @@ import { ProjectCard } from "./project-card";
 import { ArrowIcon } from "./studio-icons";
 
 export function GalleryPage({ fronts }: { fronts: Front[] }) {
-	const [params] = useSearchParams();
 	const reduce = usePrefersReducedMotion();
-	const activeTag = params.get("tag");
-	const tags = collectTags(fronts);
-	const visible = filterByTag(fronts, activeTag);
 	useSmoothScroll(!reduce);
 
 	return (
@@ -53,42 +49,14 @@ export function GalleryPage({ fronts }: { fronts: Front[] }) {
 							({String(fronts.length).padStart(2, "0")})
 						</span>
 					</div>
-					{tags.length > 0 && (
-						<nav aria-label="Filtrar por etiqueta" className="nbf-filters">
-							<Link
-								to="/"
-								className="nbf-filter"
-								aria-current={activeTag ? undefined : "true"}
-							>
-								todos
-							</Link>
-							{tags.map((tag) => (
-								<Link
-									key={tag}
-									to={`/?tag=${encodeURIComponent(tag)}`}
-									className="nbf-filter"
-									aria-current={
-										activeTag?.toLowerCase() === tag ? "true" : undefined
-									}
-								>
-									{tag}
-								</Link>
-							))}
-						</nav>
-					)}
 					{fronts.length === 0 ? (
 						<p className="gallery-empty">
 							Todavía no hay webs. Crea la primera con{" "}
 							<code>pnpm new-front nombre</code> y aparecerá aquí.
 						</p>
-					) : visible.length === 0 ? (
-						<p className="gallery-empty">
-							Ninguna web lleva la etiqueta «{activeTag}».{" "}
-							<Link to="/">Ver todos</Link>
-						</p>
 					) : (
 						<ol className="nbf-list">
-							{visible.map((front) => (
+							{fronts.map((front) => (
 								<ProjectCard key={front.slug} front={front} still={reduce} />
 							))}
 						</ol>
