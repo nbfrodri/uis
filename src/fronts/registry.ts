@@ -7,9 +7,10 @@ const metas = import.meta.glob<{ default: FrontMeta }>(
 		eager: true,
 	},
 );
-const components = import.meta.glob<{ default: ComponentType }>(
+const components = import.meta.glob<{ default: ComponentType }>([
 	"./*/index.tsx",
-);
+	"!./_*/index.tsx",
+]);
 
 export const fronts: Front[] = buildFronts(metas);
 
