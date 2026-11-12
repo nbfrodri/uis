@@ -1,5 +1,5 @@
-import "@fontsource-variable/newsreader/opsz.css";
-import "@fontsource-variable/newsreader/opsz-italic.css";
+import "@fontsource-variable/funnel-display";
+import "@fontsource-variable/funnel-sans";
 import "./gallery.css";
 import { Link, useSearchParams } from "react-router";
 import { collectTags, type Front, filterByTag } from "../lib/fronts";
