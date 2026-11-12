@@ -23,12 +23,12 @@ const WIDTH = 1280;
 const HEIGHT = 720;
 const PORT = 9333;
 
-// Fixed binaries with argument arrays and no shell, so nothing is interpreted.
-const run = (cmd, args) =>
+// A fixed binary with an argument array and no shell: nothing is interpreted.
+const ffmpeg = (args) =>
 	new Promise((resolve, reject) => {
-		const child = spawn(cmd, args, { stdio: "ignore", shell: false });
+		const child = spawn("ffmpeg", args, { stdio: "ignore", shell: false });
 		child.on("exit", (code) =>
-			code === 0 ? resolve() : reject(new Error(`${cmd} exited ${code}`)),
+			code === 0 ? resolve() : reject(new Error(`ffmpeg exited ${code}`)),
 		);
 	});
 
@@ -44,7 +44,8 @@ const browser = spawn(
 		"--no-first-run",
 		"about:blank",
 	],
-	{ stdio: "ignore" },
+	// Argument array, no shell; the only interpolations are a temp dir and constants.
+	{ stdio: "ignore", shell: false },
 );
 
 async function connect() {
@@ -132,7 +133,7 @@ async function recordScroll(name, { from = 0, to = 1, seconds = 9, fps = 10 }) {
 		);
 	}
 	const filter = `fps=${fps},scale=800:-1:flags=lanczos,split[a][b];[a]palettegen=max_colors=96:stats_mode=diff[p];[b][p]paletteuse=dither=bayer:bayer_scale=5:diff_mode=rectangle`;
-	await run("ffmpeg", [
+	await ffmpeg([
 		"-y",
 		"-loglevel",
 		"error",
