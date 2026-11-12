@@ -45,16 +45,16 @@ function MiniCart() {
 				<Button
 					variant="ghost"
 					isIconOnly
-					className="size-9 min-w-9"
+					className="size-8 min-w-8"
 					aria-label={`Carrito, ${totals.count} productos`}
 					onPress={() => setOpen(true)}
 				>
-					<BagIcon className="size-[1.375rem]" />
+					<BagIcon className="size-5" />
 				</Button>
 				{totals.count > 0 && (
 					<Badge
 						size="sm"
-						className="top-1! right-1! min-w-[1.125rem] bg-(--ink) px-1 text-[0.6875rem] text-white"
+						className="top-0! right-0! min-w-4 bg-(--ink) px-1 text-[0.625rem] text-white"
 					>
 						{totals.count}
 					</Badge>
@@ -120,7 +120,7 @@ function MobileMenu() {
 				variant="ghost"
 				isIconOnly
 				aria-label="Abrir menú"
-				className="size-9 min-w-9 lg:hidden"
+				className="size-8 min-w-8 lg:hidden"
 				onPress={() => setOpen(true)}
 			>
 				<MenuIcon className="size-6" />
@@ -165,14 +165,14 @@ export function Header() {
 				Envío gratis desde 40 €
 			</p>
 			{/* Floating pill. The side columns share the free space equally, so the menu sits on the true centre.
-			    Inset is 6px all round so round controls nest concentrically in the pill's curve. */}
+			    Inset is 8px all round so round controls nest concentrically in the pill's curve. */}
 			<header
 				data-scrolled={scrolled}
 				className="site-header sticky top-2 z-30 px-3 pt-2 sm:px-6"
 			>
 				<div
 					ref={pillRef}
-					className="site-pill mx-auto grid h-12 max-w-4xl grid-cols-[1fr_auto_1fr] items-center gap-2 rounded-full border border-(--rule) p-1.5 pl-2.5 lg:pl-4"
+					className="site-pill mx-auto grid h-[50px] max-w-4xl grid-cols-[1fr_auto_1fr] items-center gap-4 rounded-full border border-(--rule) p-2 pl-3 lg:pl-5"
 				>
 					<div className="flex items-center gap-1 justify-self-start">
 						<MobileMenu />
@@ -185,9 +185,9 @@ export function Header() {
 						</SiteLink>
 					</div>
 					<MainNav anchor={pillRef} />
-					<div className="flex items-center gap-1.5 justify-self-end">
+					<div className="flex items-center gap-2 justify-self-end">
 						<div className="hidden md:block">
-							<InkSearch className="w-44" variant="filled" />
+							<InkSearch className="w-40" variant="filled" />
 						</div>
 						<MiniCart />
 					</div>

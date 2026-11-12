@@ -2,7 +2,7 @@ import { NavigationMenu } from "@base-ui/react/navigation-menu";
 import {
 	type ReactNode,
 	type RefObject,
-	useLayoutEffect,
+	useEffect,
 	useRef,
 	useState,
 } from "react";
@@ -26,7 +26,7 @@ const familyColor = Object.fromEntries(
 );
 
 const itemClass =
-	"relative z-10 flex h-9 items-center gap-1.5 rounded-full px-3.5 text-[0.9375rem] font-semibold outline-none focus-visible:ring-2 focus-visible:ring-(--ink)";
+	"relative z-10 flex h-8 items-center gap-1.5 rounded-full px-3 text-[0.875rem] font-semibold outline-none focus-visible:ring-2 focus-visible:ring-(--ink)";
 
 /** Thin chevron matching the stroke of the other icons; nudged 1px down to sit on the text's optical centre. */
 function ChevronIcon() {
@@ -77,16 +77,26 @@ function MenuLink({
 function useSlidingIndicator(activeIndex: number) {
 	const listRef = useRef<HTMLUListElement>(null);
 	const [hovered, setHovered] = useState<number | null>(null);
-	const [box, setBox] = useState<{ left: number; width: number } | null>(null);
-	const target = hovered ?? activeIndex;
+	const [boxes, setBoxes] = useState<{ left: number; width: number }[]>([]);
 
-	useLayoutEffect(() => {
-		const item =
-			listRef.current?.querySelectorAll<HTMLElement>("[data-nav-item]")[target];
-		setBox(item ? { left: item.offsetLeft, width: item.offsetWidth } : null);
-	}, [target]);
+	// Re-measure whenever the list changes size, e.g. when the web font arrives.
+	useEffect(() => {
+		const list = listRef.current;
+		if (!list || typeof ResizeObserver === "undefined") return;
+		const observer = new ResizeObserver(() => {
+			const items = list.querySelectorAll<HTMLElement>("[data-nav-item]");
+			setBoxes(
+				[...items].map((item) => ({
+					left: item.offsetLeft,
+					width: item.offsetWidth,
+				})),
+			);
+		});
+		observer.observe(list);
+		return () => observer.disconnect();
+	}, []);
 
-	return { listRef, box, setHovered };
+	return { listRef, box: boxes[hovered ?? activeIndex] ?? null, setHovered };
 }
 
 export function MainNav({ anchor }: { anchor: RefObject<HTMLElement | null> }) {
@@ -108,13 +118,13 @@ export function MainNav({ anchor }: { anchor: RefObject<HTMLElement | null> }) {
 		<NavigationMenu.Root aria-label="Principal" className="hidden lg:block">
 			<NavigationMenu.List
 				ref={listRef}
-				className="relative flex items-center"
+				className="relative flex items-center gap-1"
 				onPointerLeave={() => setHovered(null)}
 				onBlur={() => setHovered(null)}
 			>
 				<span
 					aria-hidden="true"
-					className="nav-indicator absolute top-0 left-0 h-9 rounded-full bg-(--wash)"
+					className="nav-indicator absolute top-0 left-0 h-8 rounded-full bg-(--wash)"
 					style={{
 						transform: `translateX(${box?.left ?? 0}px)`,
 						width: box?.width ?? 0,
@@ -229,7 +239,7 @@ export function MainNav({ anchor }: { anchor: RefObject<HTMLElement | null> }) {
 				{/* Anchored to the whole pill so the panel sits centred under it, not under the trigger. */}
 				<NavigationMenu.Positioner
 					anchor={anchor}
-					sideOffset={8}
+					sideOffset={10}
 					align="center"
 					className="nav-positioner z-40"
 				>

@@ -29,14 +29,11 @@ export function usePlaceSuggestions(
 ) {
 	const [places, setPlaces] = useState<Place[]>([]);
 	const [status, setStatus] = useState<Status>("idle");
+	const text = query.trim();
+	const active = text.length >= MIN_CHARACTERS;
 
 	useEffect(() => {
-		const text = query.trim();
-		if (text.length < MIN_CHARACTERS) {
-			setPlaces([]);
-			setStatus("idle");
-			return;
-		}
+		if (!active) return;
 		const controller = new AbortController();
 		const timer = window.setTimeout(async () => {
 			setStatus("loading");
@@ -63,9 +60,10 @@ export function usePlaceSuggestions(
 			window.clearTimeout(timer);
 			controller.abort();
 		};
-	}, [query, kind, nearCity]);
+	}, [text, active, kind, nearCity]);
 
-	return { places, status };
+	// Too short to search: nothing to suggest, whatever an earlier search left in state.
+	return active ? { places, status } : { places: [], status: "idle" as Status };
 }
 
 type CityModule = typeof import("spanish-cities-info");

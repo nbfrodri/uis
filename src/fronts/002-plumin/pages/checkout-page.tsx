@@ -10,7 +10,7 @@ import {
 	RadioGroup,
 	TextField,
 } from "@heroui/react";
-import { type ReactNode, useEffect, useState } from "react";
+import { type ReactNode, useState } from "react";
 import { cartTotals } from "../cart";
 import { useCart } from "../cart-context";
 import {
@@ -240,10 +240,146 @@ function AddressFields({
 	);
 }
 
+type StepProps = {
+	form: CheckoutForm;
+	errors: CheckoutErrors;
+	update: (name: keyof CheckoutForm, value: string) => void;
+};
+
+function DeliveryStep({
+	form,
+	errors,
+	update,
+	patch,
+	subtotal,
+}: StepProps & {
+	patch: (changes: Partial<CheckoutForm>) => void;
+	subtotal: number;
+}) {
+	const fieldProps = { form, errors, onChange: update };
+	return (
+		<Step number={2} title="Entrega">
+			<RadioGroup
+				aria-label="Forma de entrega"
+				value={form.delivery}
+				onChange={(value) => update("delivery", value as Delivery)}
+				className="grid gap-3"
+			>
+				<OptionCard
+					value="domicilio"
+					title="Envío a domicilio"
+					detail="24-48 h"
+					aside={subtotal >= 40 ? "Gratis" : formatPrice(4.9)}
+				/>
+				<OptionCard
+					value="tienda"
+					title="Recoger en la tienda"
+					detail="Ave María 31, en unas 2 h"
+					aside="Gratis"
+				/>
+			</RadioGroup>
+
+			<div className="mt-6 grid gap-4 sm:grid-cols-2">
+				<Field
+					name="firstName"
+					label="Nombre"
+					autoComplete="given-name"
+					{...fieldProps}
+				/>
+				<Field
+					name="lastName"
+					label="Apellidos"
+					autoComplete="family-name"
+					{...fieldProps}
+				/>
+				{form.delivery === "domicilio" && (
+					<AddressFields form={form} errors={errors} onChange={patch} />
+				)}
+				<Field
+					name="phone"
+					label="Teléfono"
+					type="tel"
+					inputMode="tel"
+					autoComplete="tel-national"
+					className="sm:col-span-2"
+					{...fieldProps}
+				/>
+			</div>
+		</Step>
+	);
+}
+
+function PaymentStep({ form, errors, update }: StepProps) {
+	const fieldProps = { form, errors, onChange: update };
+	return (
+		<Step number={3} title="Pago">
+			<RadioGroup
+				aria-label="Forma de pago"
+				value={form.payment}
+				onChange={(value) => update("payment", value as Payment)}
+				className="grid gap-3 sm:grid-cols-2"
+			>
+				<OptionCard value="tarjeta" title="Tarjeta" detail="" aside="" />
+				<OptionCard value="bizum" title="Bizum" detail="" aside="" />
+			</RadioGroup>
+
+			{form.payment === "tarjeta" ? (
+				<div className="mt-6 grid gap-4 sm:grid-cols-4">
+					<Field
+						name="cardNumber"
+						label="Número de tarjeta"
+						inputMode="numeric"
+						autoComplete="off"
+						placeholder="1234 5678 9012 3456"
+						format={formatCardNumber}
+						className="sm:col-span-4"
+						{...fieldProps}
+					/>
+					<Field
+						name="cardName"
+						label="Titular"
+						autoComplete="off"
+						className="sm:col-span-2"
+						{...fieldProps}
+					/>
+					<Field
+						name="cardExpiry"
+						label="Caducidad"
+						inputMode="numeric"
+						autoComplete="off"
+						placeholder="MM/AA"
+						format={formatExpiry}
+						{...fieldProps}
+					/>
+					<Field
+						name="cardCvc"
+						label="CVC"
+						inputMode="numeric"
+						autoComplete="off"
+						placeholder="123"
+						format={(v) => v.replace(/\D/g, "").slice(0, 4)}
+						{...fieldProps}
+					/>
+				</div>
+			) : (
+				<div className="mt-6 max-w-sm">
+					<Field
+						name="bizumPhone"
+						label="Móvil de Bizum"
+						type="tel"
+						inputMode="tel"
+						autoComplete="off"
+						{...fieldProps}
+					/>
+				</div>
+			)}
+		</Step>
+	);
+}
+
 export function CheckoutPage() {
 	const cart = useCart();
 	const [form, setForm] = useState<CheckoutForm>(emptyCheckout);
-	const [errors, setErrors] = useState<CheckoutErrors>({});
 	const [submitted, setSubmitted] = useState(false);
 	const [paying, setPaying] = useState(false);
 	const [order, setOrder] = useState<Order | null>(null);
@@ -254,19 +390,15 @@ export function CheckoutPage() {
 	const patch = (changes: Partial<CheckoutForm>) =>
 		setForm((current) => ({ ...current, ...changes }));
 
-	// After the first attempt, errors follow the user's corrections live.
-	useEffect(() => {
-		if (submitted) setErrors(validateCheckout(form));
-	}, [form, submitted]);
+	// Errors only show after the first attempt, then follow the user's corrections live.
+	const errors: CheckoutErrors = submitted ? validateCheckout(form) : {};
 
 	const update = (name: keyof CheckoutForm, value: string) =>
 		patch({ [name]: value });
 
 	const submit = () => {
 		setSubmitted(true);
-		const found = validateCheckout(form);
-		setErrors(found);
-		if (Object.keys(found).length > 0) {
+		if (Object.keys(validateCheckout(form)).length > 0) {
 			requestAnimationFrame(() =>
 				document
 					.querySelector<HTMLElement>('.plumin [aria-invalid="true"]')
@@ -352,117 +484,15 @@ export function CheckoutPage() {
 						</Checkbox>
 					</Step>
 
-					<Step number={2} title="Entrega">
-						<RadioGroup
-							aria-label="Forma de entrega"
-							value={form.delivery}
-							onChange={(value) => update("delivery", value as Delivery)}
-							className="grid gap-3"
-						>
-							<OptionCard
-								value="domicilio"
-								title="Envío a domicilio"
-								detail="24-48 h"
-								aside={totals.subtotal >= 40 ? "Gratis" : formatPrice(4.9)}
-							/>
-							<OptionCard
-								value="tienda"
-								title="Recoger en la tienda"
-								detail="Ave María 31, en unas 2 h"
-								aside="Gratis"
-							/>
-						</RadioGroup>
+					<DeliveryStep
+						form={form}
+						errors={errors}
+						update={update}
+						patch={patch}
+						subtotal={totals.subtotal}
+					/>
 
-						<div className="mt-6 grid gap-4 sm:grid-cols-2">
-							<Field
-								name="firstName"
-								label="Nombre"
-								autoComplete="given-name"
-								{...fieldProps}
-							/>
-							<Field
-								name="lastName"
-								label="Apellidos"
-								autoComplete="family-name"
-								{...fieldProps}
-							/>
-							{form.delivery === "domicilio" && (
-								<AddressFields form={form} errors={errors} onChange={patch} />
-							)}
-							<Field
-								name="phone"
-								label="Teléfono"
-								type="tel"
-								inputMode="tel"
-								autoComplete="tel-national"
-								className="sm:col-span-2"
-								{...fieldProps}
-							/>
-						</div>
-					</Step>
-
-					<Step number={3} title="Pago">
-						<RadioGroup
-							aria-label="Forma de pago"
-							value={form.payment}
-							onChange={(value) => update("payment", value as Payment)}
-							className="grid gap-3 sm:grid-cols-2"
-						>
-							<OptionCard value="tarjeta" title="Tarjeta" detail="" aside="" />
-							<OptionCard value="bizum" title="Bizum" detail="" aside="" />
-						</RadioGroup>
-
-						{form.payment === "tarjeta" ? (
-							<div className="mt-6 grid gap-4 sm:grid-cols-4">
-								<Field
-									name="cardNumber"
-									label="Número de tarjeta"
-									inputMode="numeric"
-									autoComplete="off"
-									placeholder="1234 5678 9012 3456"
-									format={formatCardNumber}
-									className="sm:col-span-4"
-									{...fieldProps}
-								/>
-								<Field
-									name="cardName"
-									label="Titular"
-									autoComplete="off"
-									className="sm:col-span-2"
-									{...fieldProps}
-								/>
-								<Field
-									name="cardExpiry"
-									label="Caducidad"
-									inputMode="numeric"
-									autoComplete="off"
-									placeholder="MM/AA"
-									format={formatExpiry}
-									{...fieldProps}
-								/>
-								<Field
-									name="cardCvc"
-									label="CVC"
-									inputMode="numeric"
-									autoComplete="off"
-									placeholder="123"
-									format={(v) => v.replace(/\D/g, "").slice(0, 4)}
-									{...fieldProps}
-								/>
-							</div>
-						) : (
-							<div className="mt-6 max-w-sm">
-								<Field
-									name="bizumPhone"
-									label="Móvil de Bizum"
-									type="tel"
-									inputMode="tel"
-									autoComplete="off"
-									{...fieldProps}
-								/>
-							</div>
-						)}
-					</Step>
+					<PaymentStep form={form} errors={errors} update={update} />
 
 					<Button
 						type="submit"

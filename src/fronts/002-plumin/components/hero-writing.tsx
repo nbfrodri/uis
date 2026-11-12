@@ -62,28 +62,30 @@ function usePrefersReducedMotion() {
 	return reduced;
 }
 
-/** Reveals `text` one character at a time; restarts whenever `restartKey` changes. */
+/**
+ * Reveals `text` one character at a time; starts again whenever `restartKey` changes.
+ * The count is tagged with the key it belongs to, so a new key reads as 0 without resetting state in an effect.
+ */
 function useHandwriting(text: string, restartKey: string, enabled: boolean) {
-	const [shown, setShown] = useState(enabled ? 0 : text.length);
-	// biome-ignore lint/correctness/useExhaustiveDependencies: restartKey is the trigger to write again.
+	const [progress, setProgress] = useState({ key: restartKey, count: 0 });
+	const count = progress.key === restartKey ? progress.count : 0;
+
 	useEffect(() => {
-		if (!enabled) {
-			setShown(text.length);
-			return;
-		}
-		setShown(0);
+		if (!enabled) return;
 		const timer = window.setInterval(() => {
-			setShown((count) => {
-				if (count >= text.length) {
+			setProgress((current) => {
+				const done = current.key === restartKey ? current.count : 0;
+				if (done >= text.length) {
 					window.clearInterval(timer);
-					return count;
+					return current;
 				}
-				return count + 1;
+				return { key: restartKey, count: done + 1 };
 			});
 		}, MS_PER_CHARACTER);
 		return () => window.clearInterval(timer);
 	}, [text, restartKey, enabled]);
-	return text.slice(0, shown);
+
+	return enabled ? text.slice(0, count) : text;
 }
 
 /**

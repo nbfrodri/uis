@@ -67,12 +67,12 @@ export function InkSearch({
 			}}
 		>
 			<ComboBox.InputGroup className="relative flex items-center">
-				<span className="pointer-events-none absolute left-3 z-10 text-(--ink-soft)">
+				<span className="pointer-events-none absolute left-2.5 z-10 text-(--ink-soft)">
 					<SearchIcon />
 				</span>
 				<Input
 					placeholder="Buscar tintas"
-					className={`h-9 w-full rounded-full pr-9 pl-9 text-[0.9375rem] ${variant === "filled" ? "border-transparent! bg-(--wash)! shadow-none!" : ""}`}
+					className={`h-8 w-full rounded-full pr-8 pl-8 text-sm ${variant === "filled" ? "border-transparent! bg-(--wash)! shadow-none!" : ""}`}
 					onKeyDown={(event) => {
 						// No suggestion highlighted: Enter searches the whole catalogue.
 						if (
@@ -89,7 +89,7 @@ export function InkSearch({
 						slot={null}
 						aria-label="Borrar búsqueda"
 						onPress={() => setQuery("")}
-						className="absolute! right-1.5 z-10"
+						className="absolute! right-1 z-10 size-6!"
 					/>
 				)}
 				{/* Suggestions open as you type; the trigger stays for the combobox contract but is not shown. */}
