@@ -11,15 +11,22 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { setTimeout as sleep } from "node:timers/promises";
 
-const BASE = process.argv[2] ?? "http://localhost:5288";
+// The only input: a page origin for the browser to open, never part of a command.
+const BASE = (() => {
+	const url = new URL(process.argv[2] ?? "http://localhost:5288");
+	if (url.protocol !== "http:" && url.protocol !== "https:")
+		throw new Error("The base must be an http(s) URL");
+	return url.origin;
+})();
 const OUT = new URL("../docs/media/", import.meta.url).pathname;
 const WIDTH = 1280;
 const HEIGHT = 720;
 const PORT = 9333;
 
+// Fixed binaries with argument arrays and no shell, so nothing is interpreted.
 const run = (cmd, args) =>
 	new Promise((resolve, reject) => {
-		const child = spawn(cmd, args, { stdio: "ignore" });
+		const child = spawn(cmd, args, { stdio: "ignore", shell: false });
 		child.on("exit", (code) =>
 			code === 0 ? resolve() : reject(new Error(`${cmd} exited ${code}`)),
 		);
