@@ -5,6 +5,7 @@ import {
 	useTransform,
 } from "motion/react";
 import { useLayoutEffect, useRef, useState } from "react";
+import { ParallaxShapes, type Shape } from "./effects";
 
 const PRACTICE = [
 	{
@@ -31,6 +32,39 @@ const PRACTICE = [
 		title: "Rendimiento",
 		text: "Menos JavaScript, imágenes ligeras y transformaciones en la GPU.",
 		tags: ["Vite", "Carga diferida", "GPU"],
+	},
+];
+
+// Figures behind the panels travel sideways at their own depth.
+const RAIL_SHAPES: Shape[] = [
+	{ kind: "ring", left: "18%", top: "14%", size: 180, speed: 700, spin: 60 },
+	{
+		kind: "triangle",
+		left: "46%",
+		top: "70%",
+		size: 90,
+		speed: 1100,
+		spin: 140,
+	},
+	{
+		kind: "star",
+		left: "72%",
+		top: "12%",
+		size: 48,
+		speed: 1500,
+		spin: 220,
+		accent: true,
+	},
+	{ kind: "wave", left: "86%", top: "78%", size: 120, speed: 900, spin: 0 },
+	{ kind: "dots", left: "4%", top: "80%", size: 70, speed: 500, spin: 0 },
+	{
+		kind: "diamond",
+		left: "60%",
+		top: "40%",
+		size: 28,
+		speed: 1800,
+		spin: 180,
+		accent: true,
 	},
 ];
 
@@ -66,12 +100,6 @@ export function PracticeRail({ still }: { still: boolean }) {
 		(v) => `translateX(${-v * distance}px)`,
 	);
 	const progress = useTransform(scrollYProgress, (v) => `scaleX(${v})`);
-	// The backdrop reads left to right and drifts the same way as the panels,
-	// but slower: parallax depth.
-	const backdrop = useTransform(
-		scrollYProgress,
-		(v) => `translate(${5 - v * 35}%, -50%)`,
-	);
 	const [current, setCurrent] = useState(1);
 	useMotionValueEvent(scrollYProgress, "change", (v) =>
 		setCurrent(Math.min(PRACTICE.length, Math.floor(v * PRACTICE.length) + 1)),
@@ -88,15 +116,12 @@ export function PracticeRail({ still }: { still: boolean }) {
 			style={still ? undefined : { height: `calc(${distance}px + 100dvh)` }}
 		>
 			<div className="nbf-rail-sticky">
-				{!still && (
-					<motion.span
-						className="nbf-rail-backdrop"
-						aria-hidden="true"
-						style={{ transform: backdrop }}
-					>
-						Lo que hago — Lo que hago
-					</motion.span>
-				)}
+				<ParallaxShapes
+					still={still}
+					progress={scrollYProgress}
+					axis="x"
+					shapes={RAIL_SHAPES}
+				/>
 				<div className="nbf-rail-head">
 					<h2 id="nbf-rail-title" className="nbf-label">
 						Lo que hago

@@ -1,5 +1,6 @@
 import "@fontsource-variable/archivo/wdth.css";
 import "./gallery.css";
+import { motion } from "motion/react";
 import { useState } from "react";
 import { Link } from "react-router";
 import type { Front } from "../lib/fronts";
@@ -25,22 +26,8 @@ type ShapeList = Parameters<typeof ParallaxShapes>[0]["shapes"];
 
 // Decorative layers: depth comes from speed (px travelled across the pass).
 const WORK_SHAPES: ShapeList = [
-	{
-		kind: "ring",
-		left: "62%",
-		top: "-4rem",
-		size: 220,
-		speed: 260,
-		spin: 40,
-	},
-	{
-		kind: "plus",
-		left: "8%",
-		top: "70%",
-		size: 44,
-		speed: 420,
-		spin: 180,
-	},
+	{ kind: "ring", left: "62%", top: "-4rem", size: 220, speed: 260, spin: 40 },
+	{ kind: "plus", left: "8%", top: "70%", size: 44, speed: 420, spin: 180 },
 	{
 		kind: "star",
 		left: "88%",
@@ -50,25 +37,13 @@ const WORK_SHAPES: ShapeList = [
 		spin: 120,
 		accent: true,
 	},
-	{
-		kind: "dots",
-		left: "44%",
-		top: "88%",
-		size: 70,
-		speed: 180,
-		spin: 0,
-	},
+	{ kind: "dots", left: "44%", top: "88%", size: 70, speed: 180, spin: 0 },
+	{ kind: "arc", left: "30%", top: "2rem", size: 110, speed: 340, spin: -30 },
+	{ kind: "half", left: "94%", top: "30%", size: 60, speed: 600, spin: 90 },
 ];
 
 const CTA_SHAPES: ShapeList = [
-	{
-		kind: "square",
-		left: "70%",
-		top: "10%",
-		size: 140,
-		speed: 300,
-		spin: -60,
-	},
+	{ kind: "square", left: "70%", top: "10%", size: 140, speed: 300, spin: -60 },
 	{
 		kind: "star",
 		left: "56%",
@@ -78,15 +53,64 @@ const CTA_SHAPES: ShapeList = [
 		spin: 200,
 		accent: true,
 	},
+	{ kind: "ring", left: "86%", top: "48%", size: 90, speed: 520, spin: 0 },
+	{ kind: "wave", left: "40%", top: "84%", size: 100, speed: 380, spin: 0 },
 	{
-		kind: "ring",
-		left: "86%",
-		top: "48%",
-		size: 90,
-		speed: 520,
-		spin: 0,
+		kind: "diamond",
+		left: "92%",
+		top: "8%",
+		size: 24,
+		speed: 700,
+		spin: 180,
+		accent: true,
 	},
 ];
+
+const ABOUT_SHAPES: ShapeList = [
+	{
+		kind: "triangle",
+		left: "52%",
+		top: "70%",
+		size: 70,
+		speed: 420,
+		spin: -120,
+	},
+	{
+		kind: "plus",
+		left: "4%",
+		top: "8%",
+		size: 32,
+		speed: 560,
+		spin: 90,
+		accent: true,
+	},
+	{ kind: "dots", left: "58%", top: "6%", size: 56, speed: 260, spin: 0 },
+];
+
+const BANDS_SHAPES: ShapeList = [
+	{ kind: "half", left: "6%", top: "4%", size: 70, speed: 360, spin: 180 },
+	{
+		kind: "star",
+		left: "80%",
+		top: "86%",
+		size: 44,
+		speed: 500,
+		spin: 160,
+		accent: true,
+	},
+	{ kind: "arc", left: "90%", top: "0%", size: 90, speed: 300, spin: 40 },
+];
+
+/** Fades and rises in each time it enters view, and resets when it leaves. */
+const replay = (still: boolean, delay: number) =>
+	still
+		? {}
+		: {
+				initial: { opacity: 0, transform: "translateY(1rem)" },
+				whileInView: { opacity: 1, transform: "translateY(0rem)" },
+				viewport: { amount: 0.6 },
+				transition: { duration: 0.6, delay, ease: [0.23, 1, 0.32, 1] as const },
+			};
 
 export function GalleryPage({ fronts }: { fronts: Front[] }) {
 	const reduce = usePrefersReducedMotion();
@@ -127,7 +151,10 @@ export function GalleryPage({ fronts }: { fronts: Front[] }) {
 			<main id="contenido">
 				<NbfHero still={reduce} ready={introDone} />
 
-				<MarqueeBands still={reduce} />
+				<div className="nbf-bands-wrap">
+					<ParallaxShapes still={reduce} shapes={BANDS_SHAPES} />
+					<MarqueeBands still={reduce} />
+				</div>
 
 				<section
 					id="proyectos"
@@ -160,6 +187,7 @@ export function GalleryPage({ fronts }: { fronts: Front[] }) {
 				<PracticeRail still={reduce} />
 
 				<section className="nbf-about" aria-label="Sobre NBF">
+					<ParallaxShapes still={reduce} shapes={ABOUT_SHAPES} />
 					<ScrollDrawnLine still={reduce} />
 					<ScrollHighlight
 						still={reduce}
@@ -168,17 +196,24 @@ export function GalleryPage({ fronts }: { fronts: Front[] }) {
 				</section>
 				<section className="nbf-cta" aria-labelledby="nbf-cta-title">
 					<ParallaxShapes still={reduce} shapes={CTA_SHAPES} />
-					<p className="nbf-label">Siguiente paso</p>
+					<motion.p className="nbf-label" {...replay(reduce, 0)}>
+						Siguiente paso
+					</motion.p>
 					<RevealLines
 						id="nbf-cta-title"
 						lines={["¿Quieres ver", "cómo está hecho?"]}
 						still={reduce}
 					/>
-					<Magnetic still={reduce} strength={0.25}>
-						<a href="https://github.com/nbfrodri/uis" className="nbf-cta-link">
-							Código en GitHub <ArrowIcon />
-						</a>
-					</Magnetic>
+					<motion.div {...replay(reduce, 0.25)}>
+						<Magnetic still={reduce} strength={0.25}>
+							<a
+								href="https://github.com/nbfrodri/uis"
+								className="nbf-cta-link"
+							>
+								Código en GitHub <ArrowIcon />
+							</a>
+						</Magnetic>
+					</motion.div>
 				</section>
 			</main>
 

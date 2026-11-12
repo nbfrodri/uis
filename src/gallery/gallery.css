@@ -407,24 +407,7 @@
 	font-weight: 600;
 	color: var(--nbf-ink);
 }
-/* Huge outlined words behind the panels, travelling the other way. */
-.nbf-rail-backdrop {
-	position: absolute;
-	top: 50%;
-	left: 0;
-	z-index: 0;
-	font-size: clamp(8rem, 22vw, 22rem);
-	font-weight: 900;
-	font-stretch: 125%;
-	line-height: 1;
-	letter-spacing: -0.04em;
-	white-space: nowrap;
-	color: transparent;
-	-webkit-text-stroke: 1px color-mix(in oklab, var(--nbf-ink) 20%, transparent);
-	pointer-events: none;
-	will-change: transform;
-}
-.nbf-rail-sticky > :not(.nbf-rail-backdrop) {
+.nbf-rail-sticky > :not(.nbf-shapes) {
 	position: relative;
 	z-index: 1;
 }
@@ -455,8 +438,9 @@
 .nbf-rail-panel {
 	display: grid;
 	grid-template-rows: 1fr auto auto auto;
-	background: color-mix(in oklab, var(--nbf-paper) 70%, transparent);
-	backdrop-filter: blur(6px);
+	/* Translucent, so the figures read through the panels as they pass. */
+	background: color-mix(in oklab, var(--nbf-paper) 35%, transparent);
+	backdrop-filter: blur(3px);
 	gap: 1rem;
 	width: min(78vw, 34rem);
 	padding: clamp(1.25rem, 3vw, 2rem);
@@ -720,10 +704,11 @@
 }
 
 /* Decorative SVG layer: shapes drift behind a section's content. */
-:is(.nbf-work, .nbf-about, .nbf-cta) {
+:is(.nbf-work, .nbf-about, .nbf-cta, .nbf-bands-wrap) {
 	position: relative;
 }
-:is(.nbf-work, .nbf-about, .nbf-cta) > :not(.nbf-shapes, .nbf-drawn-line) {
+:is(.nbf-work, .nbf-about, .nbf-cta, .nbf-bands-wrap)
+	> :not(.nbf-shapes, .nbf-drawn-line) {
 	position: relative;
 	z-index: 1;
 }

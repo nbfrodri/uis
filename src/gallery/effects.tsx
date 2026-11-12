@@ -1,5 +1,6 @@
 import {
 	animate,
+	type MotionValue,
 	motion,
 	useInView,
 	useMotionValue,
@@ -327,7 +328,8 @@ export function FooterMark({ still }: { still: boolean }) {
 	const ref = useRef<HTMLSpanElement>(null);
 	// Watch the wrapper: the letters start clipped by their masks, so watching
 	// them directly would never report them as visible.
-	const inView = useInView(ref, { once: true, amount: 0.3 });
+	// Replays: hides again when scrolled away, rises again on return.
+	const inView = useInView(ref, { amount: 0.3 });
 	const shown = still || inView;
 	return (
 		<span ref={ref} className="nbf-footer-mark" aria-hidden="true">
@@ -335,7 +337,9 @@ export function FooterMark({ still }: { still: boolean }) {
 				<span key={letter} className="nbf-footer-letter">
 					<motion.span
 						initial={still ? false : { transform: "translateY(100%)" }}
-						animate={shown ? { transform: "translateY(0%)" } : undefined}
+						animate={{
+							transform: shown ? "translateY(0%)" : "translateY(100%)",
+						}}
 						transition={{
 							duration: 0.9,
 							delay: i * 0.08,
@@ -361,16 +365,18 @@ export function RevealLines({
 	still: boolean;
 }) {
 	const ref = useRef<HTMLHeadingElement>(null);
-	const inView = useInView(ref, { once: true, amount: 0.5 });
+	// Replays: hides again when scrolled away, rises again on return.
+	const inView = useInView(ref, { amount: 0.5 });
 	return (
 		<h2 ref={ref} id={id} aria-label={lines.join(" ")}>
 			{lines.map((line, i) => (
 				<span key={line} className="nbf-reveal-line" aria-hidden="true">
 					<motion.span
 						initial={still ? false : { transform: "translateY(105%)" }}
-						animate={
-							still || inView ? { transform: "translateY(0%)" } : undefined
-						}
+						animate={{
+							transform:
+								still || inView ? "translateY(0%)" : "translateY(105%)",
+						}}
 						transition={{
 							duration: 0.9,
 							delay: i * 0.1,
@@ -386,7 +392,17 @@ export function RevealLines({
 }
 
 type Shape = {
-	kind: "ring" | "plus" | "star" | "dots" | "square";
+	kind:
+		| "ring"
+		| "plus"
+		| "star"
+		| "dots"
+		| "square"
+		| "triangle"
+		| "wave"
+		| "arc"
+		| "diamond"
+		| "half";
 	/** Position inside the section, as CSS lengths. */
 	left: string;
 	top: string;
@@ -427,15 +443,51 @@ const SHAPE_PATHS: Record<Shape["kind"], ReactNode> = {
 			strokeWidth="2"
 		/>
 	),
+	triangle: (
+		<path
+			d="M50 8 94 88H6Z"
+			fill="none"
+			strokeWidth="2"
+			strokeLinejoin="round"
+		/>
+	),
+	wave: (
+		<path
+			d="M2 50c12-24 24-24 32 0s20 24 32 0 20-24 32 0"
+			fill="none"
+			strokeWidth="5"
+			strokeLinecap="round"
+		/>
+	),
+	arc: (
+		<path
+			d="M10 90A80 80 0 0 1 90 10"
+			fill="none"
+			strokeWidth="3"
+			strokeLinecap="round"
+		/>
+	),
+	diamond: <path d="M50 4 96 50 50 96 4 50Z" stroke="none" />,
+	half: <path d="M4 60a46 46 0 0 1 92 0Z" stroke="none" />,
 };
 
-/** Decorative SVG shapes that drift and turn at their own depth while a section scrolls by. */
+/**
+ * Decorative SVG shapes that drift and turn at their own depth while a section
+ * scrolls by. Pass `progress` to drive them from another timeline (a pinned
+ * section), and `axis="x"` to make them travel sideways.
+ */
+export type { Shape };
+
 export function ParallaxShapes({
 	shapes,
 	still,
+	progress,
+	axis = "y",
 }: {
 	shapes: Shape[];
 	still: boolean;
+	progress?: MotionValue<number>;
+	axis?: "x" | "y";
 }) {
 	const ref = useRef<HTMLDivElement>(null);
 	const { scrollYProgress } = useScroll({
@@ -448,7 +500,8 @@ export function ParallaxShapes({
 				<ShapeItem
 					key={`${shape.kind}-${shape.left}-${shape.top}`}
 					shape={shape}
-					progress={scrollYProgress}
+					progress={progress ?? scrollYProgress}
+					axis={axis}
 					still={still}
 				/>
 			))}
@@ -459,16 +512,18 @@ export function ParallaxShapes({
 function ShapeItem({
 	shape,
 	progress,
+	axis,
 	still,
 }: {
 	shape: Shape;
-	progress: ReturnType<typeof useScroll>["scrollYProgress"];
+	progress: MotionValue<number>;
+	axis: "x" | "y";
 	still: boolean;
 }) {
 	const transform = useTransform(
 		progress,
 		(v) =>
-			`translateY(${(0.5 - v) * shape.speed}px) rotate(${v * shape.spin}deg)`,
+			`translate${axis === "x" ? "X" : "Y"}(${(0.5 - v) * shape.speed}px) rotate(${v * shape.spin}deg)`,
 	);
 	return (
 		<motion.svg
