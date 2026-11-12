@@ -1,6 +1,7 @@
 import { Label, ListBox, Select } from "@heroui/react";
 import { useSearchParams } from "react-router";
 import { queryInks, sortOptions } from "../catalog";
+import { ShopBreadcrumbs } from "../components/breadcrumbs";
 import { ProductCard } from "../components/product-card";
 import { SiteLink } from "../components/site-link";
 import { Swatch } from "../components/swatch";
@@ -45,23 +46,17 @@ export function Catalog() {
 
 	return (
 		<main className="mx-auto max-w-7xl px-4 pt-8 sm:px-8">
-			<nav aria-label="Ruta" className="mb-6 text-sm text-(--ink-soft)">
-				<SiteLink to="" className="hover:underline">
-					Inicio
-				</SiteLink>
-				<span aria-hidden="true"> / </span>
-				{selectedFamily ? (
-					<>
-						<SiteLink to="tintas" className="hover:underline">
-							Tintas
-						</SiteLink>
-						<span aria-hidden="true"> / </span>
-						<span aria-current="page">{selectedFamily.label}</span>
-					</>
-				) : (
-					<span aria-current="page">Tintas</span>
-				)}
-			</nav>
+			<ShopBreadcrumbs
+				items={[
+					{ label: "Inicio", to: "" },
+					...(selectedFamily
+						? [
+								{ label: "Tintas", to: "tintas" },
+								{ label: selectedFamily.label },
+							]
+						: [{ label: "Tintas" }]),
+				]}
+			/>
 			<header
 				className="catalog-intro"
 				style={{ backgroundColor: mix(accent, "#ffffff", 0.94) }}

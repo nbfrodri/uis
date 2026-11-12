@@ -1,8 +1,8 @@
 import { useParams } from "react-router";
 import { AddToCart } from "../components/add-to-cart";
+import { ShopBreadcrumbs } from "../components/breadcrumbs";
 import { Level } from "../components/level";
 import { ProductCard } from "../components/product-card";
-import { SiteLink } from "../components/site-link";
 import { Swatch } from "../components/swatch";
 import { families, findInk, formatPrice, inks, mix } from "../data";
 import { Missing } from "./missing";
@@ -19,18 +19,17 @@ export function InkPage() {
 
 	return (
 		<main className="mx-auto max-w-7xl px-4 pt-8 sm:px-8">
-			<nav aria-label="Ruta" className="text-sm text-(--ink-soft)">
-				<SiteLink to="tintas" className="hover:underline">
-					Tintas
-				</SiteLink>
-				{" / "}
-				<SiteLink
-					to={`tintas?familia=${ink.family}`}
-					className="hover:underline"
-				>
-					{family?.label}
-				</SiteLink>
-			</nav>
+			<ShopBreadcrumbs
+				items={[
+					{ label: "Inicio", to: "" },
+					{ label: "Tintas", to: "tintas" },
+					{
+						label: family?.label ?? ink.family,
+						to: `tintas?familia=${ink.family}`,
+					},
+					{ label: ink.name },
+				]}
+			/>
 
 			<div className="mt-6 grid gap-10 md:grid-cols-2 md:gap-16">
 				<div
