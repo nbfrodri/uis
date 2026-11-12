@@ -1,4 +1,5 @@
-import "@fontsource-variable/bricolage-grotesque/wdth.css";
+import "@fontsource-variable/newsreader/opsz.css";
+import "@fontsource-variable/newsreader/opsz-italic.css";
 import "./gallery.css";
 import { Link, useSearchParams } from "react-router";
 import { collectTags, type Front, filterByTag } from "../lib/fronts";
@@ -16,7 +17,10 @@ export function GalleryPage({ fronts }: { fronts: Front[] }) {
 				<h1 className="gallery-title">Libreta de interfaces</h1>
 				<p className="gallery-lede">
 					Ejercicios de UI, del más reciente al primero.{" "}
-					{fronts.length === 1 ? "1 front" : `${fronts.length} fronts`}.
+					{fronts.length === 1
+						? "1\u00a0front"
+						: `${fronts.length}\u00a0fronts`}
+					.
 				</p>
 				{tags.length > 0 && (
 					<nav aria-label="Filtrar por etiqueta" className="gallery-tags">
