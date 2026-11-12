@@ -1,13 +1,10 @@
 import { buttonVariants } from "@heroui/react";
-import { type CSSProperties, useEffect, useState } from "react";
+import { type CSSProperties, useState } from "react";
 import { Radio, RadioGroup } from "react-aria-components";
 import { findInk, formatPrice } from "../data";
-import { LogoMark } from "./logo";
+import { HandwrittenTitle } from "./handwritten-title";
 import { SiteLink } from "./site-link";
 import { Swatch } from "./swatch";
-
-const HEADLINE = "Tinta para escribir a mano.";
-const MS_PER_CHARACTER = 70;
 
 const choices = [
 	"azul-real",
@@ -49,55 +46,13 @@ const backdrop = [
 	return ink ? [{ ...layer, ink }] : [];
 });
 
-function usePrefersReducedMotion() {
-	const [reduced, setReduced] = useState(
-		() => window.matchMedia("(prefers-reduced-motion: reduce)").matches,
-	);
-	useEffect(() => {
-		const query = window.matchMedia("(prefers-reduced-motion: reduce)");
-		const update = () => setReduced(query.matches);
-		query.addEventListener("change", update);
-		return () => query.removeEventListener("change", update);
-	}, []);
-	return reduced;
-}
-
-/**
- * Reveals `text` one character at a time; starts again whenever `restartKey` changes.
- * The count is tagged with the key it belongs to, so a new key reads as 0 without resetting state in an effect.
- */
-function useHandwriting(text: string, restartKey: string, enabled: boolean) {
-	const [progress, setProgress] = useState({ key: restartKey, count: 0 });
-	const count = progress.key === restartKey ? progress.count : 0;
-
-	useEffect(() => {
-		if (!enabled) return;
-		const timer = window.setInterval(() => {
-			setProgress((current) => {
-				const done = current.key === restartKey ? current.count : 0;
-				if (done >= text.length) {
-					window.clearInterval(timer);
-					return current;
-				}
-				return { key: restartKey, count: done + 1 };
-			});
-		}, MS_PER_CHARACTER);
-		return () => window.clearInterval(timer);
-	}, [text, restartKey, enabled]);
-
-	return enabled ? text.slice(0, count) : text;
-}
-
 /**
  * The headline is the product demo: it writes itself, by hand, in the chosen ink.
  */
 export function HeroWriting() {
 	const [inkId, setInkId] = useState(choices[0]?.id ?? "");
 	const ink = choices.find((choice) => choice.id === inkId) ?? choices[0];
-	const reduced = usePrefersReducedMotion();
-	const written = useHandwriting(HEADLINE, inkId, !reduced);
 	if (!ink) return null;
-	const done = written.length === HEADLINE.length;
 
 	return (
 		<section className="mx-auto max-w-7xl px-4 pt-10 pb-24 sm:px-8 lg:pt-14">
@@ -125,21 +80,7 @@ export function HeroWriting() {
 				</div>
 
 				<div className="relative mx-auto max-w-5xl rotate-[-1deg] rounded-3xl bg-white px-6 pt-8 pb-12 shadow-[0_40px_80px_-40px_rgb(23_32_88/0.5),0_0_0_1px_rgb(23_32_88/0.06)] sm:px-14 sm:pt-12 sm:pb-16">
-					<h1
-						className="ruled font-hand min-h-[2.62em] text-[clamp(3.25rem,9vw,7.5rem)] font-semibold"
-						style={{ color: ink.color, transition: "color 300ms ease" }}
-					>
-						<span aria-hidden="true">
-							{written}
-							{!done && (
-								<LogoMark
-									className="ml-1 inline-block size-[0.45em] -translate-y-[0.15em] rotate-[200deg]"
-									cutout="#fff"
-								/>
-							)}
-						</span>
-						<span className="sr-only">{HEADLINE}</span>
-					</h1>
+					<HandwrittenTitle key={ink.id} color={ink.color} />
 				</div>
 			</div>
 

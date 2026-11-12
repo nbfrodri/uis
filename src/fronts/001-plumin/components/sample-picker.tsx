@@ -14,7 +14,7 @@ export function SamplePicker({
 	const slots = Array.from(
 		{ length: sampleBox.sampleCount },
 		(_, position) => ({
-			id: `selection-${position + 1}`,
+			id: chosen[position]?.id ?? `selection-${position + 1}`,
 			ink: chosen[position],
 		}),
 	);
@@ -89,7 +89,7 @@ export function SamplePicker({
 						{selected.length}/{sampleBox.sampleCount}
 					</output>
 				</div>
-				<div className="sample-selection-tray" aria-hidden="true">
+				<div className="sample-selection-tray">
 					{slots.map(({ id, ink }) => (
 						<span
 							className="sample-selection-slot"
@@ -102,51 +102,34 @@ export function SamplePicker({
 							}
 						>
 							{ink ? (
-								<Swatch color={ink.color} sheen={ink.sheen} seed={101} />
+								<>
+									<span className="sample-selection-art" aria-hidden="true">
+										<Swatch color={ink.color} sheen={ink.sheen} seed={101} />
+									</span>
+									<button
+										type="button"
+										className="sample-selection-remove"
+										aria-label={`Quitar ${ink.name} de la caja`}
+										title={ink.name}
+										onClick={() => onToggle(ink.id)}
+									>
+										<svg
+											viewBox="0 0 16 16"
+											fill="none"
+											stroke="currentColor"
+											strokeWidth="1.5"
+											aria-hidden="true"
+										>
+											<path d="m4 4 8 8M12 4l-8 8" />
+										</svg>
+									</button>
+								</>
 							) : (
-								<span>+</span>
+								<span aria-hidden="true">+</span>
 							)}
 						</span>
 					))}
 				</div>
-				{chosen.length > 0 ? (
-					<ol className="sample-chosen-list">
-						{chosen.map((ink) => (
-							<li key={ink.id}>
-								<span
-									className="sample-chosen-color"
-									style={{ backgroundColor: ink.color }}
-									aria-hidden="true"
-								/>
-								<span>{ink.name}</span>
-								<button
-									type="button"
-									aria-label={`Quitar ${ink.name} de la caja`}
-									onClick={() => onToggle(ink.id)}
-								>
-									<svg
-										viewBox="0 0 16 16"
-										fill="none"
-										stroke="currentColor"
-										strokeWidth="1.5"
-										aria-hidden="true"
-									>
-										<path d="m4 4 8 8M12 4l-8 8" />
-									</svg>
-								</button>
-							</li>
-						))}
-					</ol>
-				) : (
-					<p className="sample-kit-footnote">
-						Los cinco huecos se irán llenando con tus colores.
-					</p>
-				)}
-				<p className="sample-kit-footnote">
-					{complete
-						? "Tu selección está completa. Puedes quitar una para probar otra combinación."
-						: `Te ${sampleBox.sampleCount - selected.length === 1 ? "queda 1 tinta" : `quedan ${sampleBox.sampleCount - selected.length} tintas`} por elegir.`}
-				</p>
 				<div className="sample-selection-total">
 					<span>Caja de 5 × 4 ml</span>
 					<strong>{formatPrice(sampleBox.price)}</strong>

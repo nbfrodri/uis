@@ -1,9 +1,9 @@
 import { Button } from "@heroui/react";
-import sampleBoxPhoto from "../assets/sample-box.webp";
 import { cartLineKey } from "../cart";
 import { useCart } from "../cart-context";
 import { findInk, formatPrice, nameOf, priceOf } from "../data";
 import { QuantityField } from "./quantity-field";
+import { SampleBoxThumbnail } from "./sample-box-thumbnail";
 import { Swatch } from "./swatch";
 
 /** The cart's lines, shared by the side drawer and the cart page. */
@@ -28,26 +28,7 @@ export function CartLines({ compact }: { compact?: boolean }) {
 									className="h-4/5 w-3/5"
 								/>
 							) : (
-								<>
-									<img
-										src={sampleBoxPhoto}
-										alt="Caja de muestras Plumín"
-										width={1200}
-										height={800}
-										className="h-auto w-full"
-									/>
-									{line.samples && (
-										<span className="flex gap-1" aria-hidden="true">
-											{line.samples.map((id) => (
-												<span
-													key={id}
-													className="size-1.5 rounded-full"
-													style={{ backgroundColor: findInk(id)?.color }}
-												/>
-											))}
-										</span>
-									)}
-								</>
+								<SampleBoxThumbnail samples={line.samples} />
 							)}
 						</div>
 						<div className="flex min-w-0 flex-1 flex-col justify-between gap-2">
@@ -81,7 +62,7 @@ export function CartLines({ compact }: { compact?: boolean }) {
 								/>
 								<Button
 									size="sm"
-									variant="ghost"
+									variant="danger-soft"
 									onPress={() =>
 										dispatch({
 											type: "remove",

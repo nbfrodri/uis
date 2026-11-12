@@ -208,6 +208,9 @@ importers:
       spanish-cities-info:
         specifier: ^2.4.2
         version: 2.4.2
+      vara:
+        specifier: 1.4.1
+        version: 1.4.1
     devDependencies:
       '@biomejs/biome':
         specifier: ^2.6.6
@@ -1569,6 +1572,9 @@ packages:
     peerDependencies:
       react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
 
+  vara@1.4.1:
+    resolution: {integrity: sha512-oX+D+jXIJTmdQb7+OeuhvxSvSJB1PG8X2mzI3u7wTbuJ4v2QskA2fNlkNnyI2883YBRmEoA6R9gJg4jHiVNvXQ==}
+
   vite@8.3.8:
     resolution: {integrity: sha512-LzOn3h9rG/0vhLdXrV4yJ4QFA9eEoqCl+Yx+kGJd7aB9w6nfNgVHKSYwLPZUHrz4ZGa+t+kXjV9itvcHDLQouA==}
     engines: {node: ^20.19.0 || >=22.12.0}
@@ -2820,6 +2826,8 @@ snapshots:
   use-sync-external-store@1.7.0(react@19.3.1):
     dependencies:
       react: 19.3.1
+
+  vara@1.4.1: {}
 
   vite@8.3.8(@types/node@26.6.6)(jiti@2.7.0):
     dependencies:

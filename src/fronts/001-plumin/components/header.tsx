@@ -71,7 +71,7 @@ function MiniCart() {
 							<Drawer.CloseTrigger />
 						</Drawer.Header>
 						<Drawer.Body
-							className={`flex-1 overflow-y-auto ${totals.count === 0 ? "grid place-items-center" : ""}`}
+							className={`flex-1 overflow-y-auto ${totals.count === 0 ? "grid place-items-center" : "cart-drawer-body"}`}
 						>
 							{totals.count === 0 ? (
 								<div className="py-10 text-center">
