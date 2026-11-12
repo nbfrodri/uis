@@ -64,11 +64,11 @@
 	font-family: "Caveat Variable", cursive;
 }
 
-/* Ruled paper whose lines sit on the handwriting baseline.
+/* Ruled paper whose lines sit on the handwriting baseline (in em, so it scales with the text).
    --lh is the line height; --base is where the baseline falls inside one line box. */
 .plumin .ruled {
-	--lh: 2.75rem;
-	--base: 2.08rem;
+	--lh: 1.31em;
+	--base: 0.99em;
 	line-height: var(--lh);
 	background-image: repeating-linear-gradient(
 		to bottom,
