@@ -672,9 +672,21 @@
 .nbf-footer-mark {
 	display: flex;
 }
+/* The mask box must hold the whole glyph (line-height 1) or it trims the
+   outline; the negative margins keep the mark as tight as before. */
 .nbf-footer-letter {
 	display: block;
 	overflow: hidden;
+	line-height: 1;
+	margin-block: -0.12em;
+	/* Tight tracking through margins: letter-spacing would shrink each mask
+	   box and cut the right edge of the glyph. */
+	margin-right: -0.06em;
+	padding-inline: 0.02em;
+	letter-spacing: 0;
+}
+.nbf-footer-letter:last-child {
+	margin-right: 0;
 }
 .nbf-footer-letter > span {
 	display: block;
