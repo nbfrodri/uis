@@ -1,28 +1,13 @@
-import { type ComponentType, lazy, Suspense, useEffect, useMemo } from "react";
+import { Suspense, useEffect } from "react";
 import { Link, useNavigate, useParams } from "react-router";
-import { findFront, loadFront } from "./fronts/registry";
+import { findFront, getFrontComponent } from "./fronts/registry";
 import { NotFound } from "./not-found";
-
-const lazyCache = new Map<string, ComponentType>();
-
-function useFrontComponent(slug: string): ComponentType | null {
-	return useMemo(() => {
-		const loader = loadFront(slug);
-		if (!loader) return null;
-		let component = lazyCache.get(slug);
-		if (!component) {
-			component = lazy(loader);
-			lazyCache.set(slug, component);
-		}
-		return component;
-	}, [slug]);
-}
 
 export function FrontPage() {
 	const { slug = "" } = useParams();
 	const navigate = useNavigate();
 	const front = findFront(slug);
-	const Component = useFrontComponent(slug);
+	const Component = getFrontComponent(slug);
 
 	useEffect(() => {
 		if (!front) return;

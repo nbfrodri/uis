@@ -1,4 +1,4 @@
-import type { ComponentType } from "react";
+import { type ComponentType, lazy } from "react";
 import { buildFronts, type Front, type FrontMeta } from "../lib/fronts";
 
 const metas = import.meta.glob<{ default: FrontMeta }>(
@@ -18,8 +18,11 @@ export function findFront(slug: string): Front | undefined {
 	return fronts.find((front) => front.slug === slug);
 }
 
-export function loadFront(
-	slug: string,
-): (() => Promise<{ default: ComponentType }>) | undefined {
-	return components[`./${slug}/index.tsx`];
+// One lazy component per front, created once so React never sees a new component type.
+const frontComponents = new Map(
+	Object.entries(components).map(([path, loader]) => [path, lazy(loader)]),
+);
+
+export function getFrontComponent(slug: string): ComponentType | undefined {
+	return frontComponents.get(`./${slug}/index.tsx`);
 }
