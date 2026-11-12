@@ -11,12 +11,16 @@ type AddToCartProps = {
 	label?: string;
 	/** Singular and plural unit names, e.g. ["frasco", "frascos"]. */
 	unit?: [string, string];
+	samples?: string[];
+	disabled?: boolean;
 };
 
 export function AddToCart({
 	id,
 	label = "Añadir al carrito",
 	unit = ["frasco", "frascos"],
+	samples,
+	disabled = false,
 }: AddToCartProps) {
 	const { dispatch } = useCart();
 	const [qty, setQty] = useState(1);
@@ -24,7 +28,7 @@ export function AddToCart({
 	const sitePath = useSitePath();
 
 	const add = () => {
-		dispatch({ type: "add", id, qty });
+		dispatch({ type: "add", id, qty, samples });
 		toast.success(`${nameOf(id)} en el carrito`, {
 			description: `Has añadido ${qty} ${qty === 1 ? unit[0] : unit[1]}.`,
 			actionProps: {
@@ -41,7 +45,12 @@ export function AddToCart({
 				onChange={setQty}
 				label={unit[1].charAt(0).toUpperCase() + unit[1].slice(1)}
 			/>
-			<Button size="lg" onPress={add} className="h-11 px-7 font-semibold">
+			<Button
+				size="lg"
+				onPress={add}
+				isDisabled={disabled}
+				className="h-11 px-7 font-semibold"
+			>
 				{label}
 			</Button>
 		</div>

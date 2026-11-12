@@ -1,9 +1,9 @@
-export type CartLine = { id: string; qty: number };
+export type CartLine = { id: string; qty: number; samples?: string[] };
 export type CartState = { lines: CartLine[] };
 export type CartAction =
-	| { type: "add"; id: string; qty: number }
-	| { type: "set"; id: string; qty: number }
-	| { type: "remove"; id: string }
+	| { type: "add"; id: string; qty: number; samples?: string[] }
+	| { type: "set"; id: string; qty: number; samples?: string[] }
+	| { type: "remove"; id: string; samples?: string[] }
 	| { type: "clear" };
 
 export const MAX_QTY = 10;
@@ -12,25 +12,56 @@ export const SHIPPING = 4.9;
 
 const clamp = (qty: number) => Math.min(MAX_QTY, Math.max(0, Math.floor(qty)));
 
-function setQty(lines: CartLine[], id: string, qty: number): CartLine[] {
+export function cartLineKey(line: Pick<CartLine, "id" | "samples">): string {
+	return line.samples?.length
+		? `${line.id}:${[...line.samples].sort().join(",")}`
+		: line.id;
+}
+
+function setQty(
+	lines: CartLine[],
+	id: string,
+	qty: number,
+	samples?: string[],
+): CartLine[] {
 	const next = clamp(qty);
-	if (next === 0) return lines.filter((line) => line.id !== id);
-	if (!lines.some((line) => line.id === id))
-		return [...lines, { id, qty: next }];
-	return lines.map((line) => (line.id === id ? { id, qty: next } : line));
+	const key = cartLineKey({ id, samples });
+	if (next === 0) return lines.filter((line) => cartLineKey(line) !== key);
+	if (!lines.some((line) => cartLineKey(line) === key))
+		return [
+			...lines,
+			{ id, qty: next, ...(samples?.length ? { samples: [...samples] } : {}) },
+		];
+	return lines.map((line) =>
+		cartLineKey(line) === key ? { ...line, qty: next } : line,
+	);
 }
 
 export function cartReducer(state: CartState, action: CartAction): CartState {
 	switch (action.type) {
 		case "add": {
+			const key = cartLineKey(action);
 			const current =
-				state.lines.find((line) => line.id === action.id)?.qty ?? 0;
-			return { lines: setQty(state.lines, action.id, current + action.qty) };
+				state.lines.find((line) => cartLineKey(line) === key)?.qty ?? 0;
+			return {
+				lines: setQty(
+					state.lines,
+					action.id,
+					current + action.qty,
+					action.samples,
+				),
+			};
 		}
 		case "set":
-			return { lines: setQty(state.lines, action.id, action.qty) };
+			return {
+				lines: setQty(state.lines, action.id, action.qty, action.samples),
+			};
 		case "remove":
-			return { lines: state.lines.filter((line) => line.id !== action.id) };
+			return {
+				lines: state.lines.filter(
+					(line) => cartLineKey(line) !== cartLineKey(action),
+				),
+			};
 		case "clear":
 			return { lines: [] };
 	}

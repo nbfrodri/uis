@@ -1,4 +1,5 @@
 import { Button } from "@heroui/react";
+import { cartLineKey } from "../cart";
 import { useCart } from "../cart-context";
 import { findInk, formatPrice, nameOf, priceOf } from "../data";
 import { QuantityField } from "./quantity-field";
@@ -15,7 +16,7 @@ export function CartLines({ compact }: { compact?: boolean }) {
 				const ink = findInk(line.id);
 				const price = priceOf(line.id) ?? 0;
 				return (
-					<li key={line.id} className="flex gap-4 py-4">
+					<li key={cartLineKey(line)} className="flex gap-4 py-4">
 						<div
 							className={`grid shrink-0 place-items-center rounded-xl bg-(--wash) ${compact ? "h-20 w-16" : "h-28 w-22"}`}
 						>
@@ -36,6 +37,11 @@ export function CartLines({ compact }: { compact?: boolean }) {
 									<p className="text-sm text-(--ink-soft)">
 										{formatPrice(price)} la unidad
 									</p>
+									{line.samples && (
+										<p className="mt-1 text-xs text-(--ink-soft)">
+											{line.samples.map(nameOf).join(", ")}
+										</p>
+									)}
 								</div>
 								<p className="font-semibold">{formatPrice(price * line.qty)}</p>
 							</div>
@@ -43,7 +49,12 @@ export function CartLines({ compact }: { compact?: boolean }) {
 								<QuantityField
 									value={line.qty}
 									onChange={(qty) =>
-										dispatch({ type: "set", id: line.id, qty })
+										dispatch({
+											type: "set",
+											id: line.id,
+											qty,
+											samples: line.samples,
+										})
 									}
 									label={`Cantidad de ${nameOf(line.id)}`}
 									hideLabel
@@ -51,7 +62,13 @@ export function CartLines({ compact }: { compact?: boolean }) {
 								<Button
 									size="sm"
 									variant="ghost"
-									onPress={() => dispatch({ type: "remove", id: line.id })}
+									onPress={() =>
+										dispatch({
+											type: "remove",
+											id: line.id,
+											samples: line.samples,
+										})
+									}
 									aria-label={`Quitar ${nameOf(line.id)}`}
 								>
 									Quitar

@@ -11,7 +11,7 @@ import {
 	TextField,
 } from "@heroui/react";
 import { type ReactNode, useState } from "react";
-import { cartTotals } from "../cart";
+import { cartLineKey, cartTotals } from "../cart";
 import { useCart } from "../cart-context";
 import {
 	type CheckoutErrors,
@@ -525,7 +525,10 @@ function OrderSummary({ delivery }: { delivery: Delivery }) {
 				{lines.map((line) => {
 					const ink = findInk(line.id);
 					return (
-						<li key={line.id} className="flex items-center gap-3 py-3">
+						<li
+							key={cartLineKey(line)}
+							className="flex items-center gap-3 py-3"
+						>
 							<span
 								className="relative size-10 shrink-0 rounded-full"
 								style={{ background: ink?.color ?? "var(--ink)" }}
@@ -536,6 +539,11 @@ function OrderSummary({ delivery }: { delivery: Delivery }) {
 								<span className="text-sm text-(--ink-soft)">
 									{line.qty} × {formatPrice(priceOf(line.id) ?? 0)}
 								</span>
+								{line.samples && (
+									<span className="mt-1 block text-xs text-(--ink-soft)">
+										{line.samples.map(nameOf).join(", ")}
+									</span>
+								)}
 							</span>
 							<span className="font-semibold">
 								{formatPrice((priceOf(line.id) ?? 0) * line.qty)}
@@ -558,7 +566,11 @@ function OrderSummary({ delivery }: { delivery: Delivery }) {
 			</dl>
 			<SiteLink
 				to="carrito"
-				className="mt-4 inline-block text-sm underline underline-offset-4"
+				className={buttonVariants({
+					variant: "primary",
+					fullWidth: true,
+					className: "mt-4 font-semibold",
+				})}
 			>
 				Editar el carrito
 			</SiteLink>
