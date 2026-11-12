@@ -268,11 +268,20 @@
 	position: relative;
 	display: grid;
 	align-items: center;
+	/* An explicit width keeps the ratio driven by width: with min-height alone,
+	   the ratio would widen the title past a phone's screen. */
+	width: 100%;
 	min-height: 9rem;
 	aspect-ratio: 3 / 1;
 	font-size: clamp(2rem, 7vw, 6rem);
 	font-weight: 600;
 	line-height: 1.2;
+}
+@media (max-width: 40rem) {
+	.plumin .hero-handwriting {
+		min-height: 0;
+		aspect-ratio: 2 / 1;
+	}
 }
 .plumin .hero-handwriting-strokes {
 	position: absolute;

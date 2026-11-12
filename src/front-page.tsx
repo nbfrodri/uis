@@ -54,18 +54,6 @@ export function FrontPage() {
 				className="front-back"
 				aria-label="Volver al índice (Esc)"
 			>
-				<svg
-					viewBox="0 0 20 20"
-					fill="none"
-					stroke="currentColor"
-					strokeWidth="1.3"
-					aria-hidden="true"
-				>
-					<rect x="3" y="3" width="5" height="5" rx="1" />
-					<rect x="12" y="3" width="5" height="5" rx="1" />
-					<rect x="3" y="12" width="5" height="5" rx="1" />
-					<rect x="12" y="12" width="5" height="5" rx="1" />
-				</svg>
 				<span>Índice</span>
 				<kbd className="front-back-key">Esc</kbd>
 			</Link>
@@ -85,9 +73,6 @@ const backStyles = `
 	box-shadow: 0 8px 24px -10px rgb(20 23 31 / 0.45); backdrop-filter: blur(12px);
 	transition: background-color 150ms ease;
 }
-/* Optical, not geometric: the grid is centred on the label's cap height, so it
-   no longer hangs below the baseline. */
-.front-back > svg { display: block; flex: none; width: 1rem; height: 1rem; transform: translateY(0.5px); }
 .front-back > span { transform: translateY(1px); }
 .front-back-key { transform: translateY(1px); padding: 0.25rem 0.3rem; border-radius: 4px; background: rgb(255 255 255 / 0.1); color: #c5cad5; font: 450 0.625rem/1 "Archivo Variable", system-ui, sans-serif; }
 .front-back:hover { background: #254cff; }

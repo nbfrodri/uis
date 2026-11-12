@@ -174,8 +174,9 @@ it("stops drawing when reduced motion is enabled during playback", async () => {
 	await waitFor(() => expect(drawing.ready).toBeDefined());
 	act(() => drawing.ready?.());
 	query.matches = true;
-	const listener = query.addEventListener.mock.calls[0]?.[1];
-	await act(async () => listener());
+	await act(async () => {
+		for (const [, listener] of query.addEventListener.mock.calls) listener();
+	});
 	expect(drawing.cancel).toHaveBeenCalledTimes(2);
 	expect(container.querySelector("svg")).toBeNull();
 	expect(

@@ -1,4 +1,10 @@
-import { useEffect, useId, useLayoutEffect, useRef } from "react";
+import {
+	useEffect,
+	useId,
+	useLayoutEffect,
+	useRef,
+	useSyncExternalStore,
+} from "react";
 import fontUrl from "vara/fonts/Satisfy/SatisfySL.json?url";
 import {
 	createHandwritingPlayback,
@@ -6,12 +12,29 @@ import {
 } from "./handwriting-playback";
 
 const HEADLINE = "Tinta para escribir a mano.";
+const WIDE_LINES = ["Tinta para escribir", "a mano."];
+// Three shorter lines let a phone draw the words larger, each on its own rule.
+const NARROW_LINES = ["Tinta para", "escribir", "a mano."];
+const NARROW = "(max-width: 40rem)";
+
+function useNarrow() {
+	return useSyncExternalStore(
+		(onChange) => {
+			const query = window.matchMedia(NARROW);
+			query.addEventListener("change", onChange);
+			return () => query.removeEventListener("change", onChange);
+		},
+		() => window.matchMedia(NARROW).matches,
+		() => false,
+	);
+}
 
 /** Vara builds the stroke font; native animations own its cancellable playback. */
 export function HandwrittenTitle({ color }: { color: string }) {
 	const mount = useRef<HTMLSpanElement>(null);
 	const playback = useRef<HandwritingPlayback | null>(null);
 	const id = `handwriting-${useId().replaceAll(":", "")}`;
+	const lines = useNarrow() ? NARROW_LINES : WIDE_LINES;
 
 	// The strokes use currentColor, so a new ink only needs the text rewritten.
 	// Layout effect: restart before paint so the recoloured text never flashes.
@@ -54,7 +77,7 @@ export function HandwrittenTitle({ color }: { color: string }) {
 				const writer = new Vara(
 					`[id="${id}"]`,
 					fontUrl,
-					[{ text: ["Tinta para escribir", "a mano."], width: 2000 }],
+					[{ text: lines, width: 2000 }],
 					{
 						fontSize: 100,
 						strokeWidth: 2,
@@ -102,7 +125,7 @@ export function HandwrittenTitle({ color }: { color: string }) {
 			reset();
 			query.removeEventListener("change", start);
 		};
-	}, [id]);
+	}, [id, lines]);
 
 	return (
 		<div className="hero-handwriting-wrap">
@@ -115,8 +138,9 @@ export function HandwrittenTitle({ color }: { color: string }) {
 					aria-hidden="true"
 				/>
 				<span className="hero-handwriting-fallback" aria-hidden="true">
-					<span>Tinta para escribir</span>
-					<span>a mano.</span>
+					{lines.map((line) => (
+						<span key={line}>{line}</span>
+					))}
 				</span>
 				<span className="sr-only">{HEADLINE}</span>
 			</h1>
