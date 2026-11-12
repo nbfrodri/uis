@@ -5,7 +5,8 @@ import {
 	useTransform,
 } from "motion/react";
 import { useLayoutEffect, useRef, useState } from "react";
-import { ParallaxShapes, type Shape } from "./effects";
+import { ParallaxShapes } from "./effects";
+import { RAIL_SHAPES } from "./shapes";
 
 const PRACTICE = [
 	{
@@ -32,39 +33,6 @@ const PRACTICE = [
 		title: "Rendimiento",
 		text: "Menos JavaScript, imágenes ligeras y transformaciones en la GPU.",
 		tags: ["Vite", "Carga diferida", "GPU"],
-	},
-];
-
-// Figures behind the panels travel sideways at their own depth.
-const RAIL_SHAPES: Shape[] = [
-	{ kind: "ring", left: "18%", top: "14%", size: 180, speed: 700, spin: 60 },
-	{
-		kind: "triangle",
-		left: "46%",
-		top: "70%",
-		size: 90,
-		speed: 1100,
-		spin: 140,
-	},
-	{
-		kind: "star",
-		left: "72%",
-		top: "12%",
-		size: 48,
-		speed: 1500,
-		spin: 220,
-		accent: true,
-	},
-	{ kind: "wave", left: "86%", top: "78%", size: 120, speed: 900, spin: 0 },
-	{ kind: "dots", left: "4%", top: "80%", size: 70, speed: 500, spin: 0 },
-	{
-		kind: "diamond",
-		left: "60%",
-		top: "40%",
-		size: 28,
-		speed: 1800,
-		spin: 180,
-		accent: true,
 	},
 ];
 
