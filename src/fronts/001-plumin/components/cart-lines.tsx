@@ -1,4 +1,5 @@
 import { Button } from "@heroui/react";
+import sampleBoxPhoto from "../assets/sample-box.webp";
 import { cartLineKey } from "../cart";
 import { useCart } from "../cart-context";
 import { findInk, formatPrice, nameOf, priceOf } from "../data";
@@ -18,7 +19,7 @@ export function CartLines({ compact }: { compact?: boolean }) {
 				return (
 					<li key={cartLineKey(line)} className="flex gap-4 py-4">
 						<div
-							className={`grid shrink-0 place-items-center rounded-xl bg-(--wash) ${compact ? "h-20 w-16" : "h-28 w-22"}`}
+							className={`grid shrink-0 content-center place-items-center gap-2 overflow-hidden rounded-xl ${ink ? "bg-(--wash)" : "bg-[#f4ede2]"} ${compact ? "h-20 w-16" : "h-28 w-22"}`}
 						>
 							{ink ? (
 								<Swatch
@@ -27,7 +28,26 @@ export function CartLines({ compact }: { compact?: boolean }) {
 									className="h-4/5 w-3/5"
 								/>
 							) : (
-								<span className="text-sm font-bold">5×4 ml</span>
+								<>
+									<img
+										src={sampleBoxPhoto}
+										alt="Caja de muestras Plumín"
+										width={1200}
+										height={800}
+										className="h-auto w-full"
+									/>
+									{line.samples && (
+										<span className="flex gap-1" aria-hidden="true">
+											{line.samples.map((id) => (
+												<span
+													key={id}
+													className="size-1.5 rounded-full"
+													style={{ backgroundColor: findInk(id)?.color }}
+												/>
+											))}
+										</span>
+									)}
+								</>
 							)}
 						</div>
 						<div className="flex min-w-0 flex-1 flex-col justify-between gap-2">
