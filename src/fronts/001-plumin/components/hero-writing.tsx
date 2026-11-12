@@ -80,7 +80,7 @@ export function HeroWriting() {
 				</div>
 
 				<div className="relative mx-auto max-w-5xl rotate-[-1deg] rounded-3xl bg-white px-6 pt-8 pb-12 shadow-[0_40px_80px_-40px_rgb(23_32_88/0.5),0_0_0_1px_rgb(23_32_88/0.06)] sm:px-14 sm:pt-12 sm:pb-16">
-					<HandwrittenTitle key={ink.id} color={ink.color} />
+					<HandwrittenTitle color={ink.color} />
 				</div>
 			</div>
 

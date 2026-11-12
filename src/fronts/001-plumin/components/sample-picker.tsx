@@ -53,20 +53,24 @@ export function SamplePicker({
 									<span>{ink.maker}</span>
 								</span>
 								<span className="sample-choice-check" aria-hidden="true">
+									{/* Disc and mark share one SVG so every card rasterises them
+									    identically. The tick sits a touch up and right of its box
+									    centre: its weight is in the lower-left vertex. */}
 									<svg
 										aria-hidden="true"
 										viewBox="0 0 16 16"
 										fill="none"
 										stroke="currentColor"
-										strokeWidth="1.75"
+										strokeWidth="1.6"
 										strokeLinecap="round"
 										strokeLinejoin="round"
 									>
+										<circle cx="8" cy="8" r="7.5" stroke="none" />
 										<path
 											d={
 												selected.includes(ink.id)
-													? "m4 8 2.5 2.5L12 5"
-													: "M8 4v8M4 8h8"
+													? "M4.75 7.9l2.3 2.3 4.6-4.9"
+													: "M8 4.75v6.5M4.75 8h6.5"
 											}
 										/>
 									</svg>

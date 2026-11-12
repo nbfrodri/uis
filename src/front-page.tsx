@@ -85,7 +85,9 @@ const backStyles = `
 	box-shadow: 0 8px 24px -10px rgb(20 23 31 / 0.45); backdrop-filter: blur(12px);
 	transition: background-color 150ms ease;
 }
-.front-back > svg { display: block; flex: none; width: 1.1rem; height: 1.1rem; transform: translateY(1px); }
+/* Optical, not geometric: the grid is centred on the label's cap height, so it
+   no longer hangs below the baseline. */
+.front-back > svg { display: block; flex: none; width: 1rem; height: 1rem; transform: translateY(0.5px); }
 .front-back > span { transform: translateY(1px); }
 .front-back-key { transform: translateY(1px); padding: 0.25rem 0.3rem; border-radius: 4px; background: rgb(255 255 255 / 0.1); color: #c5cad5; font: 450 0.625rem/1 "Archivo Variable", system-ui, sans-serif; }
 .front-back:hover { background: #254cff; }

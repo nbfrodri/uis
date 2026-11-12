@@ -80,7 +80,7 @@ function Field({
 			autoComplete={input.autoComplete}
 			type={input.type ?? "text"}
 		>
-			<Label className="font-semibold">{label}</Label>
+			<Label className="mb-1 font-semibold">{label}</Label>
 			<Input
 				placeholder={input.placeholder}
 				inputMode={input.inputMode}
