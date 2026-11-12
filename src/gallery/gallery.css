@@ -239,7 +239,8 @@
 	font-weight: 800;
 	font-stretch: 100%;
 	color: transparent;
-	-webkit-text-stroke: 1px var(--nbf-ink);
+	-webkit-text-stroke: 1.5px
+		color-mix(in oklab, var(--nbf-ink) 55%, transparent);
 }
 .nbf-band-track {
 	display: flex;
@@ -513,7 +514,34 @@
 }
 
 .nbf-about {
-	padding: clamp(5rem, 14vw, 12rem) var(--nbf-gutter);
+	padding: clamp(5rem, 14vw, 12rem) var(--nbf-gutter) clamp(3rem, 8vw, 6rem);
+}
+.nbf-cta {
+	display: grid;
+	justify-items: start;
+	gap: 1.5rem;
+	margin-inline: var(--nbf-gutter);
+	padding-block: clamp(3rem, 8vw, 6rem);
+	border-top: 1px solid var(--nbf-line);
+}
+.nbf-cta h2 {
+	margin: 0;
+	font-size: clamp(2.5rem, 8vw, 7.5rem);
+	font-weight: 800;
+	font-stretch: 80%;
+	line-height: 0.92;
+	letter-spacing: -0.03em;
+}
+.gallery .nbf-cta-link {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.5rem;
+	padding: 1rem 1.5rem;
+	border-radius: 999px;
+	background: var(--nbf-accent);
+	color: #fff;
+	font-size: 1rem;
+	font-weight: 600;
 }
 .nbf-about p {
 	max-width: 22ch;
@@ -537,7 +565,8 @@
 	line-height: 0.75;
 	letter-spacing: -0.06em;
 	color: transparent;
-	-webkit-text-stroke: 1px var(--nbf-ink);
+	-webkit-text-stroke: 1.5px
+		color-mix(in oklab, var(--nbf-ink) 55%, transparent);
 }
 .nbf-footer-bottom {
 	display: flex;
@@ -624,23 +653,6 @@
 	mix-blend-mode: difference;
 	pointer-events: none;
 	will-change: transform;
-	transition:
-		width 200ms var(--nbf-ease),
-		height 200ms var(--nbf-ease),
-		border-radius 200ms var(--nbf-ease),
-		background-color 150ms ease;
-}
-/* Over a project: a small label, readable instead of a huge blot. */
-.nbf-cursor[data-label] {
-	display: grid;
-	place-items: center;
-	width: 3.25rem;
-	height: 3.25rem;
-	background: var(--nbf-accent);
-	color: #fff;
-	font-size: 0.75rem;
-	font-weight: 600;
-	mix-blend-mode: normal;
 }
 :root.nbf-has-cursor .gallery,
 :root.nbf-has-cursor .gallery :is(a, button) {

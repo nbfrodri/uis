@@ -1,6 +1,7 @@
 import {
 	animate,
 	motion,
+	useInView,
 	useMotionValue,
 	useScroll,
 	useSpring,
@@ -101,20 +102,15 @@ export function Preloader({
 	);
 }
 
-/**
- * A dot that trails the pointer. It grows a little over links, and over large
- * targets marked with data-cursor it becomes a small label instead.
- */
+/** A dot that follows the pointer and grows slightly over anything clickable. */
 export function Cursor({ still }: { still: boolean }) {
 	const [enabled] = useState(() => !still && finePointer());
 	const x = useMotionValue(-100);
 	const y = useMotionValue(-100);
-	const sx = useSpring(x, { stiffness: 500, damping: 40, mass: 0.4 });
-	const sy = useSpring(y, { stiffness: 500, damping: 40, mass: 0.4 });
 	const scale = useSpring(1, { stiffness: 400, damping: 30 });
-	const [label, setLabel] = useState<string | null>(null);
 	const transform = useTransform(
-		[sx, sy, scale],
+		// Position follows the pointer directly (no lag); only the size eases.
+		[x, y, scale],
 		([px, py, s]) =>
 			`translate(${px}px, ${py}px) translate(-50%, -50%) scale(${s})`,
 	);
@@ -125,11 +121,9 @@ export function Cursor({ still }: { still: boolean }) {
 			x.set(event.clientX);
 			y.set(event.clientY);
 			const target = event.target as Element | null;
-			const labelled = target?.closest<HTMLElement>("[data-cursor]");
-			setLabel(labelled?.dataset.cursor ?? null);
-			scale.set(labelled ? 1 : target?.closest("a, button") ? 2.2 : 1);
+			scale.set(target?.closest("a, button") ? 1.6 : 1);
 		};
-		window.addEventListener("pointermove", move);
+		window.addEventListener("pointermove", move, { passive: true });
 		document.documentElement.classList.add("nbf-has-cursor");
 		return () => {
 			window.removeEventListener("pointermove", move);
@@ -141,12 +135,9 @@ export function Cursor({ still }: { still: boolean }) {
 	return (
 		<motion.div
 			className="nbf-cursor"
-			data-label={label ? "" : undefined}
 			aria-hidden="true"
 			style={{ transform }}
-		>
-			{label}
-		</motion.div>
+		/>
 	);
 }
 
@@ -355,14 +346,18 @@ export function MadridClock() {
 
 /** The footer monogram: letters rise into place, staggered, when it comes into view. */
 export function FooterMark({ still }: { still: boolean }) {
+	const ref = useRef<HTMLSpanElement>(null);
+	// Watch the wrapper: the letters start clipped by their masks, so watching
+	// them directly would never report them as visible.
+	const inView = useInView(ref, { once: true, amount: 0.3 });
+	const shown = still || inView;
 	return (
-		<span className="nbf-footer-mark" aria-hidden="true">
+		<span ref={ref} className="nbf-footer-mark" aria-hidden="true">
 			{["N", "B", "F"].map((letter, i) => (
 				<span key={letter} className="nbf-footer-letter">
 					<motion.span
 						initial={still ? false : { transform: "translateY(100%)" }}
-						whileInView={{ transform: "translateY(0%)" }}
-						viewport={{ once: true, amount: 0.4 }}
+						animate={shown ? { transform: "translateY(0%)" } : undefined}
 						transition={{
 							duration: 0.9,
 							delay: i * 0.08,

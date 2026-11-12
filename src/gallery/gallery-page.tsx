@@ -95,6 +95,19 @@ export function GalleryPage({ fronts }: { fronts: Front[] }) {
 						text="NBF es mi espacio para probar ideas: negocios imaginarios, convertidos en webs que funcionan de verdad, del primer vistazo al último clic."
 					/>
 				</section>
+				<section className="nbf-cta" aria-labelledby="nbf-cta-title">
+					<p className="nbf-label">Siguiente paso</p>
+					<h2 id="nbf-cta-title">
+						¿Quieres ver
+						<br />
+						cómo está hecho?
+					</h2>
+					<Magnetic still={reduce} strength={0.25}>
+						<a href="https://github.com/nbfrodri/uis" className="nbf-cta-link">
+							Código en GitHub <ArrowIcon />
+						</a>
+					</Magnetic>
+				</section>
 			</main>
 
 			<footer className="nbf-footer">

@@ -39,7 +39,6 @@ export function ProjectCard({
 				to={`/f/${front.slug}`}
 				viewTransition
 				className="nbf-row-link"
-				data-cursor="Ver"
 				aria-label={`Explorar ${front.title}`}
 			>
 				<span className="nbf-row-index">{pad(front.number)}</span>

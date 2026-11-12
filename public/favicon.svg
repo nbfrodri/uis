@@ -1,1 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><title>uis</title><rect width="32" height="32" rx="7" fill="#1c2b4a"/><rect x="7" y="17" width="18" height="6" fill="#f2e45c"/><path d="M10 9v8a6 6 0 0 0 12 0V9" fill="none" stroke="#eef1f4" stroke-width="3" stroke-linecap="round"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+	<!-- NBF: a heavy N on graphite, with the electric blue accent. -->
+	<rect width="32" height="32" rx="7" fill="#111214" />
+	<path d="M7 24V8h4.6l7 10V8H23v16h-4.6l-7-10v10Z" fill="#f0eee9" />
+	<rect x="24.5" y="20.5" width="3.5" height="3.5" rx="0.5" fill="#3d5afe" />
+</svg>
