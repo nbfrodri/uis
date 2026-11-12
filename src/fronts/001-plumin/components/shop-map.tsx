@@ -42,7 +42,13 @@ function useMap(container: React.RefObject<HTMLDivElement | null>) {
 				if (!entry?.isIntersecting) return;
 				observer.disconnect();
 				try {
-					const maplibre = await import("maplibre-gl");
+					const [maplibre, { default: workerUrl }] = await Promise.all([
+						import("maplibre-gl"),
+						// MapLibre computes its worker path at runtime, so the bundler never copies the file.
+						// Importing it with ?url makes Vite emit it, and we point MapLibre at it.
+						import("maplibre-gl/dist/maplibre-gl-worker.mjs?url"),
+					]);
+					maplibre.setWorkerUrl(workerUrl);
 					if (cancelled) return;
 					map = new maplibre.Map({
 						container: element,

@@ -16,11 +16,9 @@ export function GalleryPage({ fronts }: { fronts: Front[] }) {
 			<header className="gallery-header">
 				<h1 className="gallery-title">Libreta de interfaces</h1>
 				<p className="gallery-lede">
-					Ejercicios de UI, del más reciente al primero.{" "}
-					{fronts.length === 1
-						? "1\u00a0front"
-						: `${fronts.length}\u00a0fronts`}
-					.
+					Webs de demostración diseñadas y construidas con IA, de la más
+					reciente a la primera.{" "}
+					{fronts.length === 1 ? "1\u00a0web" : `${fronts.length}\u00a0webs`}.
 				</p>
 				{tags.length > 0 && (
 					<nav aria-label="Filtrar por etiqueta" className="gallery-tags">
@@ -50,12 +48,12 @@ export function GalleryPage({ fronts }: { fronts: Front[] }) {
 			<main>
 				{fronts.length === 0 ? (
 					<p className="gallery-empty">
-						Todavía no hay fronts. Crea el primero con{" "}
+						Todavía no hay webs. Crea la primera con{" "}
 						<code>pnpm new-front nombre</code> y aparecerá aquí.
 					</p>
 				) : visible.length === 0 ? (
 					<p className="gallery-empty">
-						Ningún front lleva la etiqueta «{activeTag}».{" "}
+						Ninguna web lleva la etiqueta «{activeTag}».{" "}
 						<Link to="/">Ver todos</Link>
 					</p>
 				) : (

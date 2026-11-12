@@ -26,7 +26,7 @@ describe("front routing", () => {
 	});
 
 	it("opens a registered front at a nested path", async () => {
-		renderAt("/f/001-tarjeta-embarque/cualquier/cosa");
+		renderAt("/f/001-plumin/cualquier/cosa");
 		expect(
 			await screen.findByRole("link", { name: /volver al índice/i }),
 		).toBeInTheDocument();
@@ -40,7 +40,7 @@ describe("front routing", () => {
 	});
 
 	it("leaves the front with Esc, except while typing in a field", async () => {
-		renderAt("/f/002-plumin/tintas/granada");
+		renderAt("/f/001-plumin/tintas/granada");
 		const select = await screen.findByRole(
 			"textbox",
 			{ name: "Frascos" },

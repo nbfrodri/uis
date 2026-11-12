@@ -6,7 +6,7 @@ import { routes } from "../../app";
 // The front is lazy-loaded; under a full parallel test run that can take over a second.
 const slow = { timeout: 5000 };
 
-async function renderShop(url = "/f/002-plumin/tintas") {
+async function renderShop(url = "/f/001-plumin/tintas") {
 	const router = createMemoryRouter(routes, { initialEntries: [url] });
 	render(<RouterProvider router={router} />);
 	const input = await screen.findByRole(
@@ -25,7 +25,7 @@ describe("ink search", () => {
 		await userEvent.click(
 			within(listbox).getByRole("option", { name: /granada/i }),
 		);
-		expect(router.state.location.pathname).toBe("/f/002-plumin/tintas/granada");
+		expect(router.state.location.pathname).toBe("/f/001-plumin/tintas/granada");
 	});
 
 	it("shows every match when pressing Enter", async () => {

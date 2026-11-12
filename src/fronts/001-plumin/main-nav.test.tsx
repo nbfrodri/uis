@@ -8,7 +8,7 @@ const slow = { timeout: 5000 };
 describe("main navigation", () => {
 	it("opens the inks mega menu with colour families and featured inks", async () => {
 		const router = createMemoryRouter(routes, {
-			initialEntries: ["/f/002-plumin/taller"],
+			initialEntries: ["/f/001-plumin/taller"],
 		});
 		render(<RouterProvider router={router} />);
 		const nav = await screen.findByRole(
@@ -20,11 +20,11 @@ describe("main navigation", () => {
 		const azules = await screen.findByRole("link", { name: /azules/i }, slow);
 		expect(azules).toHaveAttribute(
 			"href",
-			"/f/002-plumin/tintas?familia=azules",
+			"/f/001-plumin/tintas?familia=azules",
 		);
 		expect(screen.getByRole("link", { name: /granada/i })).toHaveAttribute(
 			"href",
-			"/f/002-plumin/tintas/granada",
+			"/f/001-plumin/tintas/granada",
 		);
 		await userEvent.click(azules);
 		expect(router.state.location.search).toBe("?familia=azules");

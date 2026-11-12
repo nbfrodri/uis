@@ -59,7 +59,7 @@ describe("GalleryPage", () => {
 	it("explains how to clear a tag that matches nothing", () => {
 		renderGallery(fronts, "/?tag=brutalist");
 		expect(
-			screen.getByText(/ningún front lleva la etiqueta/i),
+			screen.getByText(/ninguna web lleva la etiqueta/i),
 		).toBeInTheDocument();
 		expect(screen.getByRole("link", { name: /ver todos/i })).toHaveAttribute(
 			"href",

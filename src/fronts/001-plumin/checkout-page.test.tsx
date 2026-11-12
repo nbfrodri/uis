@@ -11,7 +11,7 @@ async function renderCheckout() {
 		JSON.stringify({ lines: [{ id: "granada", qty: 1 }] }),
 	);
 	const router = createMemoryRouter(routes, {
-		initialEntries: ["/f/002-plumin/pago"],
+		initialEntries: ["/f/001-plumin/pago"],
 	});
 	render(<RouterProvider router={router} />);
 	await screen.findByRole("heading", { name: "Finalizar compra" }, slow);
