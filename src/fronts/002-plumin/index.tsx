@@ -7,6 +7,7 @@ import { CartProvider } from "./cart-context";
 import { Layout } from "./components/layout";
 import { CartPage } from "./pages/cart-page";
 import { Catalog } from "./pages/catalog";
+import { CheckoutPage } from "./pages/checkout-page";
 import { Home } from "./pages/home";
 import { InkPage } from "./pages/ink";
 import { Missing } from "./pages/missing";
@@ -23,6 +24,7 @@ export default function Plumin() {
 						<Route path="tintas" element={<Catalog />} />
 						<Route path="tintas/:id" element={<InkPage />} />
 						<Route path="carrito" element={<CartPage />} />
+						<Route path="pago" element={<CheckoutPage />} />
 						<Route path="taller" element={<Workshop />} />
 						<Route path="*" element={<Missing />} />
 					</Route>

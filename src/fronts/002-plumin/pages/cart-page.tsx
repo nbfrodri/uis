@@ -1,5 +1,4 @@
-import { Button, buttonVariants } from "@heroui/react";
-import { useState } from "react";
+import { buttonVariants } from "@heroui/react";
 import { useCart } from "../cart-context";
 import { CartLines } from "../components/cart-lines";
 import { ShippingMeter } from "../components/shipping-meter";
@@ -7,26 +6,7 @@ import { SiteLink } from "../components/site-link";
 import { formatPrice } from "../data";
 
 export function CartPage() {
-	const { totals, dispatch } = useCart();
-	const [ordered, setOrdered] = useState(false);
-
-	if (ordered) {
-		return (
-			<main className="mx-auto max-w-3xl px-4 pt-16 sm:px-8">
-				<h1 className="text-5xl font-extrabold tracking-[-0.04em]">
-					Pedido recibido
-				</h1>
-				<p className="mt-4 text-lg">
-					Es una tienda de práctica: no se ha cobrado nada y no llegará ningún
-					paquete. El carrito se ha vaciado.
-				</p>
-				<SiteLink to="tintas" className={buttonVariants({ className: "mt-6" })}>
-					Seguir mirando tintas
-				</SiteLink>
-			</main>
-		);
-	}
-
+	const { totals } = useCart();
 	if (totals.count === 0) {
 		return (
 			<main className="mx-auto max-w-3xl px-4 pt-16 sm:px-8">
@@ -63,19 +43,18 @@ export function CartPage() {
 							{formatPrice(totals.total)}
 						</dd>
 					</dl>
-					<Button
-						size="lg"
-						fullWidth
-						className="mt-6 font-semibold"
-						onPress={() => {
-							dispatch({ type: "clear" });
-							setOrdered(true);
-						}}
+					<SiteLink
+						to="pago"
+						className={buttonVariants({
+							size: "lg",
+							fullWidth: true,
+							className: "mt-6 font-semibold",
+						})}
 					>
-						Hacer el pedido de prueba
-					</Button>
+						Tramitar pedido
+					</SiteLink>
 					<p className="mt-3 text-xs text-(--ink-soft)">
-						Tienda de práctica: no se pide ningún dato ni se cobra nada.
+						Tienda de práctica: el pago es simulado y no se cobra nada.
 					</p>
 				</aside>
 			</div>

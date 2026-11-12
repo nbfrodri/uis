@@ -42,6 +42,7 @@ const cents = (value: number) => Math.round(value * 100) / 100;
 export function cartTotals(
 	state: CartState,
 	priceOf: (id: string) => number | undefined,
+	delivery: "domicilio" | "tienda" = "domicilio",
 ) {
 	let count = 0;
 	let subtotal = 0;
@@ -51,7 +52,10 @@ export function cartTotals(
 		count += line.qty;
 		subtotal += price * line.qty;
 	}
-	const shipping = count === 0 || subtotal >= FREE_SHIPPING_FROM ? 0 : SHIPPING;
+	const shipping =
+		count === 0 || delivery === "tienda" || subtotal >= FREE_SHIPPING_FROM
+			? 0
+			: SHIPPING;
 	return {
 		count,
 		subtotal: cents(subtotal),

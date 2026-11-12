@@ -1,0 +1,60 @@
+import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import { createMemoryRouter, RouterProvider } from "react-router";
+import { routes } from "../../app";
+
+const slow = { timeout: 5000 };
+
+async function renderCheckout() {
+	localStorage.setItem(
+		"uis.plumin.cart",
+		JSON.stringify({ lines: [{ id: "granada", qty: 1 }] }),
+	);
+	const router = createMemoryRouter(routes, {
+		initialEntries: ["/f/002-plumin/pago"],
+	});
+	render(<RouterProvider router={router} />);
+	await screen.findByRole("heading", { name: "Finalizar compra" }, slow);
+}
+
+afterEach(() => localStorage.clear());
+
+describe("checkout", () => {
+	it("explains what is missing instead of submitting", async () => {
+		await renderCheckout();
+		await userEvent.click(screen.getByRole("button", { name: /pagar/i }));
+		expect(
+			await screen.findByText(/escribe un correo válido/i),
+		).toBeInTheDocument();
+		expect(
+			screen.getByText(/código postal tiene 5 cifras/i),
+		).toBeInTheDocument();
+		expect(screen.queryByText(/pedido confirmado/i)).not.toBeInTheDocument();
+	});
+
+	it("completes a pick-up order paid with Bizum and empties the cart", async () => {
+		const user = userEvent.setup();
+		await renderCheckout();
+		await user.type(
+			screen.getByLabelText("Correo electrónico"),
+			"lucia@example.com",
+		);
+		await user.click(
+			screen.getByRole("radio", { name: /recoger en la tienda/i }),
+		);
+		expect(screen.queryByLabelText("Dirección")).not.toBeInTheDocument();
+		await user.type(screen.getByLabelText("Nombre"), "Lucía");
+		await user.type(screen.getByLabelText("Apellidos"), "Ferrer");
+		await user.type(screen.getByLabelText("Teléfono"), "612345678");
+		await user.click(screen.getByRole("radio", { name: /bizum/i }));
+		await user.type(screen.getByLabelText("Móvil de Bizum"), "612345678");
+		await user.click(screen.getByRole("button", { name: /pagar 19,00/i }));
+		expect(
+			await screen.findByRole("heading", { name: /pedido confirmado/i }, slow),
+		).toBeInTheDocument();
+		expect(screen.getByText(/PL-[A-Z0-9]{5}/)).toBeInTheDocument();
+		expect(
+			JSON.parse(localStorage.getItem("uis.plumin.cart") ?? "{}").lines,
+		).toEqual([]);
+	});
+});

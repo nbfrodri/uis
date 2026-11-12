@@ -9,6 +9,7 @@ import { FrontPage } from "./front-page";
 import { fronts } from "./fronts/registry";
 import { GalleryPage } from "./gallery/gallery-page";
 import { NotFound } from "./not-found";
+import { RouteError } from "./route-error";
 
 export const routes: RouteObject[] = [
 	{ path: "/", element: <GalleryPage fronts={fronts} /> },
@@ -25,6 +26,7 @@ const router = createBrowserRouter([
 				<Outlet />
 			</>
 		),
+		errorElement: <RouteError />,
 		children: routes,
 	},
 ]);

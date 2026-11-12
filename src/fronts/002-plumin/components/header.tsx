@@ -87,8 +87,16 @@ function MiniCart() {
 									<span>Subtotal</span>
 									<span>{formatPrice(totals.subtotal)}</span>
 								</p>
-								<Button size="lg" fullWidth onPress={() => go("carrito")}>
-									Ir al carrito
+								<Button size="lg" fullWidth onPress={() => go("pago")}>
+									Tramitar pedido
+								</Button>
+								<Button
+									size="lg"
+									variant="secondary"
+									fullWidth
+									onPress={() => go("carrito")}
+								>
+									Ver el carrito
 								</Button>
 							</Drawer.Footer>
 						)}
