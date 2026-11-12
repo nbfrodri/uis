@@ -4,10 +4,20 @@ import { useCart } from "../cart-context";
 import { findInk, formatPrice, nameOf, priceOf } from "../data";
 import { QuantityField } from "./quantity-field";
 import { SampleBoxThumbnail } from "./sample-box-thumbnail";
+import { SiteLink } from "./site-link";
 import { Swatch } from "./swatch";
 
-/** The cart's lines, shared by the side drawer and the cart page. */
-export function CartLines({ compact }: { compact?: boolean }) {
+/**
+ * The cart's lines, shared by the side drawer and the cart page. The photo and
+ * name open the product; `onNavigate` lets the drawer close itself first.
+ */
+export function CartLines({
+	compact,
+	onNavigate,
+}: {
+	compact?: boolean;
+	onNavigate?: () => void;
+}) {
 	const { lines, dispatch } = useCart();
 	const visible = lines.filter((line) => priceOf(line.id) !== undefined);
 
@@ -16,10 +26,17 @@ export function CartLines({ compact }: { compact?: boolean }) {
 			{visible.map((line) => {
 				const ink = findInk(line.id);
 				const price = priceOf(line.id) ?? 0;
+				// The sample box has no page of its own: it lives on the home page.
+				const to = ink ? `tintas/${ink.id}` : "#muestras";
 				return (
 					<li key={cartLineKey(line)} className="flex gap-4 py-4">
-						<div
-							className={`grid shrink-0 content-center place-items-center gap-2 overflow-hidden rounded-xl ${ink ? "bg-(--wash)" : "bg-[#f4ede2]"} ${compact ? "h-20 w-16" : "h-28 w-22"}`}
+						{/* The name is the accessible link; the photo repeats it for the pointer. */}
+						<SiteLink
+							to={to}
+							onClick={onNavigate}
+							tabIndex={-1}
+							aria-hidden="true"
+							className={`grid shrink-0 content-center place-items-center gap-2 overflow-hidden rounded-xl transition-opacity hover:opacity-80 ${ink ? "bg-(--wash)" : "bg-[#f4ede2]"} ${compact ? "h-20 w-16" : "h-28 w-22"}`}
 						>
 							{ink ? (
 								<Swatch
@@ -30,11 +47,17 @@ export function CartLines({ compact }: { compact?: boolean }) {
 							) : (
 								<SampleBoxThumbnail samples={line.samples} />
 							)}
-						</div>
+						</SiteLink>
 						<div className="flex min-w-0 flex-1 flex-col justify-between gap-2">
 							<div className="flex items-start justify-between gap-3">
 								<div>
-									<p className="leading-snug font-bold">{nameOf(line.id)}</p>
+									<SiteLink
+										to={to}
+										onClick={onNavigate}
+										className="leading-snug font-bold underline-offset-2 hover:underline"
+									>
+										{nameOf(line.id)}
+									</SiteLink>
 									<p className="text-sm text-(--ink-soft)">
 										{formatPrice(price)} la unidad
 									</p>
