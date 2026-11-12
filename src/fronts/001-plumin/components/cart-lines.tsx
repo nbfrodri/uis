@@ -1,7 +1,9 @@
 import { Button } from "@heroui/react";
+import { cartLineKey } from "../cart";
 import { useCart } from "../cart-context";
 import { findInk, formatPrice, nameOf, priceOf } from "../data";
 import { QuantityField } from "./quantity-field";
+import { SampleBoxThumbnail } from "./sample-box-thumbnail";
 import { Swatch } from "./swatch";
 
 /** The cart's lines, shared by the side drawer and the cart page. */
@@ -15,9 +17,9 @@ export function CartLines({ compact }: { compact?: boolean }) {
 				const ink = findInk(line.id);
 				const price = priceOf(line.id) ?? 0;
 				return (
-					<li key={line.id} className="flex gap-4 py-4">
+					<li key={cartLineKey(line)} className="flex gap-4 py-4">
 						<div
-							className={`grid shrink-0 place-items-center rounded-xl bg-(--wash) ${compact ? "h-20 w-16" : "h-28 w-22"}`}
+							className={`grid shrink-0 content-center place-items-center gap-2 overflow-hidden rounded-xl ${ink ? "bg-(--wash)" : "bg-[#f4ede2]"} ${compact ? "h-20 w-16" : "h-28 w-22"}`}
 						>
 							{ink ? (
 								<Swatch
@@ -26,7 +28,7 @@ export function CartLines({ compact }: { compact?: boolean }) {
 									className="h-4/5 w-3/5"
 								/>
 							) : (
-								<span className="text-sm font-bold">5×4 ml</span>
+								<SampleBoxThumbnail samples={line.samples} />
 							)}
 						</div>
 						<div className="flex min-w-0 flex-1 flex-col justify-between gap-2">
@@ -36,6 +38,11 @@ export function CartLines({ compact }: { compact?: boolean }) {
 									<p className="text-sm text-(--ink-soft)">
 										{formatPrice(price)} la unidad
 									</p>
+									{line.samples && (
+										<p className="mt-1 text-xs text-(--ink-soft)">
+											{line.samples.map(nameOf).join(", ")}
+										</p>
+									)}
 								</div>
 								<p className="font-semibold">{formatPrice(price * line.qty)}</p>
 							</div>
@@ -43,15 +50,26 @@ export function CartLines({ compact }: { compact?: boolean }) {
 								<QuantityField
 									value={line.qty}
 									onChange={(qty) =>
-										dispatch({ type: "set", id: line.id, qty })
+										dispatch({
+											type: "set",
+											id: line.id,
+											qty,
+											samples: line.samples,
+										})
 									}
 									label={`Cantidad de ${nameOf(line.id)}`}
 									hideLabel
 								/>
 								<Button
 									size="sm"
-									variant="ghost"
-									onPress={() => dispatch({ type: "remove", id: line.id })}
+									variant="danger-soft"
+									onPress={() =>
+										dispatch({
+											type: "remove",
+											id: line.id,
+											samples: line.samples,
+										})
+									}
 									aria-label={`Quitar ${nameOf(line.id)}`}
 								>
 									Quitar

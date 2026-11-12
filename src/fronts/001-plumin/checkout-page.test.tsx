@@ -1,15 +1,14 @@
-import { render, screen, waitFor } from "@testing-library/react";
+import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { createMemoryRouter, RouterProvider } from "react-router";
 import { routes } from "../../app";
+import type { CartLine } from "./cart";
+import { nameOf } from "./data";
 
 const slow = { timeout: 5000 };
 
-async function renderCheckout() {
-	localStorage.setItem(
-		"uis.plumin.cart",
-		JSON.stringify({ lines: [{ id: "granada", qty: 1 }] }),
-	);
+async function renderCheckout(lines: CartLine[] = [{ id: "granada", qty: 1 }]) {
+	localStorage.setItem("uis.plumin.cart", JSON.stringify({ lines }));
 	const router = createMemoryRouter(routes, {
 		initialEntries: ["/f/001-plumin/pago"],
 	});
@@ -20,6 +19,31 @@ async function renderCheckout() {
 afterEach(() => localStorage.clear());
 
 describe("checkout", () => {
+	it("shows the ink selection for each distinct sample box in the order summary", async () => {
+		const first = ["azul-real", "granada", "tabaco", "ciruela", "aceituna"];
+		const second = [
+			"mar-de-bizkaia",
+			"tormenta",
+			"negro-imprenta",
+			"musgo-de-ordesa",
+			"pimenton",
+		];
+		await renderCheckout([
+			{ id: "caja-muestras", qty: 1, samples: first },
+			{ id: "caja-muestras", qty: 1, samples: second },
+		]);
+		const summary = screen.getByRole("complementary", {
+			name: "Resumen del pedido",
+		});
+		expect(within(summary).getAllByText("Caja de muestras")).toHaveLength(2);
+		expect(
+			within(summary).getByText(first.map(nameOf).join(", ")),
+		).toBeInTheDocument();
+		expect(
+			within(summary).getByText(second.map(nameOf).join(", ")),
+		).toBeInTheDocument();
+	});
+
 	it("explains what is missing instead of submitting", async () => {
 		await renderCheckout();
 		await userEvent.click(screen.getByRole("button", { name: /pagar/i }));

@@ -22,7 +22,7 @@ export function ProductCard({ ink, seed }: { ink: Ink; seed: number }) {
 				<h3 className="mt-4 text-lg leading-snug font-bold">{ink.name}</h3>
 			</SiteLink>
 			<p className="text-sm text-(--ink-soft)">{ink.maker}</p>
-			<div className="mt-2 flex items-center justify-between gap-2">
+			<div className="mt-2 flex flex-wrap items-center justify-between gap-2">
 				<p className="font-semibold">{formatPrice(ink.price)}</p>
 				<QuickAdd id={ink.id} />
 			</div>

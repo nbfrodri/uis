@@ -164,7 +164,7 @@ export function SuggestField<T extends Item>({
 				onPick(item);
 			}}
 		>
-			<Label className="font-semibold">{label}</Label>
+			<Label className="mb-1 font-semibold">{label}</Label>
 			<ComboBox.InputGroup>
 				<Input
 					placeholder={placeholder}

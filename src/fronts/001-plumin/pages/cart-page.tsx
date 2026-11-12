@@ -20,16 +20,33 @@ export function CartPage() {
 	}
 
 	return (
-		<main className="mx-auto max-w-6xl px-4 pt-10 sm:px-8">
-			<h1 className="text-5xl font-extrabold tracking-[-0.04em]">Carrito</h1>
-			<div className="mt-10 grid gap-12 md:grid-cols-[1fr_22rem]">
-				<CartLines />
+		<main className="mx-auto max-w-6xl px-4 pt-6 sm:px-8 sm:pt-10">
+			<h1 className="text-4xl font-extrabold tracking-[-0.04em] sm:text-5xl">
+				Carrito
+			</h1>
+			<div className="mt-6 grid gap-6 sm:mt-10 md:grid-cols-[1fr_22rem] md:gap-12">
+				<div className="cart-window flex min-h-0 flex-col self-start overflow-hidden rounded-xl border border-(--rule) bg-white">
+					<header className="flex items-baseline justify-between border-b border-(--rule) px-4 py-3 sm:px-6">
+						<h2 className="font-bold">Tus productos</h2>
+						<p className="text-sm text-(--ink-soft)">
+							{totals.count} {totals.count === 1 ? "artículo" : "artículos"}
+						</p>
+					</header>
+					<section
+						aria-label="Productos del carrito"
+						// biome-ignore lint/a11y/noNoninteractiveTabindex: a scrollable region must be keyboard-reachable.
+						tabIndex={0}
+						className="cart-window-scroll relative overflow-y-auto overscroll-contain px-4 sm:px-6"
+					>
+						<CartLines />
+					</section>
+				</div>
 				<aside
 					aria-label="Resumen del pedido"
-					className="self-start rounded-3xl bg-(--wash) p-6 md:sticky md:top-28"
+					className="self-start rounded-3xl bg-(--wash) p-5 sm:p-6"
 				>
 					<ShippingMeter subtotal={totals.subtotal} />
-					<dl className="mt-6 grid grid-cols-[1fr_auto] gap-y-2">
+					<dl className="mt-4 grid grid-cols-[1fr_auto] gap-y-2 sm:mt-6">
 						<dt>Subtotal</dt>
 						<dd className="text-right">{formatPrice(totals.subtotal)}</dd>
 						<dt>Envío</dt>
@@ -48,7 +65,7 @@ export function CartPage() {
 						className={buttonVariants({
 							size: "lg",
 							fullWidth: true,
-							className: "mt-6 font-semibold",
+							className: "mt-4 font-semibold sm:mt-6",
 						})}
 					>
 						Tramitar pedido

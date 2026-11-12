@@ -185,7 +185,9 @@ export const sampleBox = {
 	id: "caja-muestras",
 	name: "Caja de muestras",
 	price: 9,
-	note: "Cinco viales de 4 ml a elegir. Te escribimos para saber cuáles.",
+	sampleCount: 5,
+	mlPerSample: 4,
+	note: "Cinco viales de 4 ml con las tintas que tú elijas.",
 };
 
 export function findInk(id: string): Ink | undefined {

@@ -2,7 +2,7 @@
 
 Portfolio de sitios web completos de demostración: tiendas, estudios, consultoras y otros negocios inventados. Cada proyecto tiene su propia identidad visual, navegación y páginas, con recorridos interactivos para explorar el sitio como una web independiente.
 
-La portada (`/`) es el índice del portfolio. Los proyectos muestran experiencias completas, desde la página de inicio hasta las páginas de detalle y los flujos de cada negocio.
+La portada (`/`), **Estudio digital**, presenta los proyectos como un portfolio de estudio: escena visual original, parallax y composiciones de escritorio y móvil. Los proyectos muestran experiencias completas, desde la página de inicio hasta las páginas de detalle y los flujos de cada negocio. El movimiento se puede pausar y respeta la preferencia de movimiento reducido.
 
 **En línea:** https://nbfrodri.github.io/uis/
 
@@ -12,11 +12,12 @@ La portada (`/`) es el índice del portfolio. Los proyectos muestran experiencia
 
 ### Plumín
 
-Tienda ficticia de tintas para pluma estilográfica, con doce tintas de tres talleres. Incluye catálogo por familias de color, fichas de producto con muestras de escritura, carrito, proceso de compra simulado y página del taller.
+Tienda ficticia de tintas para pluma estilográfica, con doce tintas de tres talleres. Incluye catálogo por familias de color, fichas de producto con muestras de escritura, caja personalizable de cinco muestras, carrito, proceso de compra simulado y página del taller. Las combinaciones de muestras se conservan en el carrito y en el resumen del pago; se pueden añadir varias cajas diferentes.
 
 - [Explorar todas las tintas](https://nbfrodri.github.io/uis/f/001-plumin/tintas)
 - [Ver la colección de rojos](https://nbfrodri.github.io/uis/f/001-plumin/tintas?familia=rojos)
 - [Abrir la ficha de Granada](https://nbfrodri.github.io/uis/f/001-plumin/tintas/granada)
+- [Librerías utilizadas y decisiones de diseño](src/fronts/001-plumin/README.md)
 
 Los negocios y productos son inventados; el pago es una demostración y no se realizan compras reales.
 
@@ -37,6 +38,9 @@ Crea `src/fronts/NNN-nombre-corto/` a partir de `src/fronts/_template`:
 
 - `meta.ts`: título, fecha, descripción y etiquetas que muestra la galería.
 - `index.tsx`: la web. Importa aquí sus fuentes y CSS; nada se comparte con la galería salvo Tailwind y los estilos base de HeroUI.
+- `README.md`: documentación de esa web, con sus librerías, su propósito y las decisiones de diseño. Se enlaza desde la presentación del proyecto en Estudio digital.
+
+Opcionalmente, añade `preview.tsx` con un componente por defecto para componer su portada visual en la galería. Es una vista decorativa y ligera: no debe montar otra aplicación, mapas ni controles interactivos. Si no existe, se muestra una portada tipográfica con el título del proyecto. Los estilos de estas vistas deben quedar acotados a su propia clase.
 
 Cada web tiene sus propias páginas: define sus `<Routes>` con rutas relativas (la plantilla trae inicio, «sobre» y 404). Se abre en `/f/NNN-nombre-corto` y sus páginas cuelgan de ahí (`/f/NNN-nombre-corto/sobre`).
 

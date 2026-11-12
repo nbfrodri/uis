@@ -1,9 +1,9 @@
-import { AddToCart } from "../components/add-to-cart";
 import { HeroWriting } from "../components/hero-writing";
 import { ProductCard } from "../components/product-card";
+import { SampleBoxOffer } from "../components/sample-box-offer";
 import { ShopMap } from "../components/shop-map";
 import { SiteLink } from "../components/site-link";
-import { families, findInk, formatPrice, inks, mix, sampleBox } from "../data";
+import { families, findInk, inks, mix } from "../data";
 
 const newest = ["granada", "musgo-de-ordesa", "ciruela", "pimenton"].flatMap(
 	(id) => findInk(id) ?? [],
@@ -98,57 +98,7 @@ export function Home() {
 				</div>
 			</section>
 
-			<section
-				id="muestras"
-				className="mx-auto mt-28 max-w-7xl scroll-mt-28 px-4 sm:px-8"
-			>
-				<div className="grid gap-10 overflow-hidden rounded-3xl bg-(--ink) p-8 text-white sm:p-12 md:grid-cols-[1.2fr_1fr] md:items-center">
-					<div>
-						<h2 className="text-4xl font-extrabold tracking-[-0.03em] sm:text-5xl">
-							¿No te decides?
-						</h2>
-						<p className="mt-4 max-w-[46ch] text-lg text-white/85">
-							{sampleBox.note} Si luego compras un frasco, te descontamos la
-							caja.
-						</p>
-						<p className="mt-3 text-2xl font-bold">
-							{formatPrice(sampleBox.price)}
-						</p>
-						<div className="mt-6 rounded-2xl bg-white p-4 text-(--ink)">
-							<AddToCart
-								id={sampleBox.id}
-								label="Añadir la caja"
-								unit={["caja", "cajas"]}
-							/>
-						</div>
-					</div>
-					<div
-						aria-hidden="true"
-						className="flex h-56 items-end justify-center gap-3"
-					>
-						{[
-							"azul-real",
-							"granada",
-							"musgo-de-ordesa",
-							"tabaco",
-							"ciruela",
-						].map((id, i) => {
-							const ink = findInk(id);
-							return ink ? (
-								<div
-									key={id}
-									className="relative h-full w-12 rounded-t-full rounded-b-lg bg-white/15 p-1.5"
-								>
-									<div
-										className="absolute inset-x-1.5 bottom-1.5 rounded-t-full rounded-b-md"
-										style={{ background: ink.color, height: `${55 + i * 7}%` }}
-									/>
-								</div>
-							) : null;
-						})}
-					</div>
-				</div>
-			</section>
+			<SampleBoxOffer />
 
 			<section
 				id="visitanos"

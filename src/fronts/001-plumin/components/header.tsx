@@ -1,4 +1,4 @@
-import { Badge, Button, Drawer } from "@heroui/react";
+import { Button, Drawer } from "@heroui/react";
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router";
 import { useCart } from "../cart-context";
@@ -41,38 +41,44 @@ function MiniCart() {
 
 	return (
 		<Drawer isOpen={open} onOpenChange={setOpen}>
-			<Badge.Anchor>
+			<span className="cart-anchor">
 				<Button
 					variant="ghost"
 					isIconOnly
-					className="size-8 min-w-8"
+					className="cart-trigger"
 					aria-label={`Carrito, ${totals.count} productos`}
 					onPress={() => setOpen(true)}
 				>
 					<BagIcon className="size-5" />
 				</Button>
 				{totals.count > 0 && (
-					<Badge
-						size="sm"
-						className="top-0! right-0! min-w-4 bg-(--ink) px-1 text-[0.625rem] text-white"
-					>
+					<span className="cart-count" aria-hidden="true">
 						{totals.count}
-					</Badge>
+					</span>
 				)}
-			</Badge.Anchor>
+			</span>
 			<Drawer.Backdrop>
-				<Drawer.Content placement="right">
-					<Drawer.Dialog className="flex h-full flex-col sm:w-[28rem]">
-						<Drawer.Header className="flex items-center justify-between">
-							<Drawer.Heading className="text-2xl font-extrabold tracking-tight">
-								Tu carrito
-							</Drawer.Heading>
+				<Drawer.Content placement="right" className="shop-drawer-viewport">
+					<Drawer.Dialog className="shop-drawer">
+						<Drawer.Header
+							className={`flex-row items-center ${totals.count === 0 ? "justify-end" : "justify-between"}`}
+						>
+							{totals.count > 0 && (
+								<Drawer.Heading className="text-2xl font-extrabold tracking-tight">
+									Tu carrito
+								</Drawer.Heading>
+							)}
 							<Drawer.CloseTrigger />
 						</Drawer.Header>
-						<Drawer.Body className="flex-1 overflow-y-auto">
+						<Drawer.Body
+							className={`flex-1 overflow-y-auto ${totals.count === 0 ? "grid place-items-center" : "cart-drawer-body"}`}
+						>
 							{totals.count === 0 ? (
-								<div className="py-10">
-									<p className="text-lg">
+								<div className="py-10 text-center">
+									<Drawer.Heading className="text-2xl font-extrabold tracking-tight">
+										Tu carrito
+									</Drawer.Heading>
+									<p className="mt-3 text-lg">
 										Todavía no has elegido ninguna tinta.
 									</p>
 									<Button className="mt-4" onPress={() => go("tintas")}>
@@ -92,17 +98,20 @@ function MiniCart() {
 									<span>Subtotal</span>
 									<span>{formatPrice(totals.subtotal)}</span>
 								</p>
-								<Button size="lg" fullWidth onPress={() => go("pago")}>
-									Tramitar pedido
-								</Button>
-								<Button
-									size="lg"
-									variant="secondary"
-									fullWidth
-									onPress={() => go("carrito")}
-								>
-									Ver el carrito
-								</Button>
+								{/* Side by side, so the lines keep more room on short phones. */}
+								<div className="grid grid-cols-2 gap-3">
+									<Button
+										size="lg"
+										variant="secondary"
+										fullWidth
+										onPress={() => go("carrito")}
+									>
+										Ver el carrito
+									</Button>
+									<Button size="lg" fullWidth onPress={() => go("pago")}>
+										Tramitar pedido
+									</Button>
+								</div>
 							</Drawer.Footer>
 						)}
 					</Drawer.Dialog>
@@ -126,17 +135,17 @@ function MobileMenu() {
 				<MenuIcon className="size-6" />
 			</Button>
 			<Drawer.Backdrop>
-				<Drawer.Content placement="left">
-					<Drawer.Dialog>
-						<Drawer.Header className="flex items-center justify-between">
+				<Drawer.Content placement="left" className="shop-drawer-viewport">
+					<Drawer.Dialog className="shop-drawer">
+						<Drawer.Header className="flex-row items-center justify-between">
 							<Drawer.Heading>
 								<Logo />
 							</Drawer.Heading>
 							<Drawer.CloseTrigger />
 						</Drawer.Header>
-						<Drawer.Body>
-							<InkSearch onDone={() => setOpen(false)} />
-							<nav aria-label="Menú" className="mt-6 flex flex-col">
+						<Drawer.Body className="mobile-menu-body">
+							<InkSearch className="w-full" onDone={() => setOpen(false)} />
+							<nav aria-label="Menú" className="flex flex-col">
 								{mobileLinks.map((link) => (
 									<SiteLink
 										key={link.label}

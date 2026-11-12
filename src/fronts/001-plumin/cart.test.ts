@@ -3,6 +3,54 @@ import { type CartState, cartReducer, cartTotals } from "./cart";
 const empty: CartState = { lines: [] };
 
 describe("cartReducer", () => {
+	it("keeps different sample selections separate and merges the same selection regardless of order", () => {
+		const samples = ["azul-real", "granada", "tabaco", "ciruela", "aceituna"];
+		const other = [
+			"azul-real",
+			"granada",
+			"tabaco",
+			"ciruela",
+			"musgo-de-ordesa",
+		];
+		let state = cartReducer(empty, {
+			type: "add",
+			id: "caja-muestras",
+			qty: 1,
+			samples,
+		});
+		state = cartReducer(state, {
+			type: "add",
+			id: "caja-muestras",
+			qty: 1,
+			samples: other,
+		});
+		state = cartReducer(state, {
+			type: "add",
+			id: "caja-muestras",
+			qty: 1,
+			samples: [...samples].reverse(),
+		});
+		expect(state.lines).toEqual([
+			{ id: "caja-muestras", qty: 2, samples },
+			{ id: "caja-muestras", qty: 1, samples: other },
+		]);
+		state = cartReducer(state, {
+			type: "set",
+			id: "caja-muestras",
+			qty: 3,
+			samples: other,
+		});
+		expect(state.lines.map((line) => line.qty)).toEqual([2, 3]);
+		state = cartReducer(state, {
+			type: "remove",
+			id: "caja-muestras",
+			samples,
+		});
+		expect(state.lines).toEqual([
+			{ id: "caja-muestras", qty: 3, samples: other },
+		]);
+	});
+
 	it("adds a product and merges repeated adds into one line", () => {
 		let state = cartReducer(empty, { type: "add", id: "granada", qty: 1 });
 		state = cartReducer(state, { type: "add", id: "granada", qty: 2 });
