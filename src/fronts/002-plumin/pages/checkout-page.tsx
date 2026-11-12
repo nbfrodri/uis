@@ -10,7 +10,7 @@ import {
 	RadioGroup,
 	TextField,
 } from "@heroui/react";
-import { type ReactNode, useState } from "react";
+import { type ReactNode, useEffect, useState } from "react";
 import { cartTotals } from "../cart";
 import { useCart } from "../cart-context";
 import {
@@ -250,12 +250,14 @@ export function CheckoutPage() {
 
 	const totals = cartTotals(cart, priceOf, form.delivery);
 
-	const patch = (changes: Partial<CheckoutForm>) => {
-		const next = { ...form, ...changes };
-		setForm(next);
-		// After the first attempt, errors follow the user's corrections live.
-		if (submitted) setErrors(validateCheckout(next));
-	};
+	// Always merge into the latest form: some changes (a looked-up postal code) arrive later.
+	const patch = (changes: Partial<CheckoutForm>) =>
+		setForm((current) => ({ ...current, ...changes }));
+
+	// After the first attempt, errors follow the user's corrections live.
+	useEffect(() => {
+		if (submitted) setErrors(validateCheckout(form));
+	}, [form, submitted]);
 
 	const update = (name: keyof CheckoutForm, value: string) =>
 		patch({ [name]: value });

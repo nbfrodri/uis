@@ -7,10 +7,11 @@ import { CartLines } from "./cart-lines";
 import { BagIcon, MenuIcon } from "./icons";
 import { InkSearch } from "./ink-search";
 import { Logo } from "./logo";
+import { MainNav } from "./main-nav";
 import { ShippingMeter } from "./shipping-meter";
-import { SiteLink, SiteNavLink, useSitePath } from "./site-link";
+import { SiteLink, useSitePath } from "./site-link";
 
-const links = [
+const mobileLinks = [
 	{ to: "tintas", label: "Tintas" },
 	{ to: "#muestras", label: "Muestras" },
 	{ to: "taller", label: "Taller" },
@@ -132,7 +133,7 @@ function MobileMenu() {
 						<Drawer.Body>
 							<InkSearch onDone={() => setOpen(false)} />
 							<nav aria-label="Menú" className="mt-6 flex flex-col">
-								{links.map((link) => (
+								{mobileLinks.map((link) => (
 									<SiteLink
 										key={link.label}
 										to={link.to}
@@ -158,48 +159,26 @@ export function Header() {
 			<p className="bg-(--ink) px-4 py-2 text-center text-sm font-medium text-white">
 				Envío gratis desde 40 €
 			</p>
+			{/* Floating pill: detached from the edges, translucent, firmer once the page scrolls. */}
 			<header
 				data-scrolled={scrolled}
-				className="site-header sticky top-0 z-30"
+				className="site-header sticky top-3 z-30 px-3 pt-3 sm:px-6"
 			>
-				<div
-					className={`mx-auto grid max-w-7xl grid-cols-[auto_1fr_auto] items-center gap-4 px-4 sm:px-8 ${scrolled ? "py-2" : "py-4"}`}
-				>
+				<div className="site-pill mx-auto flex max-w-5xl items-center justify-between gap-3 rounded-full border border-(--rule) py-1.5 pr-2 pl-3 sm:pl-5">
 					<div className="flex items-center gap-1">
 						<MobileMenu />
-						<SiteLink to="" aria-label="Plumín, inicio">
+						<SiteLink
+							to=""
+							aria-label="Plumín, inicio"
+							className="rounded-full"
+						>
 							<Logo />
 						</SiteLink>
 					</div>
-					<nav
-						aria-label="Principal"
-						className="hidden justify-center gap-1 lg:flex"
-					>
-						{links.map((link) =>
-							link.to.startsWith("#") || link.to.includes("?") ? (
-								<SiteLink
-									key={link.label}
-									to={link.to}
-									className="rounded-full px-4 py-2 font-semibold hover:bg-(--wash)"
-								>
-									{link.label}
-								</SiteLink>
-							) : (
-								<SiteNavLink
-									key={link.label}
-									to={link.to}
-									className={({ isActive }) =>
-										`rounded-full px-4 py-2 font-semibold hover:bg-(--wash) ${isActive ? "bg-(--wash)" : ""}`
-									}
-								>
-									{link.label}
-								</SiteNavLink>
-							),
-						)}
-					</nav>
-					<div className="flex items-center gap-2">
+					<MainNav />
+					<div className="flex items-center gap-1">
 						<div className="hidden md:block">
-							<InkSearch className="w-60" />
+							<InkSearch className="w-52" />
 						</div>
 						<MiniCart />
 					</div>

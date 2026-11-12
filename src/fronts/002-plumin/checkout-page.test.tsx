@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { createMemoryRouter, RouterProvider } from "react-router";
 import { routes } from "../../app";
@@ -52,5 +52,23 @@ describe("checkout", () => {
 		expect(
 			JSON.parse(localStorage.getItem("uis.plumin.cart") ?? "{}").lines,
 		).toEqual([]);
+	});
+
+	it("picking a city fills the province and, when there is only one, the postal code", async () => {
+		const user = userEvent.setup();
+		await renderCheckout();
+		const city = screen.getByRole("combobox", { name: "Ciudad" });
+		await user.type(city, "chinch");
+		await user.click(
+			await screen.findByRole("option", { name: /chinchón/i }, slow),
+		);
+		await waitFor(
+			() => expect(screen.getByLabelText("Código postal")).toHaveValue("28370"),
+			slow,
+		);
+		expect(city).toHaveValue("Chinchón");
+		expect(screen.getByRole("combobox", { name: "Provincia" })).toHaveValue(
+			"Madrid",
+		);
 	});
 });

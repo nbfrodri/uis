@@ -135,22 +135,35 @@ export function SuggestField<T extends Item>({
 	emptyText,
 	className,
 }: SuggestFieldProps<T>) {
+	// Remember the picked suggestion so filling the field with its name doesn't reopen the list.
+	const [picked, setPicked] = useState<T | null>(null);
+	// Keep the picked item in the collection: React Aria matches the selection against it.
+	const collection =
+		picked && !items.some((item) => item.id === picked.id)
+			? [picked, ...items]
+			: items;
+
 	return (
 		<ComboBox
 			className={className}
 			inputValue={value}
-			onInputChange={onChange}
-			items={items}
+			onInputChange={(text) => {
+				if (picked && text !== picked.label) setPicked(null);
+				onChange(text);
+			}}
+			items={collection}
 			allowsCustomValue
 			allowsEmptyCollection
 			menuTrigger="input"
-			selectedKey={null}
+			selectedKey={picked?.id ?? null}
 			isInvalid={Boolean(error)}
 			isRequired
 			validationBehavior="aria"
 			onSelectionChange={(key) => {
-				const item = items.find((candidate) => candidate.id === key);
-				if (item) onPick(item);
+				const item = collection.find((candidate) => candidate.id === key);
+				if (!item) return;
+				setPicked(item);
+				onPick(item);
 			}}
 		>
 			<Label className="font-semibold">{label}</Label>
