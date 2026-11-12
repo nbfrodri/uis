@@ -20,7 +20,7 @@ export function CartPage() {
 	}
 
 	return (
-		<main className="mx-auto max-w-6xl px-4 pt-10 sm:px-8">
+		<main className="mx-auto max-w-6xl px-4 pt-6 sm:px-8 sm:pt-10">
 			<h1 className="text-4xl font-extrabold tracking-[-0.04em] sm:text-5xl">
 				Carrito
 			</h1>
@@ -43,10 +43,10 @@ export function CartPage() {
 				</div>
 				<aside
 					aria-label="Resumen del pedido"
-					className="self-start rounded-3xl bg-(--wash) p-6"
+					className="self-start rounded-3xl bg-(--wash) p-5 sm:p-6"
 				>
 					<ShippingMeter subtotal={totals.subtotal} />
-					<dl className="mt-6 grid grid-cols-[1fr_auto] gap-y-2">
+					<dl className="mt-4 grid grid-cols-[1fr_auto] gap-y-2 sm:mt-6">
 						<dt>Subtotal</dt>
 						<dd className="text-right">{formatPrice(totals.subtotal)}</dd>
 						<dt>Envío</dt>
@@ -65,7 +65,7 @@ export function CartPage() {
 						className={buttonVariants({
 							size: "lg",
 							fullWidth: true,
-							className: "mt-6 font-semibold",
+							className: "mt-4 font-semibold sm:mt-6",
 						})}
 					>
 						Tramitar pedido

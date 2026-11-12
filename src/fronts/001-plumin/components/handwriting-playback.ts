@@ -185,8 +185,10 @@ export function createHandwritingPlayback(
 	const syncPlayback = () => {
 		window.cancelAnimationFrame(frame ?? 0);
 		const paused = document.hidden;
-		for (const animation of animations)
-			paused ? animation.pause() : animation.play();
+		for (const animation of animations) {
+			if (paused) animation.pause();
+			else animation.play();
+		}
 		if (!paused) drawPen();
 	};
 	document.addEventListener("visibilitychange", syncPlayback);

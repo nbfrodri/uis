@@ -305,7 +305,8 @@
 
 /* Cart page: the lines scroll inside their own window, the summary stays put. */
 .plumin .cart-window-scroll {
-	max-height: min(32rem, 52dvh);
+	/* On phones the list, the total and the checkout button fit one screen. */
+	max-height: max(10rem, calc(100dvh - 33rem));
 	scrollbar-gutter: stable;
 	scrollbar-width: thin;
 }
