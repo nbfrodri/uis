@@ -5,7 +5,7 @@ import { useRef } from "react";
  * The monogram fills the first screen and comes apart while the hero is pinned:
  * N and F drift out at different speeds, B thins and sinks, the claim appears.
  */
-export function NbfHero({ still }: { still: boolean }) {
+export function NbfHero({ still, ready }: { still: boolean; ready: boolean }) {
 	const ref = useRef<HTMLElement>(null);
 	const { scrollYProgress: p } = useScroll({
 		target: ref,
@@ -37,9 +37,23 @@ export function NbfHero({ still }: { still: boolean }) {
 	});
 	const hint = useTransform(p, [0, 0.15], [1, 0]);
 
-	const letter = (style: object, char: string) => (
+	// Outer span: scroll transform. Mask: clips the bottom edge. Inner span:
+	// the load-in, rising from below the mask, one letter after another.
+	const letter = (style: object, char: string, index: number) => (
 		<motion.span aria-hidden="true" style={still ? undefined : style}>
-			{char}
+			<span className="nbf-hero-mask">
+				<motion.span
+					initial={still ? false : { transform: "translateY(110%)" }}
+					animate={still || ready ? { transform: "translateY(0%)" } : undefined}
+					transition={{
+						duration: 1,
+						delay: 0.1 + index * 0.09,
+						ease: [0.23, 1, 0.32, 1],
+					}}
+				>
+					{char}
+				</motion.span>
+			</span>
 		</motion.span>
 	);
 
@@ -53,9 +67,9 @@ export function NbfHero({ still }: { still: boolean }) {
 			<div className="nbf-hero-stage">
 				<h1 id="nbf-title" className="nbf-hero-letters">
 					<span className="sr-only">NBF</span>
-					{letter({ transform: n, fontVariationSettings: thin }, "N")}
-					{letter({ transform: b, fontVariationSettings: thinner }, "B")}
-					{letter({ transform: f, fontVariationSettings: thin }, "F")}
+					{letter({ transform: n, fontVariationSettings: thin }, "N", 0)}
+					{letter({ transform: b, fontVariationSettings: thinner }, "B", 1)}
+					{letter({ transform: f, fontVariationSettings: thin }, "F", 2)}
 				</h1>
 				<motion.p
 					className="nbf-hero-claim"

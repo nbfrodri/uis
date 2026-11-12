@@ -2,6 +2,7 @@ import { motion, useScroll, useTransform } from "motion/react";
 import { type ComponentType, useRef } from "react";
 import { Link } from "react-router";
 import type { Front } from "../lib/fronts";
+import { Tilt } from "./effects";
 import { ArrowIcon } from "./studio-icons";
 
 // Previews are lightweight compositions; the complete sites remain lazy-loaded.
@@ -49,14 +50,14 @@ export function ProjectCard({
 					</span>
 				</span>
 				{Preview && (
-					<span className="nbf-row-cover" aria-hidden="true">
+					<Tilt still={still} className="nbf-row-cover">
 						<motion.span
 							className="nbf-row-cover-inner"
 							style={still ? undefined : { transform: depth }}
 						>
 							<Preview />
 						</motion.span>
-					</span>
+					</Tilt>
 				)}
 			</Link>
 			<a

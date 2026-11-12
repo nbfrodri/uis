@@ -1,7 +1,17 @@
 import "@fontsource-variable/archivo/wdth.css";
 import "./gallery.css";
+import { useState } from "react";
 import { Link } from "react-router";
 import type { Front } from "../lib/fronts";
+import {
+	Cursor,
+	FooterMark,
+	MadridClock,
+	Magnetic,
+	Preloader,
+	Scramble,
+	ScrollHighlight,
+} from "./effects";
 import { MarqueeBands } from "./marquee-bands";
 import { usePrefersReducedMotion, useSmoothScroll } from "./motion-prefs";
 import { NbfHero } from "./nbf-hero";
@@ -11,10 +21,14 @@ import { ArrowIcon } from "./studio-icons";
 
 export function GalleryPage({ fronts }: { fronts: Front[] }) {
 	const reduce = usePrefersReducedMotion();
+	const [introDone, setIntroDone] = useState(false);
 	useSmoothScroll(!reduce);
 
 	return (
 		<div className="gallery nbf">
+			<Preloader still={reduce} onDone={() => setIntroDone(true)} />
+			<Cursor still={reduce} />
+			<div className="nbf-grain" aria-hidden="true" />
 			<a href="#contenido" className="nbf-skip">
 				Saltar al contenido
 			</a>
@@ -23,16 +37,26 @@ export function GalleryPage({ fronts }: { fronts: Front[] }) {
 					NBF
 				</Link>
 				<nav aria-label="Principal" className="nbf-nav">
-					<a href="#proyectos">Trabajo</a>
-					<a href="#estudio">Lo que hago</a>
-					<a href="https://github.com/nbfrodri/uis">
-						GitHub <ArrowIcon />
-					</a>
+					<Magnetic still={reduce}>
+						<a href="#proyectos">
+							<Scramble text="Trabajo" still={reduce} />
+						</a>
+					</Magnetic>
+					<Magnetic still={reduce}>
+						<a href="#estudio" className="nbf-nav-practice">
+							<Scramble text="Lo que hago" still={reduce} />
+						</a>
+					</Magnetic>
+					<Magnetic still={reduce}>
+						<a href="https://github.com/nbfrodri/uis">
+							<Scramble text="GitHub" still={reduce} /> <ArrowIcon />
+						</a>
+					</Magnetic>
 				</nav>
 			</header>
 
 			<main id="contenido">
-				<NbfHero still={reduce} />
+				<NbfHero still={reduce} ready={introDone} />
 
 				<MarqueeBands still={reduce} />
 
@@ -66,20 +90,18 @@ export function GalleryPage({ fronts }: { fronts: Front[] }) {
 				<PracticeRail still={reduce} />
 
 				<section className="nbf-about" aria-label="Sobre NBF">
-					<p>
-						NBF es mi espacio para probar ideas: negocios imaginarios,
-						convertidos en webs que funcionan de verdad, del primer vistazo al
-						último clic.
-					</p>
+					<ScrollHighlight
+						still={reduce}
+						text="NBF es mi espacio para probar ideas: negocios imaginarios, convertidos en webs que funcionan de verdad, del primer vistazo al último clic."
+					/>
 				</section>
 			</main>
 
 			<footer className="nbf-footer">
-				<span className="nbf-footer-mark" aria-hidden="true">
-					NBF
-				</span>
+				<FooterMark still={reduce} />
 				<div className="nbf-footer-bottom">
 					<span>NBF · Webs ficticias, diseño y desarrollo con IA.</span>
+					<MadridClock />
 					<a href="https://github.com/nbfrodri/uis">
 						Código en GitHub <ArrowIcon />
 					</a>
