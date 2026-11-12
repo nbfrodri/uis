@@ -55,9 +55,10 @@ describe("front routing", () => {
 		await userEvent.keyboard("{Escape}");
 		expect(
 			await screen.findByRole("heading", {
-				name: /ideas que se pueden visitar/i,
+				level: 1,
+				name: "NBF",
 			}),
 		).toBeInTheDocument();
-		expect(document.title).toBe("Estudio digital");
+		expect(document.title).toBe("NBF");
 	});
 });

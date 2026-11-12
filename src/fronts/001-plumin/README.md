@@ -28,7 +28,7 @@ La integración está aislada porque Vara 1.4.1 no ofrece una API de destrucció
 - Las manchas de tinta, los iconos y la miniatura de la caja del carrito son SVG propios. La miniatura muestra los cinco colores elegidos.
 - La [foto de muestras](assets/README.md) es una visualización del producto ficticio. Los colores de la selección se muestran por separado en «Tu caja».
 - El parallax decorativo del hero usa animaciones CSS vinculadas al scroll y respeta movimiento reducido. El selector «Tu caja» se desplaza con la página.
-- `preview.tsx` presenta una composición ligera de escritorio y móvil para Estudio digital, sin montar la tienda completa.
+- `preview.tsx` presenta una composición ligera de escritorio y móvil para la portada de NBF, sin montar la tienda completa.
 - En la página del carrito los productos se desplazan dentro de su propia ventana, que en móvil se ajusta para que el total y el botón de pago quepan en pantalla.
 - El carrito se conserva en `localStorage`. Cada combinación de muestras se guarda como una línea independiente. El pago es simulado: no se cobran importes ni se envían datos a un proveedor de pagos.
 

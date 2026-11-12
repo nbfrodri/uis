@@ -1,5 +1,4 @@
 import { render, screen, within } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
 import { createMemoryRouter, RouterProvider } from "react-router";
 import type { Front } from "../lib/fronts";
 import { GalleryPage } from "./gallery-page";
@@ -32,64 +31,31 @@ function renderGallery(list: Front[], url = "/") {
 }
 
 describe("GalleryPage", () => {
-	it("presents the studio and lets visitors pause decorative motion", async () => {
+	it("presents NBF, its work and what it does", () => {
 		renderGallery(fronts);
+		expect(screen.getByRole("link", { name: "NBF, inicio" })).toHaveAttribute(
+			"href",
+			"/",
+		);
 		expect(
-			screen.getByRole("link", { name: "Estudio digital, inicio" }),
-		).toHaveAttribute("href", "/");
-		expect(
-			screen.getByRole("heading", {
-				level: 1,
-				name: /ideas que se pueden visitar/i,
-			}),
+			screen.getByRole("heading", { level: 1, name: "NBF" }),
 		).toBeInTheDocument();
-		await userEvent.click(
-			screen.getByRole("button", { name: "Pausar movimiento" }),
-		);
 		expect(
-			screen.getByRole("button", { name: "Activar movimiento" }),
-		).toHaveAttribute("aria-pressed", "true");
-		await userEvent.click(
-			screen.getByRole("button", { name: "Activar movimiento" }),
-		);
-		expect(
-			screen.getByRole("button", { name: "Pausar movimiento" }),
-		).toHaveAttribute("aria-pressed", "false");
+			screen.getByRole("heading", { level: 2, name: "Lo que hago" }),
+		).toBeInTheDocument();
 	});
 
 	it("lists every front with a link to open it", () => {
 		renderGallery(fronts);
-		const items = screen.getAllByRole("listitem");
+		const items = within(
+			screen.getByRole("region", { name: "Trabajo" }),
+		).getAllByRole("listitem");
 		expect(items).toHaveLength(2);
 		expect(
 			within(items[0] as HTMLElement).getByRole("link", {
 				name: /reproductor de cristal/i,
 			}),
 		).toHaveAttribute("href", "/f/002-glass");
-	});
-
-	it("filters by tag from the URL and marks the active tag", async () => {
-		renderGallery(fronts);
-		await userEvent.click(screen.getByRole("link", { name: "data" }));
-		expect(screen.getAllByRole("listitem")).toHaveLength(1);
-		expect(
-			screen.getByRole("link", { name: /libro de cuentas/i }),
-		).toBeInTheDocument();
-		expect(screen.getByRole("link", { name: "data" })).toHaveAttribute(
-			"aria-current",
-			"true",
-		);
-	});
-
-	it("explains how to clear a tag that matches nothing", () => {
-		renderGallery(fronts, "/?tag=brutalist");
-		expect(
-			screen.getByText(/ninguna web lleva la etiqueta/i),
-		).toBeInTheDocument();
-		expect(screen.getByRole("link", { name: /ver todos/i })).toHaveAttribute(
-			"href",
-			"/",
-		);
 	});
 
 	it("tells how to create the first front when there are none", () => {

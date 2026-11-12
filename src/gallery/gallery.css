@@ -1,720 +1,754 @@
-/* Studio direction: Lusion's scale and spatial rhythm, with original artwork.
-   Tokens stay scoped so the independent demo sites retain their own identity. */
+/* NBF: monochrome, type-led. The monogram, the bands and the practice rail
+   move with scroll (Motion); reduced motion gets a still, readable page.
+   Tokens stay scoped so the demo sites keep their own identity. Also used by
+   the not-found and error pages through .gallery, .gallery-title and
+   .gallery-empty. */
 .gallery {
-	--studio-paper: #eff1f5;
-	--studio-ink: #14171f;
-	--studio-muted: #606773;
-	--studio-line: #d6d9e0;
-	--studio-blue: #254cff;
-	--studio-ease: cubic-bezier(0.23, 1, 0.32, 1);
+	/* Night and electric blue: graphite paper, Cloud Dancer ink (#f0eee9,
+	   Pantone 2026), one blue accent. */
+	--nbf-paper: #111214;
+	--nbf-ink: #f0eee9;
+	--nbf-accent: #3d5afe;
+	/* Derived, so a palette only sets paper, ink and accent. */
+	--nbf-muted: color-mix(in oklab, var(--nbf-ink) 62%, var(--nbf-paper));
+	--nbf-line: color-mix(in oklab, var(--nbf-ink) 16%, var(--nbf-paper));
+	--nbf-ease: cubic-bezier(0.23, 1, 0.32, 1);
+	--nbf-gutter: clamp(1rem, 4vw, 3rem);
 	min-height: 100dvh;
-	padding: 0 clamp(1rem, 3vw, 3rem);
-	background: var(--studio-paper);
-	color: var(--studio-ink);
+	padding-inline: var(--nbf-gutter);
+	background: var(--nbf-paper);
+	color: var(--nbf-ink);
 	font-family: "Archivo Variable", system-ui, sans-serif;
 	font-weight: 450;
 	-webkit-font-smoothing: antialiased;
 }
-
-.gallery > header,
-.gallery > main,
-.gallery > footer {
-	max-width: 96rem;
-	margin-inline: auto;
+/* The home page runs full-bleed; its sections set their own gutters. */
+.gallery.nbf {
+	padding-inline: 0;
+	overflow-x: clip;
 }
-
 .gallery ::selection {
-	background: var(--studio-blue);
-	color: white;
+	background: var(--nbf-ink);
+	color: var(--nbf-paper);
 }
 .gallery :where(a, button):focus-visible {
-	outline: 2px solid currentColor;
-	outline-offset: 5px;
+	outline: 2px solid var(--nbf-accent);
+	outline-offset: 4px;
 }
 .gallery :is(a, button) {
 	-webkit-tap-highlight-color: transparent;
 }
 .gallery a {
+	color: inherit;
 	text-decoration: none;
 }
 .gallery button {
 	font: inherit;
+	color: inherit;
 	cursor: pointer;
 }
-.gallery :is(#estudio, #proyectos) {
-	scroll-margin-top: 2rem;
+.gallery :is(#proyectos, #estudio) {
+	scroll-margin-top: 4rem;
 }
 
-.studio-skip {
-	position: fixed;
-	top: 1rem;
-	left: 1rem;
-	z-index: 50;
-	padding: 0.75rem 1rem;
-	background: white;
-	transform: translateY(-200%);
-}
-.studio-skip:focus {
-	transform: none;
-}
-.studio-header {
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	gap: 1.5rem;
-	min-height: 7.5rem;
-}
-.studio-wordmark {
-	display: inline-flex;
-	align-items: center;
-	gap: 0.75rem;
-	color: var(--studio-ink);
-	font-size: 1.3rem;
-	font-weight: 650;
-	line-height: 0.95;
-	letter-spacing: -0.055em;
-}
-.studio-mark {
-	width: 2.7rem;
-	height: 2.7rem;
-	flex-shrink: 0;
-}
-.studio-nav {
-	display: flex;
-	gap: 2rem;
-	font-size: 0.875rem;
-}
-.studio-nav a {
-	padding-block: 0.75rem;
-}
-.studio-nav a:hover {
-	color: var(--studio-blue);
-}
-.studio-code-link {
-	display: inline-flex;
-	align-items: center;
-	gap: 0.75rem;
-	padding: 0.75rem 1.1rem;
-	border: 1px solid var(--studio-line);
-	border-radius: 999px;
-	font-size: 0.8125rem;
-	font-weight: 550;
-}
 .studio-arrow {
-	width: 1.25rem;
-	height: 1.25rem;
-	flex-shrink: 0;
-	transition: transform 200ms var(--studio-ease);
-}
-
-.studio-hero {
-	position: relative;
-	isolation: isolate;
-	min-height: clamp(35rem, 50vw, 46rem);
-	overflow: hidden;
-	border-radius: 1.75rem;
-	background: #0b1020;
-	color: #f6f8ff;
-	view-timeline-name: --studio-hero;
-}
-.studio-hero-art {
-	position: absolute;
-	z-index: -2;
-	width: 90%;
-	top: -9%;
-	right: -15%;
-}
-.studio-hero-art img {
-	display: block;
-	width: 100%;
-	height: auto;
-}
-.studio-hero-shade {
-	position: absolute;
-	inset: 0;
-	z-index: -1;
-	background:
-		linear-gradient(
-			90deg,
-			#0b1020 0%,
-			rgb(11 16 32 / 0.76) 29%,
-			rgb(11 16 32 / 0) 72%
-		),
-		linear-gradient(0deg, rgb(11 16 32 / 0.9), transparent 45%);
-}
-.studio-hero-note {
-	position: absolute;
-	top: 2.5rem;
-	left: clamp(1.5rem, 4vw, 4rem);
-	font-size: 0.8125rem;
-	line-height: 1.5;
-	color: #c9d2e6;
-}
-.studio-hero-copy {
-	padding: clamp(11rem, 17vw, 16rem) clamp(1.5rem, 4vw, 4rem) 7rem;
-}
-.studio-hero h1 {
-	max-width: 12ch;
-	font-size: clamp(3.5rem, 7.1vw, 7.75rem);
-	line-height: 0.94;
-	font-weight: 550;
-	letter-spacing: -0.068em;
-	text-wrap: balance;
-}
-.studio-hero-copy > p {
-	max-width: 35ch;
-	margin-top: 1.75rem;
-	font-size: clamp(0.9375rem, 1.2vw, 1.125rem);
-	line-height: 1.6;
-	color: #c9d2e6;
-}
-.studio-title-line {
-	display: block;
-	overflow: clip;
-	padding-bottom: 0.04em;
-}
-.studio-title-line > span {
-	display: block;
-}
-.studio-hero-cta {
-	display: inline-flex;
-	align-items: center;
-	gap: 1rem;
-	margin-top: 1.75rem;
-	font-size: 0.875rem;
-	font-weight: 550;
-}
-.studio-hero-cta > span {
-	display: grid;
-	place-items: center;
-	width: 2.75rem;
-	height: 2.75rem;
-	border: 1px solid #748097;
-	border-radius: 50%;
-}
-.studio-hero-bottom {
-	position: absolute;
-	inset: auto clamp(1.5rem, 4vw, 4rem) 1.75rem;
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	gap: 1rem;
-	color: #c9d2e6;
-	font-size: 0.75rem;
-}
-.studio-scroll-hint {
-	display: flex;
-	align-items: center;
-	gap: 0.75rem;
-}
-.studio-scroll-hint > span {
-	font-size: 1.5rem;
-}
-.studio-motion-toggle {
-	display: inline-flex;
-	align-items: center;
-	gap: 0.5rem;
-	padding: 0.625rem 0;
-	border: 0;
-	background: transparent;
-	color: inherit;
-	font-size: inherit;
-}
-.studio-motion-toggle svg {
-	width: 0.875rem;
-	height: 0.875rem;
-}
-
-.studio-intro {
-	display: grid;
-	grid-template-columns: 1fr 2fr auto;
-	align-items: start;
-	gap: 3rem;
-	padding: clamp(5rem, 9vw, 9rem) clamp(0rem, 2vw, 2rem);
-}
-.studio-section-note {
-	padding-top: 0.5rem;
-	font-size: 0.875rem;
-	line-height: 1.6;
-	color: var(--studio-muted);
-}
-.studio-intro h2 {
-	font-size: clamp(2.5rem, 4.5vw, 4.5rem);
-	line-height: 1.03;
-	font-weight: 500;
-	letter-spacing: -0.055em;
-}
-.studio-intro :where(div) > p {
-	max-width: 42ch;
-	margin-top: 1.75rem;
-	color: var(--studio-muted);
-	font-size: 1rem;
-	line-height: 1.7;
-}
-.studio-intro-symbol {
-	align-self: center;
-	color: var(--studio-blue);
-}
-.studio-intro-symbol .studio-mark {
-	width: clamp(4rem, 7vw, 7rem);
-	height: auto;
-}
-.studio-work {
-	padding-bottom: 7rem;
-}
-.studio-work-heading {
-	display: flex;
-	align-items: start;
-	justify-content: space-between;
-	gap: 1rem;
-	padding-top: 2rem;
-	border-top: 1px solid var(--studio-line);
-}
-.studio-work-heading h2 {
-	max-width: 18ch;
-	font-size: clamp(2.5rem, 5.8vw, 5.75rem);
-	line-height: 1;
-	font-weight: 500;
-	letter-spacing: -0.06em;
-}
-.studio-project-count {
-	padding-top: 0.5rem;
-	font-size: 1rem;
-	font-variant-numeric: tabular-nums;
-}
-.studio-filters {
-	display: flex;
-	flex-wrap: wrap;
-	gap: 0.5rem;
-	margin-block: 2rem 2.5rem;
-}
-.studio-filter {
-	min-height: 2.5rem;
-	padding: 0.625rem 1rem;
-	border: 1px solid var(--studio-line);
-	border-radius: 999px;
-	font-size: 0.8125rem;
-}
-.studio-filter[aria-current="true"] {
-	background: var(--studio-ink);
-	border-color: var(--studio-ink);
-	color: white;
-}
-.studio-filter:hover {
-	border-color: var(--studio-ink);
-}
-.studio-projects {
-	display: grid;
-	grid-template-columns: repeat(2, minmax(0, 1fr));
-	gap: 4rem 2rem;
-	padding: 0;
-	list-style: none;
-}
-.studio-project:first-child {
-	grid-column: 1 / -1;
-}
-.studio-project {
-	min-width: 0;
-}
-.studio-project-link {
-	display: block;
-	border-radius: 1rem;
-}
-.studio-project-cover {
-	position: relative;
-	aspect-ratio: 16 / 10;
-	overflow: hidden;
-	border-radius: 1.5rem;
-	background: #dfe5f2;
-	container-type: inline-size;
-	view-timeline-name: --studio-project;
-}
-.studio-project-enter {
-	position: absolute;
-	right: 1.5rem;
-	bottom: 1.5rem;
-	display: inline-flex;
-	align-items: center;
-	gap: 1rem;
-	padding: 0.75rem 1rem;
-	border: 1px solid rgb(255 255 255 / 0.75);
-	border-radius: 999px;
-	background: rgb(255 255 255 / 0.9);
-	color: #172058;
-	font-size: 0.8125rem;
-	font-weight: 550;
-	backdrop-filter: blur(12px);
-}
-.studio-project-info {
-	display: flex;
-	align-items: start;
-	justify-content: space-between;
-	gap: 2rem;
-	padding-top: 1.5rem;
-}
-.studio-project-info h3 {
-	font-size: clamp(1.5rem, 3vw, 2.5rem);
-	line-height: 1.1;
-	letter-spacing: -0.04em;
-	font-weight: 550;
-	overflow-wrap: anywhere;
-}
-.studio-project-info p {
-	max-width: 54ch;
-	margin-top: 0.75rem;
-	color: var(--studio-muted);
-	font-size: 0.9375rem;
-	line-height: 1.65;
-}
-.studio-project-meta {
-	max-width: 35%;
-	overflow-wrap: anywhere;
-	flex-shrink: 0;
-	display: grid;
-	gap: 0.5rem;
-	padding-top: 0.25rem;
-	text-align: right;
-	color: var(--studio-muted);
-	font-size: 0.8125rem;
-}
-.studio-project-fallback {
-	display: grid;
-	align-content: center;
-	gap: 1.5rem;
-	height: 100%;
-	padding: 12%;
-	background: #d8def0;
-	color: #263f81;
-}
-.studio-project-fallback > span {
-	font-size: 1rem;
-}
-.studio-project-fallback > strong {
-	max-width: 12ch;
-	font-weight: 500;
-	font-size: 7cqw;
-	line-height: 1;
-	letter-spacing: -0.05em;
-	overflow-wrap: anywhere;
-}
-.studio-empty {
-	max-width: 45ch;
-	padding-block: 3rem;
-	font-size: 1.125rem;
-	line-height: 1.7;
-	color: var(--studio-muted);
-}
-.studio-empty a {
-	color: var(--studio-ink);
-	text-decoration: underline;
-	text-underline-offset: 4px;
-}
-.studio-empty code {
-	font-size: 0.875em;
+	display: inline-block;
+	width: 0.85em;
+	height: 0.85em;
+	vertical-align: -0.05em;
+	transition: transform 200ms var(--nbf-ease);
 }
 
 .gallery-title {
 	max-width: 15ch;
+	margin: 0;
 	padding-top: clamp(4rem, 15vh, 10rem);
 	font-size: clamp(2.5rem, 7vw, 6rem);
-	font-weight: 500;
+	font-weight: 800;
+	font-stretch: 85%;
 	line-height: 1;
-	letter-spacing: -0.06em;
+	letter-spacing: -0.04em;
 }
 .gallery-empty {
 	max-width: 44ch;
 	font-size: 1.125rem;
 	line-height: 1.65;
-	color: var(--studio-muted);
+	color: var(--nbf-muted);
 }
 .gallery-empty a {
-	color: var(--studio-blue);
+	color: var(--nbf-ink);
 	text-decoration: underline;
 	text-underline-offset: 4px;
 }
-.studio-footer {
-	border-top: 1px solid var(--studio-line);
-	padding-block: 4rem 2rem;
+
+.gallery .nbf-skip {
+	position: fixed;
+	top: 1rem;
+	left: 1rem;
+	z-index: 60;
+	padding: 0.75rem 1rem;
+	background: var(--nbf-ink);
+	color: var(--nbf-paper);
+	transform: translateY(-200%);
 }
-.studio-footer-top {
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	gap: 2rem;
-	padding-bottom: 4rem;
+.gallery .nbf-skip:focus {
+	transform: none;
 }
-.studio-footer-top > p {
-	font-size: clamp(2rem, 4vw, 4rem);
-	line-height: 1.08;
-	letter-spacing: -0.055em;
-	font-weight: 500;
-}
-.studio-back-top {
-	display: grid;
-	place-items: center;
-	width: clamp(3.5rem, 7vw, 6rem);
-	aspect-ratio: 1;
-	flex-shrink: 0;
-	border: 1px solid var(--studio-line);
-	border-radius: 50%;
-}
-.studio-back-top .studio-arrow {
-	width: 40%;
-	height: 40%;
-}
-.studio-footer-bottom {
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	flex-wrap: wrap;
-	gap: 1.5rem;
-	font-size: 0.75rem;
-}
-.studio-footer-bottom > span {
+
+.nbf-label {
+	margin: 0;
+	font-size: 0.8125rem;
 	font-weight: 600;
+	letter-spacing: 0.2em;
+	text-transform: uppercase;
 }
-.studio-footer-bottom > p {
-	color: var(--studio-muted);
-}
-.studio-footer-bottom > a {
+
+/* Header: inverts over whatever is under it. */
+.nbf-header {
+	position: fixed;
+	inset: 0 0 auto;
+	z-index: 50;
 	display: flex;
 	align-items: center;
-	gap: 0.5rem;
+	justify-content: space-between;
+	gap: 1rem;
+	padding: 1.25rem var(--nbf-gutter);
+	color: #fff;
+	mix-blend-mode: difference;
 }
-.studio-footer-bottom .studio-arrow {
-	width: 1rem;
-	height: 1rem;
+.nbf-wordmark {
+	font-size: 1.125rem;
+	font-weight: 800;
+	font-stretch: 125%;
+	letter-spacing: -0.02em;
 }
-
-@keyframes studio-float {
-	0%,
-	100% {
-		transform: translate3d(0, 0, 0) rotate(-2deg);
-	}
-	50% {
-		transform: translate3d(0, -2.5%, 0) rotate(2deg);
-	}
+.nbf-nav {
+	display: flex;
+	align-items: center;
+	gap: clamp(0.875rem, 3vw, 2rem);
+	font-size: 0.875rem;
 }
-@keyframes studio-hero-depth {
-	to {
-		transform: translate3d(0, 18%, 0) scale(1.12);
-	}
-}
-@keyframes studio-desktop-depth {
-	from {
-		transform: translate3d(0, 2.5cqw, 0) rotate(-5deg);
-	}
-	to {
-		transform: translate3d(0, -2.5cqw, 0) rotate(-2deg);
-	}
-}
-@keyframes studio-phone-depth {
-	from {
-		transform: translate3d(0, 4cqw, 0) rotate(7deg);
-	}
-	to {
-		transform: translate3d(0, -4cqw, 0) rotate(3deg);
-	}
-}
-
-@keyframes studio-title-reveal {
-	from {
-		transform: translate3d(0, 110%, 0);
-	}
-	to {
-		transform: translate3d(0, 0, 0);
-	}
-}
-
-@media (prefers-reduced-motion: no-preference) {
-	.studio-title-line > span {
-		animation: studio-title-reveal 700ms var(--studio-ease) both;
-	}
-	.studio-title-line:nth-child(2) > span {
-		animation-delay: 80ms;
-	}
-	.studio-hero-art img {
-		animation: studio-float 12s cubic-bezier(0.77, 0, 0.175, 1) infinite;
-	}
-	@supports (animation-timeline: view()) {
-		.studio-hero-art {
-			animation: studio-hero-depth 1s linear both;
-			animation-timeline: --studio-hero;
-			animation-range: exit 0% exit 100%;
-		}
-		.gallery .preview-browser {
-			animation: studio-desktop-depth 1s linear both;
-			animation-timeline: --studio-project;
-			animation-range: entry 0% exit 100%;
-		}
-		.gallery .preview-phone {
-			animation: studio-phone-depth 1s linear both;
-			animation-timeline: --studio-project;
-			animation-range: entry 0% exit 100%;
-		}
-	}
-}
-
-.gallery[data-motion-paused="true"]
-	:is(
-		.studio-hero-art,
-		.studio-hero-art img,
-		.preview-browser,
-		.preview-phone
-	) {
-	animation-play-state: paused;
-}
-
 @media (hover: hover) and (pointer: fine) {
-	.studio-hero-cta:hover .studio-arrow,
-	.studio-code-link:hover .studio-arrow,
-	.studio-back-top:hover .studio-arrow,
-	.studio-project-link:hover .studio-project-enter .studio-arrow {
-		transform: rotate(45deg);
+	.nbf-nav a:hover {
+		text-decoration: underline;
+		text-underline-offset: 0.25em;
 	}
 }
-
-@media (max-width: 47.99rem) {
-	.studio-header {
-		min-height: 6rem;
-		gap: 1rem;
-	}
-	.studio-wordmark {
-		font-size: 1.05rem;
-		gap: 0.5rem;
-	}
-	.studio-wordmark .studio-mark {
-		width: 2rem;
-		height: 2rem;
-	}
-	.studio-nav {
-		gap: 1rem;
-		font-size: 0.75rem;
-	}
-	.studio-code-link {
-		width: 2.5rem;
-		height: 2.5rem;
-		padding: 0;
-		justify-content: center;
-		font-size: 0;
-		gap: 0;
-	}
-	.studio-hero {
-		min-height: 40rem;
-		border-radius: 1.25rem;
-	}
-	.studio-hero-art {
-		width: 125%;
-		top: -4%;
-		right: -28%;
-	}
-	.studio-hero-shade {
-		background: linear-gradient(
-			0deg,
-			#0b1020 0%,
-			rgb(11 16 32 / 0.85) 37%,
-			transparent 76%
-		);
-	}
-	.studio-hero-note {
-		top: 1.5rem;
-		font-size: 0.75rem;
-	}
-	.studio-hero-copy {
-		padding-top: 16rem;
-		padding-bottom: 6rem;
-	}
-	.studio-hero h1 {
-		font-size: clamp(3rem, 9vw, 4.5rem);
-	}
-	.studio-hero-copy > p {
-		max-width: 30ch;
-		font-size: 0.9375rem;
-		margin-top: 1.25rem;
-	}
-	.studio-hero-cta {
-		margin-top: 1.25rem;
-	}
-	.studio-hero-bottom {
-		bottom: 1.25rem;
-		font-size: 0.6875rem;
-	}
-	.studio-intro {
-		grid-template-columns: 1fr auto;
-		gap: 2rem 1rem;
-		padding-block: 4rem;
-	}
-	.studio-section-note {
-		grid-column: 1 / -1;
-	}
-	.studio-intro-symbol .studio-mark {
-		width: 3.5rem;
-	}
-	.studio-work-heading h2 {
-		font-size: clamp(2.4rem, 8vw, 3.75rem);
-	}
-	.studio-work {
-		padding-bottom: 4rem;
-	}
-	.studio-projects {
-		grid-template-columns: 1fr;
-		gap: 3rem;
-	}
-	.studio-project-cover {
-		aspect-ratio: 1.15;
-		border-radius: 1rem;
-	}
-	.studio-project-info {
-		flex-direction: column;
-		gap: 1rem;
-	}
-	.studio-project-meta {
-		max-width: 100%;
-		display: flex;
-		flex-wrap: wrap;
-		gap: 1rem;
-		text-align: left;
-	}
-	.studio-project-enter {
-		right: 1rem;
-		bottom: 1rem;
-		font-size: 0.75rem;
-		padding: 0.625rem 0.875rem;
-	}
-	.studio-footer {
-		padding-top: 3rem;
-	}
-	.studio-footer-top {
-		align-items: end;
-		padding-bottom: 3rem;
-	}
-	.studio-footer-bottom > p {
-		order: 1;
-		flex-basis: 100%;
-	}
-}
-
-@media (prefers-reduced-motion: reduce) {
-	.studio-arrow {
-		transition: none;
-	}
-	.studio-motion-toggle {
+@media (max-width: 40rem) {
+	.nbf-nav-practice {
 		display: none;
 	}
 }
-.studio-project-docs {
+
+/* Hero: pinned for two screens while the monogram comes apart. */
+.nbf-hero {
+	height: 220vh;
+}
+.nbf-hero-stage {
+	position: sticky;
+	top: 0;
+	display: grid;
+	place-items: center;
+	height: 100dvh;
+	overflow: hidden;
+}
+.nbf-hero-letters {
+	display: flex;
+	margin: 0;
+	font-size: clamp(7rem, 33vw, 38rem);
+	font-weight: 900;
+	font-stretch: 125%;
+	line-height: 0.8;
+	letter-spacing: -0.06em;
+}
+/* Clips only the bottom edge, so letters can rise into view from below. */
+.nbf-hero-mask {
+	display: block;
+	clip-path: inset(-50% -30% 0 -30%);
+}
+.nbf-hero-mask > span {
+	display: block;
+}
+.nbf-hero-letters > span:not(.sr-only) {
+	display: inline-block;
+	font-variation-settings:
+		"wght" 900,
+		"wdth" 125;
+}
+.nbf-hero-claim {
+	position: absolute;
+	bottom: 18vh;
+	max-width: 34ch;
+	margin: 0;
+	padding-inline: 1rem;
+	text-align: center;
+	font-size: clamp(1rem, 1.6vw, 1.375rem);
+	line-height: 1.35;
+	opacity: 0;
+}
+.nbf-hero-hint {
+	position: absolute;
+	bottom: 2.5rem;
+	font-size: 0.75rem;
+	letter-spacing: 0.2em;
+	text-transform: uppercase;
+	color: var(--nbf-muted);
+}
+/* Reduced motion: one still screen with the claim in view. */
+.nbf-hero[data-still="true"] {
+	height: auto;
+}
+.nbf-hero[data-still="true"] .nbf-hero-claim {
+	opacity: 1;
+}
+
+/* Bands: three crossing strips drifting in alternate directions. */
+.nbf-bands {
+	display: grid;
+	padding-block: clamp(3rem, 8vw, 7rem);
+	overflow: hidden;
+}
+.nbf-band {
+	overflow: hidden;
+	padding-block: 0.875rem;
+	white-space: nowrap;
+	text-transform: uppercase;
+}
+.nbf-band:nth-child(1) {
+	position: relative;
+	z-index: 2;
+	background: var(--nbf-ink);
+	color: var(--nbf-paper);
+	font-size: clamp(2rem, 6vw, 5.5rem);
+	font-weight: 800;
+	font-stretch: 125%;
+	letter-spacing: -0.02em;
+	transform: rotate(-2deg) scale(1.04);
+}
+.nbf-band:nth-child(2) {
+	position: relative;
+	z-index: 1;
+	border-block: 1px solid var(--nbf-ink);
+	font-size: clamp(1.5rem, 4vw, 3.5rem);
+	font-weight: 300;
+	font-stretch: 62%;
+	transform: rotate(1.5deg) scale(1.04);
+}
+.nbf-band:nth-child(3) {
+	font-size: clamp(2rem, 6vw, 5.5rem);
+	font-weight: 800;
+	font-stretch: 100%;
+	color: transparent;
+	-webkit-text-stroke: 1.5px
+		color-mix(in oklab, var(--nbf-ink) 55%, transparent);
+}
+.nbf-band-track {
+	display: flex;
+	width: max-content;
+	will-change: transform;
+}
+.nbf-band-half {
+	display: flex;
+}
+.nbf-band-half > span {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.5em;
+	padding-inline-end: 0.5em;
+	line-height: 1;
+}
+.nbf-band-half i {
+	font-style: normal;
+	font-size: 0.5em;
+	color: var(--nbf-accent);
+	-webkit-text-stroke: 0;
+}
+
+/* Work index. */
+.nbf-work {
+	padding: clamp(4rem, 10vw, 9rem) var(--nbf-gutter);
+}
+.nbf-work-head {
+	display: flex;
+	align-items: baseline;
+	justify-content: space-between;
+	margin-bottom: 1.5rem;
+}
+.nbf-count {
+	color: var(--nbf-muted);
+	font-variant-numeric: tabular-nums;
+}
+.nbf-list {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+	border-bottom: 1px solid var(--nbf-ink);
+}
+.nbf-row {
+	position: relative;
+	border-top: 1px solid var(--nbf-ink);
+}
+.nbf-row-link {
+	display: grid;
+	grid-template-columns: 4rem minmax(0, 1fr) minmax(18rem, 40%);
+	align-items: start;
+	gap: 1rem clamp(1rem, 3vw, 3rem);
+	padding-block: clamp(1.5rem, 3vw, 2.5rem) 0.75rem;
+}
+.nbf-row-index {
+	padding-top: 0.5rem;
+	font-size: 0.875rem;
+	font-variant-numeric: tabular-nums;
+	color: var(--nbf-muted);
+	transition: color 150ms ease;
+}
+.nbf-row-text {
+	display: grid;
+	gap: 1.25rem;
+}
+.nbf-row-name {
+	font-size: clamp(2.25rem, 5.5vw, 5.5rem);
+	font-weight: 700;
+	font-stretch: 75%;
+	line-height: 0.95;
+	letter-spacing: -0.03em;
+	transition: font-stretch 500ms var(--nbf-ease);
+}
+.nbf-row-meta {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.5rem 1.5rem;
+	font-size: 0.875rem;
+	color: var(--nbf-muted);
+	font-variant-numeric: tabular-nums;
+}
+.nbf-row-docs {
+	display: inline-flex;
+	gap: 0.375rem;
+	margin: 0 0 clamp(1.5rem, 3vw, 2.5rem) calc(4rem + clamp(1rem, 3vw, 3rem));
+	font-size: 0.875rem;
+	color: var(--nbf-muted);
+}
+/* The preview sits in its own column, at the 16:10 frame it was drawn for. */
+.nbf-row-cover {
+	position: relative;
+	display: block;
+	transform-style: preserve-3d;
+	grid-row: span 1;
+	aspect-ratio: 16 / 10;
+	overflow: hidden;
+	border-radius: 0.5rem;
+	background: #dfe5f2;
+	container-type: inline-size;
+	transition: transform 400ms var(--nbf-ease);
+}
+.nbf-row-cover-inner {
+	position: absolute;
+	inset: -6% 0;
+	display: grid;
+}
+.nbf-row-link:focus-visible .nbf-row-name {
+	font-stretch: 100%;
+}
+@media (hover: hover) and (pointer: fine) {
+	.nbf-row-link:hover .nbf-row-name {
+		font-stretch: 100%;
+	}
+	.nbf-row-link:hover .nbf-row-index {
+		color: var(--nbf-accent);
+	}
+	.nbf-row-link:hover .nbf-row-cover {
+		transform: scale(1.02);
+	}
+	.nbf-row-docs:hover {
+		color: var(--nbf-ink);
+	}
+}
+@media (max-width: 48rem) {
+	.nbf-row-link {
+		grid-template-columns: 2.5rem minmax(0, 1fr);
+	}
+	.nbf-row-cover {
+		grid-column: 1 / -1;
+	}
+	.nbf-row-docs {
+		margin-left: 0;
+	}
+}
+
+/* Practice: pinned while its panels travel sideways. */
+.nbf-rail-sticky {
+	position: sticky;
+	top: 0;
+	display: grid;
+	/* minmax(0, 1fr): the wide track must not widen the column (and the header). */
+	grid-template-columns: minmax(0, 1fr);
+	grid-template-rows: auto 1fr auto;
+	gap: 2rem;
+	height: 100dvh;
+	padding-block: 5.5rem 3rem;
+	overflow: hidden;
+	/* A lifted graphite surface, not a white block: same mood, softer contrast. */
+	background: color-mix(in oklab, var(--nbf-ink) 6%, var(--nbf-paper));
+	color: var(--nbf-ink);
+}
+.nbf-rail-head {
+	display: flex;
+	align-items: baseline;
+	justify-content: space-between;
+	padding-inline: var(--nbf-gutter);
+}
+.nbf-rail-counter {
+	font-size: 0.875rem;
+	font-variant-numeric: tabular-nums;
+	color: var(--nbf-muted);
+}
+.nbf-rail-counter b {
+	font-weight: 600;
+	color: var(--nbf-ink);
+}
+.nbf-rail-sticky > :not(.nbf-shapes) {
+	position: relative;
+	z-index: 1;
+}
+.nbf-rail-tags {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.375rem;
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+.nbf-rail-tags li {
+	padding: 0.25rem 0.625rem;
+	border: 1px solid color-mix(in oklab, var(--nbf-ink) 18%, transparent);
+	border-radius: 999px;
+	font-size: 0.75rem;
+	color: color-mix(in oklab, var(--nbf-ink) 80%, transparent);
+}
+.nbf-rail-track {
+	display: flex;
+	gap: clamp(1rem, 3vw, 2.5rem);
+	width: max-content;
+	margin: 0;
+	padding: 0 var(--nbf-gutter);
+	list-style: none;
+	will-change: transform;
+}
+.nbf-rail-panel {
+	display: grid;
+	grid-template-rows: 1fr auto auto auto;
+	/* Translucent, so the figures read through the panels as they pass. */
+	background: color-mix(in oklab, var(--nbf-paper) 35%, transparent);
+	backdrop-filter: blur(3px);
+	gap: 1rem;
+	width: min(78vw, 34rem);
+	padding: clamp(1.25rem, 3vw, 2rem);
+	border: 1px solid color-mix(in oklab, var(--nbf-ink) 14%, transparent);
+	border-radius: 0.375rem;
+}
+.nbf-rail-number {
+	align-self: start;
+	font-size: clamp(5rem, 14vw, 11rem);
+	font-weight: 900;
+	font-stretch: 125%;
+	line-height: 0.8;
+	/* Solid: a hairline outline shows the variable font's overlapping contours. */
+	color: var(--nbf-accent);
+}
+.nbf-rail-panel h3 {
+	margin: 0;
+	font-size: clamp(1.75rem, 3.5vw, 3rem);
+	font-weight: 700;
+	font-stretch: 80%;
+	letter-spacing: -0.02em;
+}
+.nbf-rail-panel p {
+	max-width: 36ch;
+	margin: 0;
+	color: color-mix(in oklab, var(--nbf-ink) 70%, transparent);
+	line-height: 1.5;
+}
+.nbf-rail-progress {
+	height: 2px;
+	margin-inline: var(--nbf-gutter);
+	background: color-mix(in oklab, var(--nbf-ink) 14%, transparent);
+}
+.nbf-rail-progress > span {
+	display: block;
+	height: 100%;
+	background: var(--nbf-accent);
+	transform: scaleX(0);
+	transform-origin: left;
+}
+/* Reduced motion: the panels simply stack. */
+.nbf-rail[data-still="true"] .nbf-rail-sticky {
+	position: static;
+	height: auto;
+}
+.nbf-rail[data-still="true"] .nbf-rail-track {
+	flex-direction: column;
+	width: auto;
+}
+.nbf-rail[data-still="true"] .nbf-rail-panel {
+	width: auto;
+}
+.nbf-rail[data-still="true"] .nbf-rail-progress {
+	display: none;
+}
+
+.nbf-about {
+	padding: clamp(5rem, 14vw, 12rem) var(--nbf-gutter) clamp(3rem, 8vw, 6rem);
+}
+.nbf-cta {
+	display: grid;
+	justify-items: start;
+	gap: 1.5rem;
+	margin-inline: var(--nbf-gutter);
+	padding-block: clamp(3rem, 8vw, 6rem);
+	border-top: 1px solid var(--nbf-line);
+}
+.nbf-cta h2 {
+	margin: 0;
+	font-size: clamp(2.5rem, 8vw, 7.5rem);
+	font-weight: 800;
+	font-stretch: 80%;
+	line-height: 0.92;
+	letter-spacing: -0.03em;
+}
+.gallery .nbf-cta-link {
 	display: inline-flex;
 	align-items: center;
 	gap: 0.5rem;
-	margin-top: 1rem;
-	color: var(--studio-muted);
-	font-size: 0.8125rem;
-	text-underline-offset: 0.25em;
+	padding: 1rem 1.5rem;
+	border-radius: 999px;
+	background: var(--nbf-accent);
+	color: #fff;
+	font-size: 1rem;
+	font-weight: 600;
 }
-.studio-project-docs:hover {
-	text-decoration: underline;
+.nbf-about p {
+	max-width: 22ch;
+	margin: 0;
+	font-size: clamp(1.75rem, 4.5vw, 4rem);
+	font-weight: 500;
+	font-stretch: 85%;
+	line-height: 1.05;
+	letter-spacing: -0.02em;
 }
-.studio-project-docs svg {
-	width: 1rem;
-	height: 1rem;
+
+.nbf-footer {
+	overflow: hidden;
+	padding: 0 var(--nbf-gutter) 2.5rem;
+}
+.nbf-footer-mark {
+	display: block;
+	font-size: 34vw;
+	font-weight: 900;
+	font-stretch: 125%;
+	line-height: 0.75;
+	letter-spacing: -0.06em;
+	color: transparent;
+	-webkit-text-stroke: 1.5px
+		color-mix(in oklab, var(--nbf-ink) 55%, transparent);
+}
+.nbf-footer-bottom {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: space-between;
+	gap: 1rem;
+	margin-top: 2rem;
+	font-size: 0.875rem;
+	color: var(--nbf-muted);
+}
+.nbf-footer-bottom a {
+	color: var(--nbf-ink);
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.nbf-row-name,
+	.nbf-row-cover,
+	.studio-arrow {
+		transition: none;
+	}
+}
+
+/* ── Showcase effects ── */
+
+.nbf-preloader {
+	position: fixed;
+	inset: 0;
+	z-index: 100;
+	display: grid;
+	grid-template-columns: 1fr auto;
+	grid-template-rows: auto 1fr auto auto;
+	gap: 1.5rem;
+	padding: var(--nbf-gutter);
+	background: var(--nbf-ink);
+	color: var(--nbf-paper);
+}
+.nbf-preloader-note {
+	grid-column: 1;
+	grid-row: 3;
+	align-self: end;
+	font-size: 0.875rem;
+	line-height: 1.4;
+	color: color-mix(in oklab, var(--nbf-paper) 60%, var(--nbf-ink));
+}
+.nbf-preloader-line {
+	grid-column: 1 / -1;
+	grid-row: 4;
+	height: 2px;
+	background: color-mix(in oklab, var(--nbf-paper) 15%, var(--nbf-ink));
+}
+.nbf-preloader-line > span {
+	display: block;
+	height: 100%;
+	background: var(--nbf-accent);
+	transform: scaleX(0);
+	transform-origin: left;
+}
+.nbf-preloader-mark {
+	font-size: 1.125rem;
+	font-weight: 800;
+	font-stretch: 125%;
+}
+.nbf-preloader-count {
+	grid-column: 2;
+	grid-row: 3;
+	font-size: clamp(5rem, 18vw, 16rem);
+	font-weight: 900;
+	font-stretch: 125%;
+	line-height: 0.8;
+	letter-spacing: -0.05em;
+	font-variant-numeric: tabular-nums;
+}
+
+/* Only with a fine pointer; the native cursor stays for text fields. */
+.nbf-cursor {
+	position: fixed;
+	top: 0;
+	left: 0;
+	z-index: 90;
+	width: 0.75rem;
+	height: 0.75rem;
+	border-radius: 50%;
+	background: #fff;
+	mix-blend-mode: difference;
+	pointer-events: none;
+	will-change: transform;
+}
+:root.nbf-has-cursor .gallery,
+:root.nbf-has-cursor .gallery :is(a, button) {
+	cursor: none;
+}
+
+.nbf-magnetic {
+	display: inline-block;
+}
+.nbf-magnetic > span {
+	display: inline-block;
+}
+.nbf-scramble {
+	font-variant-numeric: tabular-nums;
+}
+
+.nbf-footer-mark {
+	display: flex;
+}
+/* The mask box must hold the whole glyph (line-height 1) or it trims the
+   outline; the negative margins keep the mark as tight as before. */
+.nbf-footer-letter {
+	display: block;
+	overflow: hidden;
+	line-height: 1;
+	margin-block: -0.12em;
+	/* Tight tracking through margins: letter-spacing would shrink each mask
+	   box and cut the right edge of the glyph. */
+	margin-right: -0.06em;
+	padding-inline: 0.02em;
+	letter-spacing: 0;
+}
+.nbf-footer-letter:last-child {
+	margin-right: 0;
+}
+.nbf-footer-letter > span {
+	display: block;
+}
+
+/* Film grain: a static SVG noise tile, barely there. */
+.nbf-grain {
+	position: fixed;
+	inset: 0;
+	z-index: 80;
+	pointer-events: none;
+	opacity: 0.06;
+	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+.nbf-hero-depth {
+	display: block;
+}
+.nbf-row-cover-reveal {
+	position: absolute;
+	inset: 0;
+	display: block;
+}
+.nbf-reveal-line {
+	display: block;
+	overflow: hidden;
+	padding-bottom: 0.06em;
+}
+.nbf-reveal-line > span {
+	display: block;
+}
+
+/* Decorative SVG layer: shapes drift behind a section's content. */
+:is(.nbf-work, .nbf-about, .nbf-cta, .nbf-bands-wrap) {
+	position: relative;
+}
+:is(.nbf-work, .nbf-about, .nbf-cta, .nbf-bands-wrap)
+	> :not(.nbf-shapes, .nbf-drawn-line) {
+	position: relative;
+	z-index: 1;
+}
+.nbf-shapes {
+	position: absolute;
+	inset: 0;
+	z-index: 0;
+	pointer-events: none;
+}
+.nbf-shape {
+	position: absolute;
+	overflow: visible;
+	stroke: color-mix(in oklab, var(--nbf-ink) 22%, transparent);
+	fill: color-mix(in oklab, var(--nbf-ink) 22%, transparent);
+	will-change: transform;
+}
+.nbf-shape[data-accent] {
+	fill: var(--nbf-accent);
+	stroke: var(--nbf-accent);
+}
+.nbf-drawn-line {
+	position: absolute;
+	top: 2rem;
+	right: var(--nbf-gutter);
+	z-index: 0;
+	width: min(28rem, 40vw);
+	stroke: var(--nbf-accent);
+	fill: var(--nbf-accent);
+	pointer-events: none;
+}
+.nbf-drawn-line svg {
+	display: block;
+	width: 100%;
+	height: auto;
+}
+@media (max-width: 48rem) {
+	.nbf-shape {
+		scale: 0.6;
+	}
+	.nbf-drawn-line {
+		opacity: 0.5;
+	}
 }

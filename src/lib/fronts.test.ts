@@ -1,4 +1,4 @@
-import { buildFronts, collectTags, filterByTag, parseFolder } from "./fronts";
+import { buildFronts, parseFolder } from "./fronts";
 
 const meta = (title: string, tags: string[] = [], date = "2026-11-12") => ({
 	default: { title, date, description: `${title} desc`, tags },
@@ -35,22 +35,5 @@ describe("buildFronts", () => {
 			"001-first",
 		]);
 		expect(fronts[0]).toMatchObject({ number: 10, title: "Tenth" });
-	});
-});
-
-describe("tags", () => {
-	const fronts = buildFronts({
-		"./001-a/meta.ts": meta("A", ["motion", "dark"]),
-		"./002-b/meta.ts": meta("B", ["Dark"]),
-		"./003-c/meta.ts": meta("C"),
-	});
-
-	it("filters case-insensitively and returns all fronts without a tag", () => {
-		expect(filterByTag(fronts, "dark").map((f) => f.title)).toEqual(["B", "A"]);
-		expect(filterByTag(fronts, null)).toHaveLength(3);
-	});
-
-	it("collects unique lowercase tags sorted by name", () => {
-		expect(collectTags(fronts)).toEqual(["dark", "motion"]);
 	});
 });

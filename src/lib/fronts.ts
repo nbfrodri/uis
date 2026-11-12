@@ -32,18 +32,3 @@ export function buildFronts(
 		})
 		.sort((a, b) => b.number - a.number);
 }
-
-export function filterByTag(fronts: Front[], tag: string | null): Front[] {
-	if (!tag) return fronts;
-	const wanted = tag.toLowerCase();
-	return fronts.filter((front) =>
-		front.tags.some((t) => t.toLowerCase() === wanted),
-	);
-}
-
-export function collectTags(fronts: Front[]): string[] {
-	const tags = new Set(
-		fronts.flatMap((front) => front.tags.map((t) => t.toLowerCase())),
-	);
-	return [...tags].sort((a, b) => a.localeCompare(b));
-}
