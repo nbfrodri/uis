@@ -64,43 +64,68 @@
 	font-family: "Caveat Variable", cursive;
 }
 
-/* HeroUI hierarchy, with a quiet chip marking the current location. */
+/* One pill around the complete trail, following the Pill Breadcrumb reference:
+   https://docs.21st.dev/@shadcnspace/components/breadcrumb-01
+   The data slots below are emitted by HeroUI, including its separator SVG. */
 .plumin .shop-breadcrumbs {
-	flex-wrap: wrap;
-	gap: 0.25rem;
+	width: fit-content;
+	max-width: 100%;
+	flex-wrap: nowrap;
+	gap: 0.375rem;
 	margin-bottom: 1.5rem;
+	padding: 0.25rem 0.5rem;
+	border: 1px solid var(--rule);
+	border-radius: 999px;
+	background: var(--wash);
+	overflow-x: auto;
+	scrollbar-width: thin;
 }
 
-.plumin .shop-breadcrumbs .breadcrumbs__item {
+.plumin .shop-breadcrumbs [data-slot="breadcrumbs-item"] {
 	min-width: 0;
-	flex-shrink: 1;
-	gap: 0.25rem;
+	flex-shrink: 0;
+	gap: 0.375rem;
 }
 
-.plumin .shop-breadcrumbs .breadcrumbs__link {
-	padding: 0.5rem 0.625rem;
-	border-radius: 0.375rem;
+.plumin .shop-breadcrumbs [data-slot="link"] {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.625rem;
+	min-height: 2.25rem;
+	padding: 0.5rem;
+	border-radius: 999px;
 	color: var(--ink-soft);
 	font-size: 0.8125rem;
 	line-height: 1.5;
-	overflow-wrap: anywhere;
+	white-space: nowrap;
 }
 
-.plumin .shop-breadcrumbs .breadcrumbs__link[data-hovered="true"] {
-	background: var(--wash);
+.plumin .shop-breadcrumbs [data-slot="link"]:focus-visible {
+	outline-offset: -2px;
+	border-radius: 999px;
+}
+
+.plumin .shop-breadcrumbs [data-slot="link"][data-hovered="true"] {
+	background: var(--paper);
 	color: var(--ink);
 	text-decoration: none;
 }
 
-.plumin .shop-breadcrumbs .breadcrumbs__link[aria-current="page"] {
-	background: var(--wash);
+.plumin .shop-breadcrumbs [data-slot="link"][aria-current="page"] {
 	color: var(--ink);
 	font-weight: 700;
 }
 
-.plumin .shop-breadcrumbs .breadcrumbs__separator {
+.plumin .shop-breadcrumbs [data-slot="breadcrumbs-separator"] {
 	color: var(--ink-soft);
 	opacity: 0.55;
+}
+
+.plumin .breadcrumb-ink {
+	width: 0.625rem;
+	height: 0.625rem;
+	flex-shrink: 0;
+	border-radius: 50%;
 }
 
 /* Overlays are portalled outside .plumin; scope them to the active shop. */

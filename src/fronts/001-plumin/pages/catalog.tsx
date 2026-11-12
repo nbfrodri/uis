@@ -47,6 +47,7 @@ export function Catalog() {
 	return (
 		<main className="mx-auto max-w-7xl px-4 pt-8 sm:px-8">
 			<ShopBreadcrumbs
+				color={accent}
 				items={[
 					{ label: "Inicio", to: "" },
 					...(selectedFamily
@@ -120,9 +121,9 @@ export function Catalog() {
 			</nav>
 
 			<div className="mt-8 flex flex-wrap items-end justify-between gap-4 border-b border-(--rule) pb-5">
-				<p className="text-sm font-semibold" role="status">
+				<output className="text-sm font-semibold">
 					{visible.length} {visible.length === 1 ? "tinta" : "tintas"}
-				</p>
+				</output>
 				<Select
 					className="w-full sm:w-64"
 					value={sort}

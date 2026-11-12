@@ -20,6 +20,7 @@ export function InkPage() {
 	return (
 		<main className="mx-auto max-w-7xl px-4 pt-8 sm:px-8">
 			<ShopBreadcrumbs
+				color={ink.color}
 				items={[
 					{ label: "Inicio", to: "" },
 					{ label: "Tintas", to: "tintas" },
