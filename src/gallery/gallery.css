@@ -624,6 +624,23 @@
 	mix-blend-mode: difference;
 	pointer-events: none;
 	will-change: transform;
+	transition:
+		width 200ms var(--nbf-ease),
+		height 200ms var(--nbf-ease),
+		border-radius 200ms var(--nbf-ease),
+		background-color 150ms ease;
+}
+/* Over a project: a small label, readable instead of a huge blot. */
+.nbf-cursor[data-label] {
+	display: grid;
+	place-items: center;
+	width: 3.25rem;
+	height: 3.25rem;
+	background: var(--nbf-accent);
+	color: #fff;
+	font-size: 0.75rem;
+	font-weight: 600;
+	mix-blend-mode: normal;
 }
 :root.nbf-has-cursor .gallery,
 :root.nbf-has-cursor .gallery :is(a, button) {
