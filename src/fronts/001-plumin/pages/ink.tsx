@@ -34,7 +34,7 @@ export function InkPage() {
 
 			<div className="mt-6 grid gap-10 md:grid-cols-2 md:gap-16">
 				<div
-					className="grid aspect-[4/5] place-items-center rounded-3xl p-10 md:sticky md:top-28 md:self-start"
+					className="grid aspect-[4/5] place-items-center rounded-3xl p-10 md:self-start"
 					style={{ background: mix(ink.color, "#ffffff", 0.88) }}
 				>
 					<Swatch

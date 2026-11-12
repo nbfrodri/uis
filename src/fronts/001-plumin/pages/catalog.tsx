@@ -3,7 +3,23 @@ import { useSearchParams } from "react-router";
 import { queryInks, sortOptions } from "../catalog";
 import { ProductCard } from "../components/product-card";
 import { SiteLink } from "../components/site-link";
-import { families, inks } from "../data";
+import { Swatch } from "../components/swatch";
+import { type Family, families, inks, mix } from "../data";
+
+const familyNotes: Record<Family, string> = {
+	azules:
+		"Del azul de los primeros cuadernos al petróleo del Cantábrico. Un clásico con muchos matices.",
+	verdes:
+		"Oliva, musgo y notas de campo. Verdes que cambian de tono con cada trazo.",
+	rojos:
+		"Granates con brillo dorado y naranjas tostados. Tintas para dejar algo más que una nota al margen.",
+	marrones:
+		"Tabaco y sepia para cartas, diarios y palabras que apetece guardar.",
+	morados:
+		"De la lavanda más suave a la ciruela profunda. Pequeños cambios de luz, grandes matices.",
+	negros:
+		"Negros de imprenta y grises de tormenta. El carácter está en los detalles.",
+};
 
 export function Catalog() {
 	const [params, setParams] = useSearchParams();
@@ -11,6 +27,13 @@ export function Catalog() {
 	const q = params.get("q");
 	const sort = params.get("orden") ?? "destacadas";
 	const visible = queryInks(inks, { family, q, sort });
+	const selectedFamily = families.find((item) => item.id === family);
+	const palette = selectedFamily
+		? inks.filter((ink) => ink.family === selectedFamily.id)
+		: inks.filter((ink) =>
+				["azul-real", "musgo-de-ordesa", "granada"].includes(ink.id),
+			);
+	const accent = palette[0]?.color ?? "#172058";
 
 	const hrefWith = (key: string, value: string | null) => {
 		const next = new URLSearchParams(params);
@@ -20,38 +43,93 @@ export function Catalog() {
 		return query ? `tintas?${query}` : "tintas";
 	};
 
-	const chip = (active: boolean) =>
-		`rounded-full px-4 py-2 text-sm font-semibold transition-colors ${active ? "bg-(--ink) text-white" : "bg-(--wash) hover:bg-(--rule)"}`;
-
 	return (
-		<main className="mx-auto max-w-7xl px-4 pt-10 sm:px-8">
-			<h1 className="text-5xl font-extrabold tracking-[-0.04em] sm:text-7xl">
-				Tintas
-			</h1>
-
-			<div className="mt-8 flex flex-wrap items-end justify-between gap-4">
-				<nav aria-label="Filtrar por color" className="flex flex-wrap gap-2">
-					<SiteLink
-						to={hrefWith("familia", null)}
-						className={chip(!family)}
-						aria-current={family ? undefined : "true"}
-					>
-						Todas
-					</SiteLink>
-					{families.map((f) => (
-						<SiteLink
-							key={f.id}
-							to={hrefWith("familia", f.id)}
-							className={chip(family === f.id)}
-							aria-current={family === f.id ? "true" : undefined}
-						>
-							{f.label}
+		<main className="mx-auto max-w-7xl px-4 pt-8 sm:px-8">
+			<nav aria-label="Ruta" className="mb-6 text-sm text-(--ink-soft)">
+				<SiteLink to="" className="hover:underline">
+					Inicio
+				</SiteLink>
+				<span aria-hidden="true"> / </span>
+				{selectedFamily ? (
+					<>
+						<SiteLink to="tintas" className="hover:underline">
+							Tintas
 						</SiteLink>
+						<span aria-hidden="true"> / </span>
+						<span aria-current="page">{selectedFamily.label}</span>
+					</>
+				) : (
+					<span aria-current="page">Tintas</span>
+				)}
+			</nav>
+			<header
+				className="catalog-intro"
+				style={{ backgroundColor: mix(accent, "#ffffff", 0.94) }}
+			>
+				<div className="catalog-intro-copy">
+					<h1 className="text-5xl font-extrabold tracking-[-0.045em] sm:text-7xl">
+						{selectedFamily?.label ?? "Tintas"}
+					</h1>
+					<p className="mt-5 max-w-[43ch] text-base text-(--ink-soft) sm:text-lg">
+						{selectedFamily
+							? familyNotes[selectedFamily.id]
+							: "Doce tintas, tres pequeños talleres y un color para cada forma de escribir. Encuentra el tuyo."}
+					</p>
+					<p className="mt-6 text-sm font-semibold">
+						Para pluma estilográfica · Frascos de 50 ml
+					</p>
+				</div>
+				<div className="catalog-palette" aria-hidden="true">
+					{palette.map((ink, index) => (
+						<div key={ink.id} className="catalog-palette-sample">
+							<Swatch
+								color={ink.color}
+								sheen={ink.sheen}
+								seed={index + 31}
+								className="h-36 w-16 sm:h-44 sm:w-20"
+							/>
+							<span className="font-hand text-xl" style={{ color: ink.color }}>
+								{ink.name}
+							</span>
+						</div>
 					))}
-				</nav>
+				</div>
+			</header>
 
+			<nav aria-label="Filtrar por color" className="mt-8 flex flex-wrap gap-2">
+				<SiteLink
+					to={hrefWith("familia", null)}
+					className="catalog-family"
+					aria-current={family ? undefined : "true"}
+				>
+					<span className="catalog-all-colors" aria-hidden="true" />
+					Todas
+				</SiteLink>
+				{families.map((f) => (
+					<SiteLink
+						key={f.id}
+						to={hrefWith("familia", f.id)}
+						className="catalog-family"
+						aria-current={family === f.id ? "true" : undefined}
+					>
+						<span
+							className="size-3 shrink-0 rounded-full"
+							style={{
+								backgroundColor: inks.find((ink) => ink.family === f.id)?.color,
+							}}
+							aria-hidden="true"
+						/>
+						{f.label}
+					</SiteLink>
+				))}
+			</nav>
+
+			<div className="mt-8 flex flex-wrap items-end justify-between gap-4 border-b border-(--rule) pb-5">
+				<p className="text-sm font-semibold" role="status">
+					{visible.length} {visible.length === 1 ? "tinta" : "tintas"}
+				</p>
 				<Select
-					className="w-64"
+					className="w-full sm:w-64"
 					value={sort}
 					onChange={(key) => {
 						const next = new URLSearchParams(params);
