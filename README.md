@@ -1,12 +1,24 @@
 # uis
 
-Portfolio de webs de demostración: sitios completos e inventados (tiendas, estudios, consultoras…), diseñados y construidos con IA para practicar diseño web. La galería (`/`) las lista y cada una se abre como una web independiente.
+Portfolio de sitios web completos de demostración: tiendas, estudios, consultoras y otros negocios inventados. Cada proyecto tiene su propia identidad visual, navegación y páginas, con recorridos interactivos para explorar el sitio como una web independiente.
+
+La portada (`/`) es el índice del portfolio. Los proyectos muestran experiencias completas, desde la página de inicio hasta las páginas de detalle y los flujos de cada negocio.
 
 **En línea:** https://nbfrodri.github.io/uis/
 
 | Web                                                   | Qué tiene                                                                                          |
 | ----------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
 | [Plumín](https://nbfrodri.github.io/uis/f/001-plumin) | Tienda de tintas: hero escrito a mano, megamenú, buscador, catálogo, carrito, pago simulado y mapa |
+
+### Plumín
+
+Tienda ficticia de tintas para pluma estilográfica, con doce tintas de tres talleres. Incluye catálogo por familias de color, fichas de producto con muestras de escritura, carrito, proceso de compra simulado y página del taller.
+
+- [Explorar todas las tintas](https://nbfrodri.github.io/uis/f/001-plumin/tintas)
+- [Ver la colección de rojos](https://nbfrodri.github.io/uis/f/001-plumin/tintas?familia=rojos)
+- [Abrir la ficha de Granada](https://nbfrodri.github.io/uis/f/001-plumin/tintas/granada)
+
+Los negocios y productos son inventados; el pago es una demostración y no se realizan compras reales.
 
 ## Arrancar
 
