@@ -1,9 +1,12 @@
 import type { ComponentType } from "react";
 import { buildFronts, type Front, type FrontMeta } from "../lib/fronts";
 
-const metas = import.meta.glob<{ default: FrontMeta }>("./*/meta.ts", {
-	eager: true,
-});
+const metas = import.meta.glob<{ default: FrontMeta }>(
+	["./*/meta.ts", "!./_*/meta.ts"],
+	{
+		eager: true,
+	},
+);
 const components = import.meta.glob<{ default: ComponentType }>(
 	"./*/index.tsx",
 );
