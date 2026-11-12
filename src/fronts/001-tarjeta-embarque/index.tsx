@@ -1,3 +1,5 @@
+import "@fontsource-variable/archivo";
+
 const details = [
 	{ label: "Puerta", value: "B32" },
 	{ label: "Embarque", value: "06:40" },
@@ -13,7 +15,7 @@ const bars = Array.from({ length: 34 }, (_, i) => ({
 
 export default function BoardingPass() {
 	return (
-		<main className="grid min-h-dvh place-items-center bg-[#9db4c0] px-4 py-16 font-sans text-[#14232b]">
+		<main className="grid min-h-dvh place-items-center bg-[#9db4c0] px-4 py-16 font-['Archivo_Variable',sans-serif] text-[#14232b]">
 			<article
 				aria-label="Tarjeta de embarque de Lucía Ferrer, vuelo IB 3172 de Madrid a Oporto"
 				className="w-full max-w-[26rem] overflow-hidden rounded-[1.25rem] bg-[#fbfaf6] shadow-[0_24px_48px_-24px_rgb(20_35_43/0.55)]"

@@ -1,13 +1,32 @@
-import { createBrowserRouter, RouterProvider } from "react-router";
+import {
+	createBrowserRouter,
+	Outlet,
+	type RouteObject,
+	RouterProvider,
+	ScrollRestoration,
+} from "react-router";
 import { FrontPage } from "./front-page";
 import { fronts } from "./fronts/registry";
 import { GalleryPage } from "./gallery/gallery-page";
 import { NotFound } from "./not-found";
 
-const router = createBrowserRouter([
+export const routes: RouteObject[] = [
 	{ path: "/", element: <GalleryPage fronts={fronts} /> },
-	{ path: "/f/:slug", element: <FrontPage /> },
+	// The splat lets each front define its own pages (/f/<slug>/productos/12…).
+	{ path: "/f/:slug/*", element: <FrontPage /> },
 	{ path: "*", element: <NotFound /> },
+];
+
+const router = createBrowserRouter([
+	{
+		element: (
+			<>
+				<ScrollRestoration />
+				<Outlet />
+			</>
+		),
+		children: routes,
+	},
 ]);
 
 export function App() {
