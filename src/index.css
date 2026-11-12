@@ -1,4 +1,5 @@
-@import "tailwindcss";
+/* HeroUI bundles Tailwind v4 plus its component styles and theme tokens. */
+@import "@heroui/styles";
 
 ::view-transition-old(root),
 ::view-transition-new(root) {

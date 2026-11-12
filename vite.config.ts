@@ -4,6 +4,8 @@ import { defineConfig } from "vitest/config";
 
 export default defineConfig({
 	plugins: [react(), tailwindcss()],
+	// MapLibre loads its worker relative to its own file; pre-bundling moves that file and breaks the worker.
+	optimizeDeps: { exclude: ["maplibre-gl"] },
 	test: {
 		environment: "jsdom",
 		globals: true,

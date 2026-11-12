@@ -1,46 +1,74 @@
-import { Outlet } from "react-router";
-import { useCart } from "../cart-context";
-import { SiteLink, SiteNavLink } from "./site-link";
+import { Toast } from "@heroui/react";
+import { useEffect } from "react";
+import { Outlet, useLocation } from "react-router";
+import { Header } from "./header";
+import { Logo } from "./logo";
+import { SiteLink } from "./site-link";
 
-const navClass = ({ isActive }: { isActive: boolean }) =>
-	`py-2 underline-offset-[6px] decoration-1 hover:underline ${isActive ? "underline" : ""}`;
+/** Scrolls to #anchors (e.g. «Visítanos») after navigating to them. */
+function useHashScroll() {
+	const { hash } = useLocation();
+	useEffect(() => {
+		if (!hash) return;
+		let cancelled = false;
+		// Wait for web fonts: they change line heights and would leave the scroll short.
+		document.fonts.ready.then(() => {
+			// One frame later, so the router's own scroll handling has finished first.
+			requestAnimationFrame(() => {
+				if (cancelled) return;
+				document
+					.getElementById(hash.slice(1))
+					?.scrollIntoView({ block: "start" });
+			});
+		});
+		return () => {
+			cancelled = true;
+		};
+	}, [hash]);
+}
 
 export function Layout() {
-	const { totals } = useCart();
+	useHashScroll();
 	return (
 		<div className="plumin">
-			<header className="sticky top-0 z-10 border-b border-(--rule) bg-(--paper)/95 backdrop-blur-sm">
-				<div className="mx-auto flex max-w-6xl items-baseline justify-between gap-4 px-4 py-3 sm:px-8">
-					<SiteLink
-						to=""
-						className="font-display text-3xl italic leading-none font-semibold"
-					>
-						Plumín
-					</SiteLink>
-					<nav
-						aria-label="Principal"
-						className="flex items-baseline gap-5 text-base sm:gap-8"
-					>
-						<SiteNavLink to="tintas" className={navClass}>
-							Tintas
-						</SiteNavLink>
-						<SiteNavLink to="taller" className={navClass}>
-							Taller
-						</SiteNavLink>
-						<SiteNavLink to="carrito" className={navClass}>
+			<Header />
+			<Outlet />
+			<footer className="mt-32 bg-(--wash)">
+				<div className="mx-auto grid max-w-7xl gap-10 px-4 py-14 sm:px-8 md:grid-cols-[2fr_1fr_1fr]">
+					<div>
+						<Logo />
+						<p className="mt-4 max-w-[36ch] text-(--ink-soft)">
+							Tintas para pluma de tres talleres pequeños. Calle del Ave María
+							31, Madrid.
+						</p>
+					</div>
+					<nav aria-label="Tienda" className="flex flex-col gap-2">
+						<p className="font-bold">Tienda</p>
+						<SiteLink to="tintas" className="hover:underline">
+							Todas las tintas
+						</SiteLink>
+						<SiteLink to="#muestras" className="hover:underline">
+							Caja de muestras
+						</SiteLink>
+						<SiteLink to="carrito" className="hover:underline">
 							Carrito
-							{totals.count > 0 && <span> ({totals.count})</span>}
-						</SiteNavLink>
+						</SiteLink>
+					</nav>
+					<nav aria-label="Plumín" className="flex flex-col gap-2">
+						<p className="font-bold">Plumín</p>
+						<SiteLink to="taller" className="hover:underline">
+							El taller
+						</SiteLink>
+						<SiteLink to="#visitanos" className="hover:underline">
+							Cómo llegar
+						</SiteLink>
 					</nav>
 				</div>
-			</header>
-			<Outlet />
-			<footer className="mt-24 border-t border-(--rule)">
-				<div className="mx-auto flex max-w-6xl flex-wrap justify-between gap-4 px-4 py-8 text-sm text-(--ink-soft) sm:px-8">
-					<p>Plumín, tintas para pluma. Calle del Ave María 31, Madrid.</p>
-					<p>Tienda inventada para practicar interfaces: no se vende nada.</p>
-				</div>
+				<p className="mx-auto max-w-7xl border-t border-(--rule) px-4 py-6 text-sm text-(--ink-soft) sm:px-8">
+					Tienda inventada para practicar interfaces: no se vende nada.
+				</p>
 			</footer>
+			<Toast.Provider placement="bottom end" />
 		</div>
 	);
 }

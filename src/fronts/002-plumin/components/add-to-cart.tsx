@@ -1,6 +1,10 @@
-import { useId, useState } from "react";
+import { Button, toast } from "@heroui/react";
+import { useState } from "react";
+import { useNavigate } from "react-router";
 import { useCart } from "../cart-context";
-import { SiteLink } from "./site-link";
+import { nameOf } from "../data";
+import { QuantityField } from "./quantity-field";
+import { useSitePath } from "./site-link";
 
 type AddToCartProps = {
 	id: string;
@@ -16,50 +20,48 @@ export function AddToCart({
 }: AddToCartProps) {
 	const { dispatch } = useCart();
 	const [qty, setQty] = useState(1);
-	const [added, setAdded] = useState(0);
-	const selectId = useId();
+	const navigate = useNavigate();
+	const sitePath = useSitePath();
+
+	const add = () => {
+		dispatch({ type: "add", id, qty });
+		toast.success(`${nameOf(id)} en el carrito`, {
+			description: `Has añadido ${qty} ${qty === 1 ? unit[0] : unit[1]}.`,
+			actionProps: {
+				children: "Ver carrito",
+				onPress: () => navigate(sitePath("carrito")),
+			},
+		});
+	};
 
 	return (
-		<div>
-			<div className="flex flex-wrap items-end gap-3">
-				<div>
-					<label htmlFor={selectId} className="block text-sm text-(--ink-soft)">
-						{unit[1].charAt(0).toUpperCase() + unit[1].slice(1)}
-					</label>
-					<select
-						id={selectId}
-						value={qty}
-						onChange={(event) => setQty(Number(event.target.value))}
-						className="mt-1 h-12 rounded-md border border-(--rule) bg-(--paper) px-3"
-					>
-						{[1, 2, 3, 4, 5].map((n) => (
-							<option key={n} value={n}>
-								{n}
-							</option>
-						))}
-					</select>
-				</div>
-				<button
-					type="button"
-					onClick={() => {
-						dispatch({ type: "add", id, qty });
-						setAdded((n) => n + qty);
-					}}
-					className="h-12 rounded-md bg-(--ink) px-6 font-semibold text-(--paper) transition-transform active:scale-[0.97]"
-				>
-					{label}
-				</button>
-			</div>
-			<p aria-live="polite" className="mt-3 min-h-6 text-sm">
-				{added > 0 && (
-					<>
-						Has añadido {added} {added === 1 ? unit[0] : unit[1]}.{" "}
-						<SiteLink to="carrito" className="underline underline-offset-4">
-							Ver el carrito
-						</SiteLink>
-					</>
-				)}
-			</p>
+		<div className="flex flex-wrap items-end gap-3">
+			<QuantityField
+				value={qty}
+				onChange={setQty}
+				label={unit[1].charAt(0).toUpperCase() + unit[1].slice(1)}
+			/>
+			<Button size="lg" onPress={add} className="h-11 px-7 font-semibold">
+				{label}
+			</Button>
 		</div>
+	);
+}
+
+/** One-tap add used on product tiles. */
+export function QuickAdd({ id }: { id: string }) {
+	const { dispatch } = useCart();
+	return (
+		<Button
+			size="sm"
+			variant="secondary"
+			aria-label={`Añadir ${nameOf(id)} al carrito`}
+			onPress={() => {
+				dispatch({ type: "add", id, qty: 1 });
+				toast.success(`${nameOf(id)} en el carrito`);
+			}}
+		>
+			Añadir
+		</Button>
 	);
 }

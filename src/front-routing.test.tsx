@@ -41,10 +41,16 @@ describe("front routing", () => {
 
 	it("leaves the front with Esc, except while typing in a field", async () => {
 		renderAt("/f/002-plumin/tintas/granada");
-		const select = await screen.findByLabelText("Frascos");
+		const select = await screen.findByRole(
+			"textbox",
+			{ name: "Frascos" },
+			{ timeout: 5000 },
+		);
 		select.focus();
 		await userEvent.keyboard("{Escape}");
-		expect(screen.getByLabelText("Frascos")).toBeInTheDocument();
+		expect(
+			screen.getByRole("textbox", { name: "Frascos" }),
+		).toBeInTheDocument();
 		select.blur();
 		await userEvent.keyboard("{Escape}");
 		expect(
