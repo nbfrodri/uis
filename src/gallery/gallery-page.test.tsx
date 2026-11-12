@@ -32,34 +32,25 @@ function renderGallery(list: Front[], url = "/") {
 }
 
 describe("GalleryPage", () => {
-	it("presents the studio and lets visitors pause decorative motion", async () => {
+	it("presents NBF, its work and what it does", () => {
 		renderGallery(fronts);
+		expect(screen.getByRole("link", { name: "NBF, inicio" })).toHaveAttribute(
+			"href",
+			"/",
+		);
 		expect(
-			screen.getByRole("link", { name: "Estudio digital, inicio" }),
-		).toHaveAttribute("href", "/");
-		expect(
-			screen.getByRole("heading", {
-				level: 1,
-				name: /ideas que se pueden visitar/i,
-			}),
+			screen.getByRole("heading", { level: 1, name: "NBF" }),
 		).toBeInTheDocument();
-		await userEvent.click(
-			screen.getByRole("button", { name: "Pausar movimiento" }),
-		);
 		expect(
-			screen.getByRole("button", { name: "Activar movimiento" }),
-		).toHaveAttribute("aria-pressed", "true");
-		await userEvent.click(
-			screen.getByRole("button", { name: "Activar movimiento" }),
-		);
-		expect(
-			screen.getByRole("button", { name: "Pausar movimiento" }),
-		).toHaveAttribute("aria-pressed", "false");
+			screen.getByRole("heading", { level: 2, name: "Lo que hago" }),
+		).toBeInTheDocument();
 	});
 
 	it("lists every front with a link to open it", () => {
 		renderGallery(fronts);
-		const items = screen.getAllByRole("listitem");
+		const items = within(
+			screen.getByRole("region", { name: "Trabajo" }),
+		).getAllByRole("listitem");
 		expect(items).toHaveLength(2);
 		expect(
 			within(items[0] as HTMLElement).getByRole("link", {
@@ -71,7 +62,11 @@ describe("GalleryPage", () => {
 	it("filters by tag from the URL and marks the active tag", async () => {
 		renderGallery(fronts);
 		await userEvent.click(screen.getByRole("link", { name: "data" }));
-		expect(screen.getAllByRole("listitem")).toHaveLength(1);
+		expect(
+			within(screen.getByRole("region", { name: "Trabajo" })).getAllByRole(
+				"listitem",
+			),
+		).toHaveLength(1);
 		expect(
 			screen.getByRole("link", { name: /libro de cuentas/i }),
 		).toBeInTheDocument();

@@ -1,4 +1,5 @@
-import type { ComponentType } from "react";
+import { motion, useScroll, useTransform } from "motion/react";
+import { type ComponentType, useRef } from "react";
 import { Link } from "react-router";
 import type { Front } from "../lib/fronts";
 import { ArrowIcon } from "./studio-icons";
@@ -9,55 +10,61 @@ const previews = import.meta.glob<{ default: ComponentType }>(
 	{ eager: true },
 );
 
-const yearFormat = new Intl.DateTimeFormat("es-ES", {
-	year: "numeric",
-	timeZone: "UTC",
-});
+const pad = (n: number) => String(n).padStart(2, "0");
 
-export function ProjectCard({ front }: { front: Front }) {
+/** One row of the work index; the preview floats in on hover with parallax. */
+export function ProjectCard({
+	front,
+	still,
+}: {
+	front: Front;
+	still: boolean;
+}) {
 	const Preview = previews[`../fronts/${front.slug}/preview.tsx`]?.default;
+	const row = useRef<HTMLLIElement>(null);
+	const { scrollYProgress } = useScroll({
+		target: row,
+		offset: ["start end", "end start"],
+	});
+	// The picture moves inside its frame slower than the page: depth.
+	const depth = useTransform(
+		scrollYProgress,
+		(v) => `translateY(${(v - 0.5) * 16}%)`,
+	);
+
 	return (
-		<li className="studio-project">
-			<article>
-				<Link
-					to={`/f/${front.slug}`}
-					viewTransition
-					className="studio-project-link"
-					aria-label={`Explorar ${front.title}`}
-				>
-					<div className="studio-project-cover" aria-hidden="true">
-						{Preview ? (
+		<li ref={row} className="nbf-row">
+			<Link
+				to={`/f/${front.slug}`}
+				viewTransition
+				className="nbf-row-link"
+				aria-label={`Explorar ${front.title}`}
+			>
+				<span className="nbf-row-index">{pad(front.number)}</span>
+				<span className="nbf-row-name">{front.title}</span>
+				<span className="nbf-row-tags">
+					{front.tags.join(" / ") || "Web de demostración"}
+				</span>
+				<time className="nbf-row-year" dateTime={front.date}>
+					{front.date.slice(0, 4)}
+				</time>
+				{Preview && (
+					<span className="nbf-row-cover" aria-hidden="true">
+						<motion.span
+							className="nbf-row-cover-inner"
+							style={still ? undefined : { transform: depth }}
+						>
 							<Preview />
-						) : (
-							<div className="studio-project-fallback">
-								<span>{String(front.number).padStart(2, "0")}</span>
-								<strong>{front.title}</strong>
-							</div>
-						)}
-						<span className="studio-project-enter">
-							Entrar en la web <ArrowIcon />
-						</span>
-					</div>
-					<div className="studio-project-info">
-						<div>
-							<h3>{front.title}</h3>
-							<p>{front.description}</p>
-						</div>
-						<div className="studio-project-meta">
-							<span>{front.tags.join(" / ") || "Web de demostración"}</span>
-							<time dateTime={front.date}>
-								{yearFormat.format(new Date(front.date))}
-							</time>
-						</div>
-					</div>
-				</Link>
-				<a
-					className="studio-project-docs"
-					href={`https://github.com/nbfrodri/uis/blob/main/src/fronts/${encodeURIComponent(front.slug)}/README.md`}
-				>
-					Librerías y decisiones <ArrowIcon />
-				</a>
-			</article>
+						</motion.span>
+					</span>
+				)}
+			</Link>
+			<a
+				className="nbf-row-docs"
+				href={`https://github.com/nbfrodri/uis/blob/main/src/fronts/${encodeURIComponent(front.slug)}/README.md`}
+			>
+				Librerías y decisiones <ArrowIcon />
+			</a>
 		</li>
 	);
 }

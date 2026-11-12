@@ -18,20 +18,3 @@ export function ArrowIcon({
 		</svg>
 	);
 }
-
-export function StudioMark() {
-	return (
-		<svg
-			viewBox="0 0 40 40"
-			fill="none"
-			className="studio-mark"
-			aria-hidden="true"
-		>
-			<path
-				d="M20 3v34M3 20h34M8 8l24 24M8 32 32 8"
-				stroke="currentColor"
-				strokeWidth="5"
-			/>
-		</svg>
-	);
-}

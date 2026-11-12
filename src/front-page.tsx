@@ -24,9 +24,9 @@ export function FrontPage() {
 
 	useEffect(() => {
 		if (!front) return;
-		document.title = `${front.title} · Estudio digital`;
+		document.title = `${front.title} · NBF`;
 		return () => {
-			document.title = "Estudio digital";
+			document.title = "NBF";
 		};
 	}, [front]);
 

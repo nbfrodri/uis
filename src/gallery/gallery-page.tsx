@@ -1,97 +1,63 @@
-import "@fontsource-variable/archivo";
+import "@fontsource-variable/archivo/wdth.css";
 import "./gallery.css";
-import { useState } from "react";
 import { Link, useSearchParams } from "react-router";
 import { collectTags, type Front, filterByTag } from "../lib/fronts";
-import { GalleryHero } from "./gallery-hero";
+import { MarqueeBands } from "./marquee-bands";
+import { usePrefersReducedMotion, useSmoothScroll } from "./motion-prefs";
+import { NbfHero } from "./nbf-hero";
+import { PracticeRail } from "./practice-rail";
 import { ProjectCard } from "./project-card";
-import { ArrowIcon, StudioMark } from "./studio-icons";
+import { ArrowIcon } from "./studio-icons";
 
 export function GalleryPage({ fronts }: { fronts: Front[] }) {
 	const [params] = useSearchParams();
-	const [paused, setPaused] = useState(false);
+	const reduce = usePrefersReducedMotion();
 	const activeTag = params.get("tag");
 	const tags = collectTags(fronts);
 	const visible = filterByTag(fronts, activeTag);
+	useSmoothScroll(!reduce);
 
 	return (
-		<div className="gallery" data-motion-paused={paused}>
-			<a href="#contenido" className="studio-skip">
+		<div className="gallery nbf">
+			<a href="#contenido" className="nbf-skip">
 				Saltar al contenido
 			</a>
-			<header className="studio-header">
-				<Link
-					to="/"
-					className="studio-wordmark"
-					aria-label="Estudio digital, inicio"
-				>
-					<StudioMark />
-					<span>
-						Estudio
-						<br />
-						digital
-					</span>
+			<header className="nbf-header">
+				<Link to="/" className="nbf-wordmark" aria-label="NBF, inicio">
+					NBF
 				</Link>
-				<nav aria-label="Principal" className="studio-nav">
-					<a href="#proyectos">Proyectos</a>
-					<a href="#estudio">El estudio</a>
+				<nav aria-label="Principal" className="nbf-nav">
+					<a href="#proyectos">Trabajo</a>
+					<a href="#estudio">Lo que hago</a>
+					<a href="https://github.com/nbfrodri/uis">
+						GitHub <ArrowIcon />
+					</a>
 				</nav>
-				<a href="https://github.com/nbfrodri/uis" className="studio-code-link">
-					Ver código <ArrowIcon />
-				</a>
 			</header>
 
 			<main id="contenido">
-				<GalleryHero
-					paused={paused}
-					onToggle={() => setPaused((value) => !value)}
-				/>
+				<NbfHero still={reduce} />
 
-				<section
-					id="estudio"
-					className="studio-intro"
-					aria-labelledby="studio-intro-title"
-				>
-					<p className="studio-section-note">
-						Un espacio para
-						<br />
-						probar otras ideas.
-					</p>
-					<div>
-						<h2 id="studio-intro-title">
-							Cada web,
-							<br />
-							un mundo propio.
-						</h2>
-						<p>
-							Negocios imaginarios, experiencias que funcionan. Del primer
-							vistazo al último clic, cada proyecto explora una forma distinta
-							de diseñar la web.
-						</p>
-					</div>
-					<span className="studio-intro-symbol" aria-hidden="true">
-						<StudioMark />
-					</span>
-				</section>
+				<MarqueeBands still={reduce} />
 
 				<section
 					id="proyectos"
-					className="studio-work"
-					aria-labelledby="studio-projects-title"
+					className="nbf-work"
+					aria-labelledby="nbf-work-title"
 				>
-					<div className="studio-work-heading">
-						<h2 id="studio-projects-title">
-							Proyectos para entrar<span aria-hidden="true">.</span>
+					<div className="nbf-work-head">
+						<h2 id="nbf-work-title" className="nbf-label">
+							Trabajo
 						</h2>
-						<span className="studio-project-count">
+						<span className="nbf-count">
 							({String(fronts.length).padStart(2, "0")})
 						</span>
 					</div>
 					{tags.length > 0 && (
-						<nav aria-label="Filtrar por etiqueta" className="studio-filters">
+						<nav aria-label="Filtrar por etiqueta" className="nbf-filters">
 							<Link
 								to="/"
-								className="studio-filter"
+								className="nbf-filter"
 								aria-current={activeTag ? undefined : "true"}
 							>
 								todos
@@ -100,7 +66,7 @@ export function GalleryPage({ fronts }: { fronts: Front[] }) {
 								<Link
 									key={tag}
 									to={`/?tag=${encodeURIComponent(tag)}`}
-									className="studio-filter"
+									className="nbf-filter"
 									aria-current={
 										activeTag?.toLowerCase() === tag ? "true" : undefined
 									}
@@ -111,45 +77,43 @@ export function GalleryPage({ fronts }: { fronts: Front[] }) {
 						</nav>
 					)}
 					{fronts.length === 0 ? (
-						<p className="studio-empty">
+						<p className="gallery-empty">
 							Todavía no hay webs. Crea la primera con{" "}
 							<code>pnpm new-front nombre</code> y aparecerá aquí.
 						</p>
 					) : visible.length === 0 ? (
-						<p className="studio-empty">
+						<p className="gallery-empty">
 							Ninguna web lleva la etiqueta «{activeTag}».{" "}
 							<Link to="/">Ver todos</Link>
 						</p>
 					) : (
-						<ol className="studio-projects">
+						<ol className="nbf-list">
 							{visible.map((front) => (
-								<ProjectCard key={front.slug} front={front} />
+								<ProjectCard key={front.slug} front={front} still={reduce} />
 							))}
 						</ol>
 					)}
 				</section>
+
+				<PracticeRail still={reduce} />
+
+				<section className="nbf-about" aria-label="Sobre NBF">
+					<p>
+						NBF es mi espacio para probar ideas: negocios imaginarios,
+						convertidos en webs que funcionan de verdad, del primer vistazo al
+						último clic.
+					</p>
+				</section>
 			</main>
 
-			<footer className="studio-footer">
-				<div className="studio-footer-top">
-					<p>
-						Hecho para explorar.
-						<br />
-						Pensado hasta el último clic.
-					</p>
-					<a
-						href="#proyectos"
-						className="studio-back-top"
-						aria-label="Volver a los proyectos"
-					>
-						<ArrowIcon />
-					</a>
-				</div>
-				<div className="studio-footer-bottom">
-					<span>Estudio digital</span>
-					<p>Webs ficticias. Diseño y desarrollo con IA.</p>
+			<footer className="nbf-footer">
+				<span className="nbf-footer-mark" aria-hidden="true">
+					NBF
+				</span>
+				<div className="nbf-footer-bottom">
+					<span>NBF · Webs ficticias, diseño y desarrollo con IA.</span>
 					<a href="https://github.com/nbfrodri/uis">
-						GitHub <ArrowIcon />
+						Código en GitHub <ArrowIcon />
 					</a>
 				</div>
 			</footer>
