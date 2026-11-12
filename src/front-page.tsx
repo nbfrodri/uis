@@ -1,6 +1,6 @@
 import { Suspense, useEffect } from "react";
 import { Link, useNavigate, useParams } from "react-router";
-import { findFront, getFrontComponent } from "./fronts/registry";
+import { findFront, frontElement } from "./fronts/registry";
 import { NotFound } from "./not-found";
 
 /** Esc belongs to the front while the user is in a field or a dialog is open. */
@@ -17,7 +17,7 @@ export function FrontPage() {
 	const { slug = "" } = useParams();
 	const navigate = useNavigate();
 	const front = findFront(slug);
-	const Component = getFrontComponent(slug);
+	const element = frontElement(slug);
 
 	useEffect(() => {
 		if (!front) return;
@@ -40,13 +40,11 @@ export function FrontPage() {
 		return () => window.removeEventListener("keydown", onKey);
 	}, [navigate]);
 
-	if (!front || !Component) return <NotFound />;
+	if (!front || !element) return <NotFound />;
 
 	return (
 		<>
-			<Suspense fallback={null}>
-				<Component />
-			</Suspense>
+			<Suspense fallback={null}>{element}</Suspense>
 			<Link
 				to="/"
 				viewTransition

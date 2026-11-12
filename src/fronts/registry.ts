@@ -1,4 +1,9 @@
-import { type ComponentType, lazy } from "react";
+import {
+	type ComponentType,
+	createElement,
+	lazy,
+	type ReactElement,
+} from "react";
 import { buildFronts, type Front, type FrontMeta } from "../lib/fronts";
 
 const metas = import.meta.glob<{ default: FrontMeta }>(
@@ -23,6 +28,8 @@ const frontComponents = new Map(
 	Object.entries(components).map(([path, loader]) => [path, lazy(loader)]),
 );
 
-export function getFrontComponent(slug: string): ComponentType | undefined {
-	return frontComponents.get(`./${slug}/index.tsx`);
+/** The element for a front, or null if no front has that slug. */
+export function frontElement(slug: string): ReactElement | null {
+	const component = frontComponents.get(`./${slug}/index.tsx`);
+	return component ? createElement(component) : null;
 }
