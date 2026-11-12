@@ -1,5 +1,5 @@
 import { Link } from "react-router";
-import { NbfHeader, pad, useSlots } from "./shared";
+import { NbfHeader, pad, useSlots, YEAR } from "./shared";
 
 /** A · The monogram fills the screen and comes apart as you scroll. */
 export function MonogramVariant() {
@@ -98,7 +98,7 @@ export function MonogramVariant() {
 					NBF
 				</span>
 				<div>
-					<span>© {new Date().getFullYear()} NBF</span>
+					<span>© {YEAR} NBF</span>
 					<a href="https://github.com/nbfrodri/uis">Código en GitHub ↗</a>
 				</div>
 			</footer>

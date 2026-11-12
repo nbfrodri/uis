@@ -42,3 +42,6 @@ export function NbfHeader() {
 		</header>
 	);
 }
+
+/** Read once at load, not during render. */
+export const YEAR = new Date().getFullYear();

@@ -1,5 +1,5 @@
 import { Link } from "react-router";
-import { NbfHeader, pad, useSlots } from "./shared";
+import { NbfHeader, pad, useSlots, YEAR } from "./shared";
 
 /** B · Vertical scroll walks a pinned rail of projects sideways. */
 export function HorizontalVariant() {
@@ -96,7 +96,7 @@ export function HorizontalVariant() {
 				</section>
 			</main>
 			<footer className="rail-footer">
-				<span>© {new Date().getFullYear()} NBF</span>
+				<span>© {YEAR} NBF</span>
 				<a href="https://github.com/nbfrodri/uis">GitHub ↗</a>
 			</footer>
 		</>
